@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8"/>
+  <title>Audio Sketch List</title>
+  <meta name="description" content="Audio sketches for something.">
+  <meta name="author" content="M. U. Sician">
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="assets/css/normalize.css">
+  <link rel="stylesheet" href="assets/css/bones.css">
+  <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="stylesheet" href="assets/css/custom.css">
+
+
+  <!-- jPlayer stylesheets -->
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jplayer/2.9.2/skin/blue.monday/css/jplayer.blue.monday.min.css" integrity="sha512-LWNZXbrfqeySC2ntzp/UuJOtqfMnEKZd7FzUhY0LdJHOmFsmCJ6MiKGJxb2TrMGtxudjdUj7sQ2mk+Jz77YR6g==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jplayer/2.9.2/skin/pink.flag/css/jplayer.pink.flag.min.css" integrity="sha512-oL3mNbkmgqF5NIZSyHPVS9owwRqE5ulXWEo85xGDrsWncxz4m/99FI8gMriZXQdFXkT5hqShFlaifY8X/tN1Ow==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- minor adjustments to jPlayer styling -->
+  <link rel="stylesheet" href="assets/css/jplayer.custom.css" type="text/css" />
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-16x16.png">
+  <link rel="manifest" href="assets/site.webmanifest">
+
+</head>
+
+<body>
+
+  <div class="container u-full-width">
+
+    <div class="row intro">
+      <div class="twelve columns">
+        <img src="assets/images/logo.png" alt="logo" id="logo" />
+        <p>
+          Audio ideas for something.
+        </p>
+      </div>
+    </div>
+
+    <div class="row music">
+      <div class="twelve columns player">
+
+        <div id="jquery_jplayer_1" class="jp-jplayer"></div>
+        <div id="jp_container_1" class="jp-audio" role="application" aria-label="media player">
+          <div class="jp-type-playlist">
+            <div class="jp-gui jp-interface">
+              <div class="jp-volume-controls">
+                <button class="jp-mute" role="button" tabindex="0">mute</button>
+                <button class="jp-volume-max" role="button" tabindex="0">max volume</button>
+                <div class="jp-volume-bar">
+                  <div class="jp-volume-bar-value"></div>
+                </div>
+              </div>
+              <div class="jp-controls-holder">
+                <div class="jp-controls">
+                  <button class="jp-previous" role="button" tabindex="0">previous</button>
+                  <button class="jp-play" role="button" tabindex="0">play</button>
+                  <button class="jp-stop" role="button" tabindex="0">stop</button>
+                  <button class="jp-next" role="button" tabindex="0">next</button>
+                </div>
+                <div class="jp-progress">
+                  <div class="jp-seek-bar">
+                    <div class="jp-play-bar"></div>
+                  </div>
+                </div>
+                <div class="jp-current-time" role="timer" aria-label="time">&nbsp;</div>
+                <div class="jp-duration" role="timer" aria-label="duration">&nbsp;</div>
+                <!-- This is buggy for some reason, so turning off -->
+                <!--
+                <div class="jp-toggles">
+                  <button class="jp-repeat" role="button" tabindex="0">repeat</button>
+                  <button class="jp-shuffle" role="button" tabindex="0">shuffle</button>
+                </div> -->
+              </div>
+            </div>
+            <div class="jp-playlist">
+              <ul>
+                <li></li>
+              </ul>
+            </div>
+            <div class="jp-no-solution">
+              <span>Update Required</span>
+              To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+
+  <!-- JQUERY LATEST 2.x
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  <!-- JQUERY LATEST 3.x
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
+
+  <!-- jPlayer
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jplayer/2.9.2/jplayer/jquery.jplayer.min.js" integrity="sha512-g0etrk7svX8WYBp+ZDIqeenmkxQSXjRDTr08ie37rVFc99iXFGxmD0/SCt3kZ6sDNmr8sR0ISHkSAc/M8rQBqg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jplayer/2.9.2/add-on/jplayer.playlist.min.js" integrity="sha512-URFV3t5uXfvKOagAfyhVvwKvilA4QPsnyCAd4I7GHPer6eipGwz/1l/XLvjNMc4CUz1LDvIqYqQV/YZE9Uf7Hg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- jPlayer playlist setup
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script type="text/javascript" src="assets/js/jplayer.setup.js"></script>
+
+  <!-- App JS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="assets/js/custom.js"></script>
+
+</body>
+</html>

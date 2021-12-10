@@ -1,0 +1,12 @@
+body {
+  /* jplayer.pink.flag: default */
+  background-color: #f0daff;
+  /* jplayer.blue-monday */
+  /* background-color: #92c9e2; */
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 640px;
+}
