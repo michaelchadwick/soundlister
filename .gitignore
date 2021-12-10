@@ -1,2 +1,2 @@
-# make sure no global .gitignore for binary files forgets the README.md
-!audio/README.md
+# dont track actual audio files
+audio/
