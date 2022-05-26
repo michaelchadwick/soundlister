@@ -1,2 +1,4 @@
 # dont track actual audio files
 audio/
+!assets/css/vendor
+!assets/js/vendor
