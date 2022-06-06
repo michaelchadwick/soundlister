@@ -10,4 +10,4 @@ Create a quick one-page website playlist for any[^1] audio. Uses [Amplitude.js](
 4. `cp audio-file-of-awesome.mp3 /path/to/soundlister/audio`
 5. `open index.html`
 
-[^1] Only supports "mp3" for now
+[^1]: Only supports "mp3" for now
