@@ -2,131 +2,141 @@
 <html lang="en">
 <head>
 
-  <!-- Basic Page Needs
+  <!-- BASIC
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta charset="utf-8"/>
+  <meta http-equiv="cache-control" content="Public">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
   <title>Audio Sketch List</title>
+
+  <!-- META
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta name="description" content="Audio sketches for something.">
   <meta name="author" content="M. U. Sician">
+  <meta name="application-name" content="Audio Sketch List">
+  <meta name="title" content="Audio Sketch List" />
 
-  <!-- Mobile Specific Metas
+  <!-- FAVICONS
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/images/favicon-16x16.png">
+  <link rel="manifest" href="./site.webmanifest">
 
-  <!-- FONT
+  <!-- FONTS
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
 
   <!-- CSS
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="stylesheet" href="assets/css/vendor/normalize.css">
-  <link rel="stylesheet" href="assets/css/vendor/bones.css">
-  <link rel="stylesheet" href="assets/css/app.css">
-
-  <!-- jPlayer stylesheets -->
-  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jplayer/2.9.2/skin/blue.monday/css/jplayer.blue.monday.min.css" integrity="sha512-LWNZXbrfqeySC2ntzp/UuJOtqfMnEKZd7FzUhY0LdJHOmFsmCJ6MiKGJxb2TrMGtxudjdUj7sQ2mk+Jz77YR6g==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jplayer/2.9.2/skin/pink.flag/css/jplayer.pink.flag.min.css" integrity="sha512-oL3mNbkmgqF5NIZSyHPVS9owwRqE5ulXWEo85xGDrsWncxz4m/99FI8gMriZXQdFXkT5hqShFlaifY8X/tN1Ow==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <!-- minor adjustments to jPlayer styling -->
-  <link rel="stylesheet" href="assets/css/jplayer.custom.css" type="text/css" />
-
-  <!-- Favicon
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-16x16.png">
-  <link rel="manifest" href="assets/site.webmanifest">
-
+  <!-- VENDOR -->
+  <link rel="stylesheet" href="./assets/css/vendor/amplitude.css" />
+  <!-- CUSTOM -->
+  <link rel="stylesheet" href="./assets/css/app.css">
 </head>
-
 <body>
 
-  <div class="container u-full-width">
+  <header>
+    <img src="assets/images/logo.png" alt="logo" id="logo" />
+    <p>
+      Audio ideas for something.
+    </p>
+  </header>
 
-    <div class="row intro">
-      <div class="twelve columns">
-        <img src="assets/images/logo.png" alt="logo" id="logo" />
-        <p>
-          Audio ideas for something.
-        </p>
-      </div>
-    </div>
+  <!-- Primary Page Layout
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 
-    <div class="row music">
-      <div class="twelve columns player">
+  <section id="main">
 
-        <div id="jquery_jplayer_1" class="jp-jplayer"></div>
-        <div id="jp_container_1" class="jp-audio" role="application" aria-label="media player">
-          <div class="jp-type-playlist">
-            <div class="jp-gui jp-interface">
-              <div class="jp-volume-controls">
-                <button class="jp-mute" role="button" tabindex="0">mute</button>
-                <button class="jp-volume-max" role="button" tabindex="0">max volume</button>
-                <div class="jp-volume-bar">
-                  <div class="jp-volume-bar-value"></div>
+    <!-- Blue Playlist Container -->
+    <div id="blue-playlist-container">
+
+      <!-- Amplitude Player -->
+      <div id="amplitude-player">
+
+        <!-- Left Side Player -->
+        <div id="amplitude-left">
+          <!--<img data-amplitude-song-info="cover_art_url" class="album-art" />-->
+
+          <div class="amplitude-visualization" id="large-visualization"></div>
+
+          <div id="player-left-bottom">
+            <div id="time-container">
+              <span class="current-time">
+                <span class="amplitude-current-minutes"></span>:<span class="amplitude-current-seconds"></span>
+              </span>
+              <div id="progress-container">
+                <div class="amplitude-wave-form"></div>
+                <input type="range" class="amplitude-song-slider"/>
+                <progress id="song-played-progress" class="amplitude-song-played-progress"></progress>
+                <progress id="song-buffered-progress" class="amplitude-buffered-progress" value="0"></progress>
+              </div>
+              <span class="duration">
+                <span class="amplitude-duration-minutes"></span>:<span class="amplitude-duration-seconds"></span>
+              </span>
+            </div>
+
+            <div id="control-container">
+              <div id="repeat-container">
+                <div class="amplitude-repeat" id="repeat"></div>
+                <div class="amplitude-shuffle amplitude-shuffle-off" id="shuffle"></div>
+              </div>
+
+              <div id="central-control-container">
+                <div id="central-controls">
+                  <div class="amplitude-prev" id="previous"></div>
+                  <div class="amplitude-play-pause" id="play-pause"></div>
+                  <div class="amplitude-next" id="next"></div>
                 </div>
               </div>
-              <div class="jp-controls-holder">
-                <div class="jp-controls">
-                  <button class="jp-previous" role="button" tabindex="0">previous</button>
-                  <button class="jp-play" role="button" tabindex="0">play</button>
-                  <button class="jp-stop" role="button" tabindex="0">stop</button>
-                  <button class="jp-next" role="button" tabindex="0">next</button>
+
+              <div id="volume-container">
+                <div class="volume-controls">
+                  <div class="amplitude-mute amplitude-not-muted"></div>
+                  <input type="range" class="amplitude-volume-slider"/>
+                  <div class="ms-range-fix"></div>
                 </div>
-                <div class="jp-progress">
-                  <div class="jp-seek-bar">
-                    <div class="jp-play-bar"></div>
-                  </div>
-                </div>
-                <div class="jp-current-time" role="timer" aria-label="time">&nbsp;</div>
-                <div class="jp-duration" role="timer" aria-label="duration">&nbsp;</div>
-                <!-- This is buggy for some reason, so turning off -->
-                <!--
-                <div class="jp-toggles">
-                  <button class="jp-repeat" role="button" tabindex="0">repeat</button>
-                  <button class="jp-shuffle" role="button" tabindex="0">shuffle</button>
-                </div> -->
+                <div class="amplitude-shuffle amplitude-shuffle-off" id="shuffle-right"></div>
               </div>
             </div>
-            <div class="jp-playlist">
-              <ul>
-                <li></li>
-              </ul>
-            </div>
-            <div class="jp-no-solution">
-              <span>Update Required</span>
-              To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.
+
+            <div id="meta-container">
+              <span data-amplitude-song-info="name" class="song-name"></span>
+
+              <div class="song-artist-album">
+                <span class="song-artist" data-amplitude-song-info="artist"></span>
+                <span class="song-album" data-amplitude-song-info="album"></span>
+              </div>
             </div>
           </div>
         </div>
+        <!-- End Left Side Player -->
+
+        <!-- Right Side Player -->
+        <!-- songs will dynamically be added from amplitude.setup.js -->
+        <div id="amplitude-right">
+
+        </div>
+        <!-- End Right Side Player -->
 
       </div>
+      <!-- End Amplitdue Player -->
+
     </div>
 
-  </div>
+  </section>
 
   <!-- End Document
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 
-  <!-- JQUERY LATEST 2.x
+  <!-- JAVASCRIPTS
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-  <!-- JQUERY LATEST 3.x
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
-
-  <!-- jPlayer
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jplayer/2.9.2/jplayer/jquery.jplayer.min.js" integrity="sha512-g0etrk7svX8WYBp+ZDIqeenmkxQSXjRDTr08ie37rVFc99iXFGxmD0/SCt3kZ6sDNmr8sR0ISHkSAc/M8rQBqg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jplayer/2.9.2/add-on/jplayer.playlist.min.js" integrity="sha512-URFV3t5uXfvKOagAfyhVvwKvilA4QPsnyCAd4I7GHPer6eipGwz/1l/XLvjNMc4CUz1LDvIqYqQV/YZE9Uf7Hg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <!-- jPlayer
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <script type="text/javascript" src="assets/js/vendor/jquery.jplayer.min.js"></script>
-  <script type="text/javascript" src="assets/js/vendor/jplayer.playlist.min.js"></script>
-  <script type="text/javascript" src="assets/js/jplayer.setup.js"></script>
-
-  <!-- App JS
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <script src="assets/js/app.js"></script>
+  <!-- VENDOR -->
+  <script type="text/javascript" src="./assets/js/vendor/mp3tag.min.js"></script>
+  <script type="text/javascript" src="./assets/js/vendor/amplitude.min.js"></script>
+  <!-- CUSTOM -->
+  <script type="text/javascript" src="./assets/js/amplitude.setup.js"></script>
+  <script type="text/javascript" src="./assets/js/app.js"></script>
 
 </body>
 </html>

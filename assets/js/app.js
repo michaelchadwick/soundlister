@@ -1,3 +1,1 @@
-$(function() {
-  // add JS here
-});
+// add JS here

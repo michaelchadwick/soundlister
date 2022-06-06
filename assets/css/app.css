@@ -4,34 +4,38 @@ dark blue:  #2b22b5
 black:      #000000
 */
 
+/* FOUNDATION */
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+}
+
 body {
   background: #02cbe3;
   color: #000000;
 }
+
 a {
   border: none;
 }
 
-.row {
-  padding: 0 1em;
+header {
+  padding: 1em;
 }
 
-.intro,
-.music {
+header,
+section#main {
   border-bottom: 5px dashed #2b22b5;
 }
 
-.intro {
-  padding-top: 20px;
-}
-.intro a {
-  border-color: #000000;
-  color: #2b22b5;
-}
-
-.music {
+section#main {
   background: #000;
-  padding: 15px 5px;
+  padding: 5px 0;
 }
 
 .downloadbutton {

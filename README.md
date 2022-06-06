@@ -1,6 +1,6 @@
 # Audio Sketch List
 
-Create a quick one-page website playlist for any audio. Uses [jPlayer](https://jplayer.org).
+Create a quick one-page website playlist for any audio. Uses [Amplitude.js](https://521dimensions.com/open-source/amplitudejs) to play stuff, and [mp3tag.js](https://github.com/eidoriantan/mp3tag.js) to read ID3 tags.
 
 ## Local Development / Deploy
 
@@ -8,7 +8,4 @@ Create a quick one-page website playlist for any audio. Uses [jPlayer](https://j
 2. `cd audio-sketch-list`
 3. `mkdir /path/to/audio-sketch-list/audio`
 4. `cp audio-file-of-awesome.mp3 /path/to/audio-sketch-list/audio`
-    * mp3 - Chrome/Safari
-    * ogg - Firefox
-5. Customize `/path/to/audio-sketch-list/js/jplayer.setup.js` to match audio files
-6. `open index.html`
+5. `open index.html`
