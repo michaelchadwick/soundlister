@@ -2,6 +2,7 @@
 light blue: #02cbe3
 dark blue:  #2b22b5
 black:      #000000
+gray:       #333333
 */
 
 /* FOUNDATION */
@@ -35,40 +36,21 @@ section#main {
 
 section#main {
   background: #000;
+  margin-bottom: 25px;
   padding: 5px 0;
 }
 
-.downloadbutton {
-  background: #15b953 url(../assets/images/bgButton.png);
-  border: 1px solid #000;
-  border-radius: 5px;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  margin-bottom: 7px;
-  overflow: hidden;
-  text-align: center;
+footer {
+  background-color: #555555;
+  border-top: 2px solid #000000;
+  bottom: 0;
+  color: #f3f3f3;
+  font-size: 0.75rem;
+  height: 20px;
+  padding: 5px 10px;
+  position: fixed;
+  width: 100%;
 }
-
-.downloadbutton:hover {
-  background-position: 0px 160px;
-}
-
-.downloadbutton:active {
-  background-position: 0px 80px;
-}
-
-.downloadbutton a {
-  border-bottom: none;
-  color: #fff;
-  display: block;
-  padding: 10px;
-  text-shadow: 0 1px 0 #000;
-}
-
-.download {
-  background: url(../assets/images/iconDownload.png) no-repeat;
-  border: none;
-  font-size: 20px;
-  padding-bottom: 10px;
-  padding-left: 40px;
+footer a {
+  color: #f0be5b;
 }
