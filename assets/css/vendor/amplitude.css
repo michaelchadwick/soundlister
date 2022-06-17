@@ -79,13 +79,13 @@ div#amplitude-right {
       }
     div#amplitude-right div.song div.play-button-container {
       display: none;
-      background: url("/assets/images/vendor/amplitudejs/blue-player/list-play-light.png") no-repeat;
+      background: url("../../images/vendor/amplitudejs/blue-player/list-play-light.png") no-repeat;
       width: 22px;
       height: 22px;
       margin-top: 10px;
     }
     div#amplitude-right div.song div.play-button-container:hover {
-      background: url("/assets/images/vendor/amplitudejs/blue-player/list-play-hover.png") no-repeat;
+      background: url("../../images/vendor/amplitudejs/blue-player/list-play-hover.png") no-repeat;
     }
     div#amplitude-right div.song.amplitude-active-song-container {
       background-color: #dbfbff;
@@ -413,10 +413,10 @@ div#control-container {
       cursor: pointer;
     }
       div#control-container div#repeat-container div#repeat.amplitude-repeat-off {
-        background: url("/assets/images/vendor/amplitudejs/blue-player/repeat-off.svg");
+        background: url("../../images/vendor/amplitudejs/blue-player/repeat-off.svg");
       }
       div#control-container div#repeat-container div#repeat.amplitude-repeat-on {
-        background: url("/assets/images/vendor/amplitudejs/blue-player/repeat-on.svg");
+        background: url("../../images/vendor/amplitudejs/blue-player/repeat-on.svg");
       }
     div#control-container div#repeat-container div#shuffle {
       width: 23px;
@@ -425,10 +425,10 @@ div#control-container {
       float: right;
     }
       div#control-container div#repeat-container div#shuffle.amplitude-shuffle-off {
-        background: url("/assets/images/vendor/amplitudejs/blue-player/shuffle-off.svg");
+        background: url("../../images/vendor/amplitudejs/blue-player/shuffle-off.svg");
       }
       div#control-container div#repeat-container div#shuffle.amplitude-shuffle-on {
-        background: url("/assets/images/vendor/amplitudejs/blue-player/shuffle-on.svg");
+        background: url("../../images/vendor/amplitudejs/blue-player/shuffle-on.svg");
       }
   @media all and (-ms-high-contrast: none) {
     div#control-container *::-ms-backdrop, div#control-container div#control-container {
@@ -449,7 +449,7 @@ div#control-container {
         width: 40px;
         height: 40px;
         cursor: pointer;
-        background: url("/assets/images/vendor/amplitudejs/blue-player/prev.svg");
+        background: url("../../images/vendor/amplitudejs/blue-player/prev.svg");
         background-repeat: no-repeat;
         float: left;
         margin-top: 10px;
@@ -463,17 +463,17 @@ div#control-container {
         float: left;
       }
         div#control-container div#central-control-container div#central-controls div#play-pause.amplitude-paused {
-          background: url("/assets/images/vendor/amplitudejs/blue-player/play.svg");
+          background: url("../../images/vendor/amplitudejs/blue-player/play.svg");
         }
         div#control-container div#central-control-container div#central-controls div#play-pause.amplitude-playing {
-          background: url("/assets/images/vendor/amplitudejs/blue-player/pause.svg");
+          background: url("../../images/vendor/amplitudejs/blue-player/pause.svg");
         }
       div#control-container div#central-control-container div#central-controls div#next {
         display: inline-block;
         width: 40px;
         height: 40px;
         cursor: pointer;
-        background: url("/assets/images/vendor/amplitudejs/blue-player/next.svg");
+        background: url("../../images/vendor/amplitudejs/blue-player/next.svg");
         background-repeat: no-repeat;
         float: left;
         margin-top: 10px;
@@ -491,10 +491,10 @@ div#control-container {
       margin: auto;
     }
       div#control-container div#volume-container div#shuffle-right.amplitude-shuffle-off {
-        background: url("/assets/images/vendor/amplitudejs/blue-player/shuffle-off.svg");
+        background: url("../../images/vendor/amplitudejs/blue-player/shuffle-off.svg");
       }
       div#control-container div#volume-container div#shuffle-right.amplitude-shuffle-on {
-        background: url("/assets/images/vendor/amplitudejs/blue-player/shuffle-on.svg");
+        background: url("../../images/vendor/amplitudejs/blue-player/shuffle-on.svg");
       }
   div#control-container div.amplitude-mute {
     cursor: pointer;
@@ -503,11 +503,11 @@ div#control-container {
     float: left;
   }
     div#control-container div.amplitude-mute.amplitude-not-muted {
-      background: url("/assets/images/vendor/amplitudejs/blue-player/volume.svg");
+      background: url("../../images/vendor/amplitudejs/blue-player/volume.svg");
       background-repeat: no-repeat;
     }
     div#control-container div.amplitude-mute.amplitude-muted {
-      background: url("/assets/images/vendor/amplitudejs/blue-player/mute.svg");
+      background: url("../../images/vendor/amplitudejs/blue-player/mute.svg");
       background-repeat: no-repeat;
     }
 

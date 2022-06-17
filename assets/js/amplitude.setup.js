@@ -51,7 +51,7 @@ function createPlaylistItem(song) {
 
       const imgNowPlaying = document.createElement('img')
       imgNowPlaying.classList.add('now-playing')
-      imgNowPlaying.src = "/assets/images/vendor/amplitudejs/blue-player/now-playing.svg"
+      imgNowPlaying.src = "assets/images/vendor/amplitudejs/blue-player/now-playing.svg"
 
       divNowPlaying.appendChild(divPlay)
       divNowPlaying.appendChild(imgNowPlaying)
