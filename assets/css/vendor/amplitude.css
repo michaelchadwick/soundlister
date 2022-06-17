@@ -563,6 +563,7 @@ div#control-container:after {
   }
 }
 input[type=range].amplitude-volume-slider {
+  background-color: transparent;
   -webkit-appearance: none;
   width: calc( 100% - 33px);
   float: left;
