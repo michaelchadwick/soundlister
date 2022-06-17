@@ -176,11 +176,13 @@ async function getFiles() {
   return titlesJSON
 }
 
-function addSongDurations() {
+function addSongDurations(songs) {
   // create audio elements - to read songs duration
   let audio_arr = [];
-  songs.forEach((song, index) => {
+
+  songs.forEach((song) => {
     const audio = document.createElement('audio');
+
     audio.src = song.url;
     audio_arr.push(audio)
   });
@@ -203,5 +205,5 @@ function addSongDurations() {
 
   attachEventListeners()
 
-  addSongDurations()
+  addSongDurations(songs)
 })()
