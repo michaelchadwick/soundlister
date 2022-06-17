@@ -63,17 +63,14 @@ function createPlaylistItem(song) {
 
       const spanName = document.createElement('span')
       spanName.classList.add('song-title')
-      // spanName.dataset.amplitudeSongInfo = 'name'
       spanName.innerHTML = song.name
 
       const spanArtist = document.createElement('span')
       spanArtist.classList.add('song-artist')
-      // spanArtist.dataset.amplitudeSongInfo = 'artist'
       spanArtist.innerHTML = song.artist
 
       const spanAlbum = document.createElement('span')
       spanAlbum.classList.add('song-album')
-      // spanAlbum.dataset.amplitudeSongInfo = 'album'
       spanAlbum.innerHTML = song.album
 
       divSongMeta.appendChild(spanName)
@@ -83,9 +80,7 @@ function createPlaylistItem(song) {
     divSongContainer.appendChild(divSongMeta)
 
     const spanDuration = document.createElement('span')
-    spanDuration.classList.add('amplitude-duration-time')
-    spanDuration.dataset.amplitudeSongIndex = index
-    // spanDuration.dataset.amplitudeSongInfo = 'duration'
+    spanDuration.classList.add('song-duration')
 
   divSongContainer.appendChild(spanDuration)
 
@@ -152,13 +147,8 @@ async function fillSongs(titles) {
       "cover_art_url": defaultArt
     }
 
-    // console.log('newSong', newSong)
-
     songArr.push(newSong)
 
-    // console.log('songArr', songArr)
-
-    // add DOM element to Amplitude playlist
     createPlaylistItem(newSong)
 
     index++
@@ -186,6 +176,25 @@ async function getFiles() {
   return titlesJSON
 }
 
+function addSongDurations() {
+  // create audio elements - to read songs duration
+  let audio_arr = [];
+  songs.forEach((song, index) => {
+    const audio = document.createElement('audio');
+    audio.src = song.url;
+    audio_arr.push(audio)
+  });
+
+  // get each song duration and put it in html element with '.song-duration' class name
+  audio_arr.forEach((audio, index) => {
+    audio.addEventListener('loadeddata', () => {
+      const minutes = Math.floor(audio.duration / 60);
+      const seconds = Math.floor(audio.duration % 60);
+      document.querySelectorAll('.song-duration')[index].innerHTML = `${minutes}:${seconds > 10 ? seconds : '0' + seconds}`;
+    });
+  });
+}
+
 (async() => {
   const titles = await getFiles()
   const songs = await fillSongs(titles)
@@ -193,4 +202,6 @@ async function getFiles() {
   Amplitude.init({ 'debug': false, 'songs': songs })
 
   attachEventListeners()
+
+  addSongDurations()
 })()
