@@ -129,9 +129,6 @@ async function fillSongs(titles) {
   // put all file information into 'songs' object[]
   for (const f in titles) {
     const filePath = `${audioDir}/${titles[f]}.${audioFormat}`
-
-    console.log('filePath', filePath)
-
     const response = await fetch(filePath)
     const data = await response.blob()
 
@@ -190,28 +187,10 @@ async function getFiles() {
 }
 
 (async() => {
-  // console.log('before start')
+  const titles = await getFiles()
+  const songs = await fillSongs(titles)
 
-  let titles = []
-
-  // console.log('titles pre-getFiles', titles)
-
-  titles = await getFiles()
-
-  // console.log('titles post-getFiles', titles)
-
-  let songs = []
-
-  // console.log('songs pre-fillSongs', songs)
-
-  songs = await fillSongs(titles)
-
-  // console.log('songs post-fillSongs', songs)
-
-  // attach Amplitude to songs
-  // console.log('running Amplitude.init', songs)
   Amplitude.init({ 'debug': false, 'songs': songs })
 
-  // attach event listener for progress bar clicking
   attachEventListeners()
 })()
