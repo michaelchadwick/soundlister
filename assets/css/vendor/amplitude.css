@@ -88,7 +88,7 @@ div#amplitude-right {
       background: url("/assets/images/vendor/amplitudejs/blue-player/list-play-hover.png") no-repeat;
     }
     div#amplitude-right div.song.amplitude-active-song-container {
-      background-color: #d8dfff;
+      background-color: #dbfbff;
     }
     div#amplitude-right div.song.amplitude-active-song-container div.song-now-playing-icon-container img.now-playing {
       display: block;
