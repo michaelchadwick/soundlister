@@ -1,6 +1,12 @@
 # Soundlister
 
-Create a quick one-page website playlist for any[^1] audio. Uses [Amplitude.js](https://521dimensions.com/open-source/amplitudejs) to play stuff, and [mp3tag.js](https://github.com/eidoriantan/mp3tag.js) to read ID3 tags.
+Create a quick one-page website playlist for any[^1] audio.
+
+## Dependencies
+
+* [PHP](https://php.net) to read files from a local directory
+* [Amplitude.js](https://521dimensions.com/open-source/amplitudejs) to play stuff
+* [mp3tag.js](https://github.com/eidoriantan/mp3tag.js) to read ID3 tags
 
 ## Local Development / Deploy
 
