@@ -2,7 +2,6 @@
 
 // let songs = []
 let audioDir = 'assets/audio'
-let audioFormat = 'mp3'
 let tags = {}
 let index = 0
 const playlistContainer = document.getElementById('amplitude-right')
@@ -123,7 +122,7 @@ async function fillSongs(titles) {
 
   // put all file information into 'songs' object[]
   for (const f in titles) {
-    const filePath = `${audioDir}/${titles[f]}.${audioFormat}`
+    const filePath = `${audioDir}/${titles[f]}`
     const response = await fetch(filePath)
     const data = await response.blob()
 
@@ -160,18 +159,9 @@ async function fillSongs(titles) {
 // use PHP script to scan audio directory
 // return titles of files
 async function getFiles() {
-  // get filenames in directory
   let fileList = await fetch('./assets/dir.php')
-
-  // console.log('fileList', fileList)
-
   let titlesArray = await fileList.text()
-
-  // console.log('titlesArray', titlesArray)
-
   let titlesJSON = JSON.parse(titlesArray)
-
-  // console.log('titlesJSON', titlesJSON)
 
   return titlesJSON
 }

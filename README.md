@@ -1,6 +1,6 @@
 # Soundlister
 
-Create a quick one-page website playlist for any[^1] audio.
+Create a quick one-page website playlist for just about any[^1] HTML5 audio[^2].
 
 ## Dependencies
 
@@ -16,4 +16,5 @@ Create a quick one-page website playlist for any[^1] audio.
 4. `cp audio-file-of-awesome.mp3 /path/to/soundlister/audio`
 5. `open index.html`
 
-[^1]: Only supports "mp3" for now
+[^1]: Supports `aac,flac,m4a,mp3,mp4,ogg,wav,webm` files
+[^2]: [HTML5 audio formats](https://en.wikipedia.org/wiki/HTML5_audio#Supported_audio_coding_formats)
