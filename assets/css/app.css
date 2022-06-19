@@ -8,22 +8,15 @@ html {
 }
 
 body {
-  background: #02cbe3;
   color: #000000;
 }
 
 a {
   border: none;
-  color: #2a2ad7;
 }
 
 header {
   padding: 1em;
-}
-
-header,
-section#main {
-  border-bottom: 5px dashed #00545d;
 }
 
 section#main {
@@ -38,11 +31,6 @@ section#main {
   .playlist-container {
     margin-bottom: 0;
   }
-}
-
-/* override for active song background-color */
-div#amplitude-right div.song.amplitude-active-song-container {
-  background-color: #dbfbff;
 }
 
 footer {

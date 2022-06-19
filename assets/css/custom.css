@@ -1,0 +1,18 @@
+/* custom colors */
+
+body {
+  background: #02cbe3;
+}
+
+a {
+  color: #2a2ad7;
+}
+
+header,
+section#main {
+  border-bottom: 5px dashed #00545d;
+}
+
+div#amplitude-right div.song.amplitude-active-song-container {
+  background-color: #dbfbff;
+}

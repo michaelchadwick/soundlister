@@ -1,6 +1,6 @@
 # Soundlister
 
-Create a quick one-page website playlist for just about any[^1] HTML5 audio[^2].
+Create a quick one-page website playlist for just about any[^1] HTML5 audio[^2]. Custom colors for body background, link color, playlist border, and active song background color can be specified in `custom.css`.
 
 ## Dependencies
 
