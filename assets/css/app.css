@@ -47,3 +47,25 @@ footer {
 footer a {
   color: #f0be5b;
 }
+
+.loader {
+  width: 40px;           /* the size */
+  padding: 10px;         /* the border thickness */
+  background: #00545d; /* the color */
+
+  aspect-ratio: 1;
+  border-radius: 50%;
+  --_m:
+    conic-gradient(#0000,#000),
+    linear-gradient(#000 0 0) content-box;
+  -webkit-mask: var(--_m);
+          mask: var(--_m);
+  -webkit-mask-composite: source-out;
+          mask-composite: subtract;
+  box-sizing: border-box;
+  animation: load 1s linear infinite;
+}
+
+@keyframes load {
+  to{transform: rotate(1turn)}
+}
