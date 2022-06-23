@@ -147,9 +147,10 @@ footer a {
 }
 
 .loader {
-  width: 40px;           /* the size */
-  padding: 10px;         /* the border thickness */
-  background: #00545d; /* the color */
+  margin: 0 auto;
+  width: 40px;
+  padding: 10px;
+  background: #2eadbb;
 
   aspect-ratio: 1;
   border-radius: 50%;
