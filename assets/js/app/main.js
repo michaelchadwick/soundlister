@@ -188,8 +188,6 @@ SoundLister._readFileAsync = function(file) {
 
 // fill songs object[] with JSON
 SoundLister._fillSongs = async function(titles) {
-  document.querySelector('.loader').style.display = 'none'
-
   const songArr = []
 
   // put all file information into 'songs' object[]
@@ -237,6 +235,8 @@ SoundLister._getFiles = async function() {
 (async() => {
   const titles = await SoundLister._getFiles()
   const songs = await SoundLister._fillSongs(titles)
+
+  document.querySelector('.loader').style.display = 'none'
 
   SoundLister.attachEventListeners()
 
