@@ -117,6 +117,7 @@ SoundLister._createPlaylistItem = function(song) {
 
   if (SoundLister.index == 0) {
     track.classList.add('active')
+    SoundLister.player.setAttribute('src', song.url)
   }
 
     const trackLink = document.createElement('a')
