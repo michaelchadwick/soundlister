@@ -5,7 +5,7 @@ Create a quick one-page website playlist for just about any[^1] HTML5 audio[^2].
 ## Dependencies
 
 * [PHP](https://php.net) to read files from a local directory
-* [Amplitude.js](https://521dimensions.com/open-source/amplitudejs) to play stuff
+* [<audio>](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio) to play stuff
 * [mp3tag.js](https://github.com/eidoriantan/mp3tag.js) to read ID3 tags
 
 ## Local Development / Deploy

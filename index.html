@@ -23,14 +23,17 @@
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/images/favicon-16x16.png">
   <link rel="manifest" href="./site.webmanifest">
 
-  <!-- FONTS
+  <!-- FONT
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
 
+  <!-- FONTAWESOME
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="./assets/fontawesome/css/fontawesome.min.css">
+  <link rel="stylesheet" href="./assets/fontawesome/css/solid.min.css">
+
   <!-- CSS
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <!-- VENDOR -->
-  <link rel="stylesheet" href="./assets/css/vendor/amplitude.css" />
   <!-- CUSTOM -->
   <link rel="stylesheet" href="./assets/css/app.css">
   <link rel="stylesheet" href="./assets/css/custom.css">
@@ -49,81 +52,19 @@
 
   <section id="main">
 
-    <!-- Blue Playlist Container -->
-    <div id="blue-playlist-container" class="playlist-container">
+    <audio class="audio" controls>
 
-      <!-- Amplitude Player -->
-      <div id="amplitude-player">
+      <source src="assets/audio/01 Devious Journey.mp3">
 
-        <!-- Left Side Player -->
-        <div id="amplitude-left">
-          <!--<img data-amplitude-song-info="cover_art_url" class="album-art" />-->
+      Your browser doesn't support HTML5 :'(
+    </audio>
 
-          <div class="amplitude-visualization" id="large-visualization"></div>
-
-          <div id="player-left-bottom">
-            <div id="time-container">
-              <span class="current-time">
-                <span class="amplitude-current-minutes"></span>:<span class="amplitude-current-seconds"></span>
-              </span>
-              <div id="progress-container">
-                <div class="amplitude-wave-form"></div>
-                <input type="range" class="amplitude-song-slider"/>
-                <progress id="song-played-progress" class="amplitude-song-played-progress"></progress>
-                <progress id="song-buffered-progress" class="amplitude-buffered-progress" value="0"></progress>
-              </div>
-              <span class="duration">
-                <span class="amplitude-duration-minutes"></span>:<span class="amplitude-duration-seconds"></span>
-              </span>
-            </div>
-
-            <div id="control-container">
-              <div id="repeat-container">
-                <div class="amplitude-repeat" id="repeat"></div>
-                <div class="amplitude-shuffle amplitude-shuffle-off" id="shuffle"></div>
-              </div>
-
-              <div id="central-control-container">
-                <div id="central-controls">
-                  <div class="amplitude-prev" id="previous"></div>
-                  <div class="amplitude-play-pause" id="play-pause"></div>
-                  <div class="amplitude-next" id="next"></div>
-                </div>
-              </div>
-
-              <div id="volume-container">
-                <div class="volume-controls">
-                  <div class="amplitude-mute amplitude-not-muted"></div>
-                  <input type="range" class="amplitude-volume-slider"/>
-                  <div class="ms-range-fix"></div>
-                </div>
-                <div class="amplitude-shuffle amplitude-shuffle-off" id="shuffle-right"></div>
-              </div>
-            </div>
-
-            <div id="meta-container">
-              <span data-amplitude-song-info="name" class="song-name"></span>
-
-              <div class="song-artist-album">
-                <span class="song-artist" data-amplitude-song-info="artist"></span>
-                <span class="song-album" data-amplitude-song-info="album"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- End Left Side Player -->
-
-        <!-- Right Side Player -->
-        <!-- songs will dynamically be added from amplitude.setup.js -->
-        <div id="amplitude-right">
-
-        </div>
-        <!-- End Right Side Player -->
-
-      </div>
-      <!-- End Amplitdue Player -->
-
+    <div id="audio-controls">
+      <button id="rewind"><i class="fa-solid fa-backward-step"></i> Prev</button>
+      <button id="forward">Next <i class="fa-solid fa-forward-step"></i></button>
     </div>
+
+    <ul id="playlist"></ul>
 
   </section>
 
@@ -138,10 +79,9 @@
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <!-- VENDOR -->
   <script type="text/javascript" src="./assets/js/vendor/mp3tag.min.js"></script>
-  <script type="text/javascript" src="./assets/js/vendor/amplitude.min.js"></script>
   <!-- CUSTOM -->
-  <script type="text/javascript" src="./assets/js/amplitude.setup.js"></script>
   <script type="text/javascript" src="./assets/js/app.js"></script>
+  <script type="text/javascript" src="./assets/js/app/main.js"></script>
 
 </body>
 </html>

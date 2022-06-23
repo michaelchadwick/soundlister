@@ -9,6 +9,7 @@ html {
 
 body {
   color: #000000;
+  font-family: 'Raleway';
 }
 
 a {
@@ -24,14 +25,110 @@ section#main {
   padding: 5px 0;
 }
 
-.playlist-container {
-  margin-bottom: 22px;
-}
-@media (min-width: 640px) {
-  .playlist-container {
-    margin-bottom: 0;
+@media (max-width: 800px) {
+  #playlist {
+    padding: 0;
   }
+    #playlist li a {
+      padding: 0 5px 5px;
+    }
 }
+
+@media (min-width: 801px) {
+  #playlist {
+    padding: 2px;
+  }
+    #playlist li a {
+      padding: 0 5px 5px 10px;
+    }
+}
+
+audio {
+  display: flex;
+  margin: 0 auto;
+}
+
+#audio-controls {
+  display: flex;
+  justify-content: center;
+  padding: 0;
+}
+  #audio-controls button {
+    cursor: pointer;
+    display: flex;
+    font-size: 1.3em;
+    justify-content: center;
+    width: 150px;
+  }
+    #audio-controls button i.fa-backward-step {
+      margin: 2px 7px 0 0;
+    }
+    #audio-controls button i.fa-forward-step {
+      margin: 2px 0 0 7px;
+    }
+
+#playlist {
+  background: #666;
+  margin: 5px auto 0;
+  max-width: 500px;
+}
+  #playlist li {
+    display: grid;
+    list-style-type: none;
+  }
+    #playlist li.active a {
+      background: #153950;
+      color: #5db0e6;
+      text-decoration: none;
+    }
+      #playlist li.active a div.translation {
+        color: #85b2d0;
+      }
+      #playlist li a {
+        background: #333;
+        color: #eeeedd;
+        display: block;
+        position: relative;
+        z-index: 2;
+      }
+      #playlist li a:hover {
+        background-color: #555;
+      }
+      #playlist li a label.track-num {
+        clear: left;
+        cursor: pointer;
+        float: left;
+        font-size: 1.5em;
+        margin-right: 12px;
+        position: relative;
+        top: 4px;
+      }
+      #playlist li a div.titles {
+        float: left;
+        padding-top: 4px;
+        z-index: 1;
+      }
+        #playlist li a div.titles div.track-name {
+          font-size: 1.1em;
+        }
+        #playlist li a div.titles div.track-artist-album {
+          color: #cdcdbd;
+          display: block;
+          font-size: 0.8em;
+        }
+          #playlist li a div.titles div.track-artist-album span.highlight {
+            color: #dfdf86;
+            font-weight: bold;
+          }
+      #playlist li a div.track-duration {
+        font-weight: 400;
+        font-size: 1em;
+        float: right;
+        position: relative;
+        right: 5px;
+        top: 13px;
+      }
+
 
 footer {
   background-color: #555555;
