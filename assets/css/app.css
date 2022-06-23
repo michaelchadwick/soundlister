@@ -140,6 +140,7 @@ footer {
   padding: 5px 10px;
   position: fixed;
   width: 100%;
+  z-index: 2;
 }
 footer a {
   color: #f0be5b;
