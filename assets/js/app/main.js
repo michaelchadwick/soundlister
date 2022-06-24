@@ -4,7 +4,8 @@ const audioDir = 'assets/audio'
 
 SoundLister.current = 0
 SoundLister.player = document.getElementsByTagName('audio')[0]
-SoundLister.backward = document.getElementById('rewind')
+SoundLister.playerButtons = document.getElementById('audio-controls')
+SoundLister.backward = document.getElementById('backward')
 SoundLister.forward = document.getElementById('forward')
 SoundLister.playlist = document.getElementById('playlist')
 SoundLister.track = null
@@ -13,7 +14,7 @@ SoundLister.tags = {}
 SoundLister.index = 0
 
 // set initial volume
-SoundLister.player.volume = 0.8
+SoundLister.player.volume = 1.0
 
 /* ********************************* */
 /* public functions                  */
@@ -29,8 +30,14 @@ SoundLister.goBack = function(e) {
   SoundLister.changeTrack(SoundLister.current)
 }
 
-SoundLister.goForward = function(e) {
-  e.preventDefault()
+SoundLister.goForward = function(e = null) {
+  if (e) {
+    e.preventDefault()
+
+    // console.log('manual change to next song')
+  } else {
+    // console.log('song ended and changing to next one')
+  }
 
   const len = document.querySelectorAll('#playlist li').length - 1
 
@@ -40,6 +47,8 @@ SoundLister.goForward = function(e) {
 }
 
 SoundLister.changeTrack = function(current) {
+  // console.log('changing track...')
+
   const tracks = document.querySelectorAll('#playlist li')
 
   SoundLister.play(tracks[current].querySelectorAll('a')[0])
@@ -55,10 +64,11 @@ SoundLister.play = function(track) {
 
   // load and play song
   SoundLister.player.load()
-  SoundLister.player.play()
+  // SoundLister.player.play()
 }
 
 SoundLister.attachEventListeners = function() {
+  // click/tap audio track on playlist
   SoundLister.playlist.addEventListener('click', (e) => {
     e.preventDefault()
 
@@ -73,9 +83,45 @@ SoundLister.attachEventListeners = function() {
 
     SoundLister.play(track)
   })
+  // click/tap Prev button
   SoundLister.backward.addEventListener('click', (e) => SoundLister.goBack(e))
+  // click/tap Next button
   SoundLister.forward.addEventListener('click', (e) => SoundLister.goForward(e))
-  SoundLister.player.addEventListener('ended', (e) => SoundLister.goForward(e))
+
+  // audio has started loading
+  SoundLister.player.addEventListener('loadstart', (e) => {
+    // console.log('audio loading begun', e)
+  })
+  // audio is loaded enough to start playing
+  SoundLister.player.addEventListener('canplay', (e) => {
+    // console.log('audio can play', e)
+  })
+  // audio is loaded enough to play to end
+  SoundLister.player.addEventListener('canplaythrough', (e) => {
+    // console.log('audio can play through', e)
+    SoundLister.player.play()
+  })
+  // audio has started playing
+  SoundLister.player.addEventListener('play', (e) => {
+    // console.log('audio has started playing', e)
+  })
+  // audio is playing
+  SoundLister.player.addEventListener('playing', (e) => {
+    // console.log('audio is playing', e)
+  })
+  // audio has been paused
+  SoundLister.player.addEventListener('paused', (e) => {
+    // console.log('audio has been paused', e)
+  })
+  // audio ended
+  SoundLister.player.addEventListener('ended', (e) => {
+    // console.log('audio ended', e)
+    SoundLister.goForward()
+  })
+  // error occurs
+  SoundLister.player.addEventListener('error', (e) => {
+    console.error('audio error', e)
+  })
 }
 
 /* ********************************* */
@@ -98,6 +144,7 @@ SoundLister._getSongDurations = function(songs) {
     audio.addEventListener('loadeddata', () => {
       const minutes = Math.floor(audio.duration / 60);
       const seconds = Math.floor(audio.duration % 60);
+
       document.querySelectorAll('.track-duration')[index].innerHTML = `${minutes}:${seconds > 10 ? seconds : '0' + seconds}`;
     });
   });
@@ -179,7 +226,7 @@ SoundLister._readFileAsync = function(file) {
     }
 
     reader.onloadend = function() {
-      // console.log('song finished loading')
+      // console.log('file finished loading')
     }
 
     reader.readAsArrayBuffer(file)
@@ -236,9 +283,23 @@ SoundLister._getFiles = async function() {
   const titles = await SoundLister._getFiles()
   const songs = await SoundLister._fillSongs(titles)
 
+  // hide loader gif once songs are loaded
   document.querySelector('.loader').style.display = 'none'
 
+  // attach all our event listeners once songs are loaded
   SoundLister.attachEventListeners()
 
+  // fill in durations after the fact
   SoundLister._getSongDurations(songs)
+
+  // if Chrome, change player and button colors
+  if (navigator.userAgent.includes('Chrome')) {
+    SoundLister.player.classList.add('chrome')
+    SoundLister.playerButtons.classList.add('chrome')
+  }
+  // if it's Safari, the default <audio> player needs to be wider
+  else if (navigator.userAgent.includes('Safari')) {
+    SoundLister.player.classList.add('safari')
+    SoundLister.playerButtons.classList.add('safari')
+  }
 })()
