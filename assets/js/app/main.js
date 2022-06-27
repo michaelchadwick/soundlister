@@ -207,7 +207,11 @@ SoundLister._createPlaylistItem = function(song) {
 
 // convert filename to a title, if needed
 SoundLister._filenameToTitle = function(filename) {
-  let t = filename.replaceAll('-', ' ').replaceAll(/^[0-9]+/g, '')
+  // change '-' to ' ', remove track numbers, remove file extension
+  let t = filename
+    .replaceAll('-', ' ')
+    .replaceAll(/^[0-9]+/g, '')
+    .replaceAll(/\.{1}[a-zA-Z0-9]{3,4}$/g, '')
   let t_split = t.split(' ')
 
   for (var i = 0; i < t_split.length; i++) {
