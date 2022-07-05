@@ -281,21 +281,9 @@ SoundLister._getFiles = async function() {
   let titlesJSON = JSON.parse(titlesArray)
 
   return titlesJSON
-};
+}
 
-(async() => {
-  const titles = await SoundLister._getFiles()
-  const songs = await SoundLister._fillSongs(titles)
-
-  // hide loader gif once songs are loaded
-  document.querySelector('.loader').style.display = 'none'
-
-  // attach all our event listeners once songs are loaded
-  SoundLister.attachEventListeners()
-
-  // fill in durations after the fact
-  SoundLister._getSongDurations(songs)
-
+SoundLister._fixBrowserIssues = function() {
   // if Chrome, change player and button colors
   if (navigator.userAgent.includes('Chrome')) {
     SoundLister.player.classList.add('chrome')
@@ -306,4 +294,29 @@ SoundLister._getFiles = async function() {
     SoundLister.player.classList.add('safari')
     SoundLister.playerButtons.classList.add('safari')
   }
+};
+
+(async() => {
+  // create array of file names, e.g. ['song1.mp3', 'song2.mp3'...'songN.mp3']
+  const titles = await SoundLister._getFiles()
+
+  // create JSON object with title, artist, album, etc. of all songs
+  const songs = await SoundLister._fillSongs(titles)
+
+  // hide loader gif once songs are loaded
+  document.querySelector('.loader').style.display = 'none'
+
+  // attach all our event listeners once songs are loaded
+  SoundLister.attachEventListeners()
+
+  // fill in durations after the fact
+  // SoundLister._getSongDurations(songs)
+  // add new m3u playlist to <audio>
+  // SoundLister.player.querySelector('source')
+  //   .setAttribute('src', './assets/audio/playlist.m3u')
+  // SoundLister.player.querySelector('source')
+  //   .setAttribute('type', 'audio/mp3')
+
+  // browser inconsistencies in UI need fixing
+  SoundLister._fixBrowserIssues()
 })()

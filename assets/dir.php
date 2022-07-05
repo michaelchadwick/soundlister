@@ -1,12 +1,30 @@
 <?php
 
-  $out = array();
+  $titles = array();
 
   foreach (glob('audio/*.{aac,flac,m4a,mp3,mp4,ogg,wav,webm}', GLOB_BRACE) as $filename) {
-    $p = pathinfo($filename);
-    $out[] = $p['basename'];
+    $path = pathinfo($filename);
+    $titles[] = $path['basename'];
   }
 
-  echo json_encode($out);
+  if (sizeof($titles)) {
+    // No support for M3U yet :'(
+    //
+    // if (!file_exists('audio/playlist.m3u')) {
+    //   try {
+    //     $fp = fopen('audio/playlist.m3u', 'w');
+
+    //     foreach ($titles as $title) {
+    //       fwrite($fp, $title . "\n");
+    //     }
+    //   } catch (Exception $e) {
+    //     echo 'Could not open playlist file: ' . $e->getMessage() . "\n";
+    //   }
+    // }
+
+    echo json_encode($titles);
+  } else {
+    throw new Exception("Could not get song titles");
+  }
 
 ?>
