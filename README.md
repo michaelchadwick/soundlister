@@ -18,3 +18,7 @@ Create a quick one-page website playlist for just about any[^1] HTML5 audio[^2].
 
 [^1]: Supports `aac,flac,m4a,mp3,mp4,ogg,wav,webm` files
 [^2]: [HTML5 audio formats](https://en.wikipedia.org/wiki/HTML5_audio#Supported_audio_coding_formats)
+
+## Acknowledgements
+
+Thanks to [CSS-Tricks](https://css-tricks.com) for their very awesome article on [making your own custom audio player](https://css-tricks.com/lets-create-a-custom-audio-player/).
