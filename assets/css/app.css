@@ -16,6 +16,102 @@ a {
   border: none;
 }
 
+input[type="range"] {
+  position: relative;
+  -webkit-appearance: none;
+  width: 48%;
+  margin: 0;
+  padding: 0;
+  height: 19px;
+  margin: 20px 2.5% 17px;
+  float: left;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  background: linear-gradient(to right, rgba(0, 125, 181, 0.6) var(--buffered-width), rgba(0, 125, 181, 0.2) var(--buffered-width));
+  cursor: pointer;
+  height: 3px;
+  width: 100%;
+}
+input[type="range"]::before {
+  position: absolute;
+  content: "";
+  top: 8px;
+  left: 0;
+  width: var(--seek-before-width);
+  height: 3px;
+  background-color: #007db5;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  position: relative;
+  -webkit-appearance: none;
+  box-sizing: content-box;
+  border: 1px solid #007db5;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  background-color: #fff;
+  cursor: pointer;
+  margin: -7px 0 0 0;
+}
+input[type="range"]:active::-webkit-slider-thumb {
+  transform: scale(1.2);
+  background: #007db5;
+}
+input[type="range"]::-moz-range-track {
+  width: 100%;
+  height: 3px;
+  cursor: pointer;
+  background: linear-gradient(to right, rgba(0, 125, 181, 0.6) var(--buffered-width), rgba(0, 125, 181, 0.2) var(--buffered-width));
+}
+input[type="range"]::-moz-range-progress {
+  background-color: #007db5;
+}
+input[type="range"]::-moz-focus-outer {
+  border: 0;
+}
+input[type="range"]::-moz-range-thumb {
+  box-sizing: content-box;
+  border: 1px solid #007db5;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  background-color: #fff;
+  cursor: pointer;
+}
+input[type="range"]:active::-moz-range-thumb {
+  transform: scale(1.2);
+  background: #007db5;
+}
+input[type="range"]::-ms-track {
+  width: 100%;
+  height: 3px;
+  cursor: pointer;
+  background: transparent;
+  border: solid transparent;
+  color: transparent;
+}
+input[type="range"]::-ms-fill-lower {
+  background-color: #007db5;
+}
+input[type="range"]::-ms-fill-upper {
+  background: linear-gradient(to right, rgba(0, 125, 181, 0.6) var(--buffered-width), rgba(0, 125, 181, 0.2) var(--buffered-width));
+}
+input[type="range"]::-ms-thumb {
+  box-sizing: content-box;
+  border: 1px solid #007db5;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  background-color: #fff;
+  cursor: pointer;
+}
+input[type="range"]:active::-ms-thumb {
+  transform: scale(1.2);
+  background: #007db5;
+}
+
 header {
   padding: 1em;
 }
@@ -24,6 +120,10 @@ section#main {
   background: #000;
   padding: 5px 0;
 }
+  section#main #wrapper {
+    margin: 0 auto;
+    max-width: 500px;
+  }
 
 @media (max-width: 800px) {
   #playlist {
@@ -43,25 +143,89 @@ section#main {
     }
 }
 
-audio {
-  background-color: #242424;
-  border: 2px solid #242424;
-  border-bottom: none;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+#audio-player-container {
+  --seek-before-width: 0%;
+  --volume-before-width: 100%;
+  --buffered-width: 0%;
+  background: #ffffff;
+  border-radius: 10px;
   display: flex;
-  margin: 0 auto;
-  width: 250px;
+  flex-direction: column;
+  font-family: Consolas, monospace;
+  justify-content: center;
+  padding: 0 20px;
+  position: relative;
 }
-  audio.chrome {
-    background-color: #f1f3f4;
-    border: 2px solid #f1f3f4;
+  #audio-player-container::before {
+    background: linear-gradient(to left, #007db5, #ff8a00);
+    content: '';
+    height: calc(100% + 4px);
+    left: -2px;
+    position: absolute;
+    top: -2px;
+    width: calc(100% + 4px);
+    z-index: -1;
   }
-  audio.safari {
-    width: 350px;
+
+  #audio-player-container .row {
+    align-items: center;
+    display: flex;
+    justify-content: center;
   }
+
+  #audio-player-container button {
+    background: inherit;
+    border: 0;
+    cursor: pointer;
+    height: 40px;
+    outline: none;
+    padding: 0;
+    width: 40px;
+  }
+
+  #audio-player-container #play-icon,
+  #audio-player-container #mute-icon {
+    font-size: 1.5rem;
+  }
+  #audio-player-container #play-icon:hover,
+  #audio-player-container #mute-icon:hover {
+    color: #02cbe3;
+  }
+  #audio-player-container #play-icon {
+    padding-right: 10px;
+  }
+  #audio-player-container #mute-icon {
+    padding-left: 10px;
+  }
+
+  #audio-player-container .time {
+    font-size: 1.3rem;
+  }
+
+  #audio-player-container output {
+    font-size: 1.3rem;
+  }
+
+  #audio-player-container #volume-slider {
+    -webkit-appearance: none;
+    height: 42px;
+    width: 18px;
+    writing-mode: bt-lr;
+    -webkit-appearance: slider-vertical;
+  }
+    #audio-player-container #volume-slider::-webkit-slider-runnable-track {
+      /* background: rgba(0, 125, 181, 0.6); */
+      background: none;
+    }
+    #audio-player-container #volume-slider::-moz-range-track {
+      background: rgba(0, 125, 181, 0.6);
+    }
+    #audio-player-container #volume-slider::-ms-fill-upper {
+      background: rgba(0, 125, 181, 0.6);
+    }
+    #audio-player-container #volume-slider::before {
+      /* width: var(--volume-before-width); */
+    }
 
 #audio-controls {
   display: flex;
@@ -70,48 +234,33 @@ audio {
 }
   #audio-controls button {
     align-items: center;
-    background-color: #242424;
-    border: 1px solid #242424;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    color: #f1f3f4;
     cursor: pointer;
     display: flex;
-    font-size: 1.1em;
-    height: 40px;
+    font-size: 1.3em;
     justify-content: center;
-    width: 127px;
+    min-width: 120px;
   }
     #audio-controls button:hover {
-      background-color: #323232;
+      background-color: #e9e9e9;
     }
       #audio-controls button#backward {
+        /*
         border-bottom-right-radius: 0;
         border-right: 1px solid #000000;
+        */
       }
         #audio-controls button#backward i {
           margin: 2px 7px 0 0;
         }
       #audio-controls button#forward {
+        /*
         border-bottom-left-radius: 0;
         border-left: 1px solid #000000;
+        */
       }
         #audio-controls button#forward i {
           margin: 2px 0 0 7px;
         }
-    #audio-controls.chrome button {
-      background-color: #f1f3f4;
-      border: 1px solid #f1f3f4;
-      color: #242424;
-    }
-      #audio-controls.chrome button:hover {
-        background-color: #ffffff;
-      }
-    #audio-controls.safari button {
-      width: 177px;
-    }
 
 #playlist {
   background: #666;

@@ -1,7 +1,5 @@
 /* global SoundLister, MP3Tag */
 
-const audioDir = 'assets/audio'
-
 SoundLister.current = 0
 SoundLister.player = document.getElementsByTagName('audio')[0]
 SoundLister.playerButtons = document.getElementById('audio-controls')
@@ -243,7 +241,7 @@ SoundLister._fillSongs = async function(titles) {
 
   // put all file information into 'songs' object[]
   for (const f in titles) {
-    const filePath = `${audioDir}/${titles[f]}`
+    const filePath = `${SoundLister.audioDir}/${titles[f]}`
     const response = await fetch(filePath)
     const data = await response.blob()
 
@@ -283,20 +281,7 @@ SoundLister._getFiles = async function() {
   return titlesJSON
 }
 
-SoundLister._fixBrowserIssues = function() {
-  // if Chrome, change player and button colors
-  if (navigator.userAgent.includes('Chrome')) {
-    SoundLister.player.classList.add('chrome')
-    SoundLister.playerButtons.classList.add('chrome')
-  }
-  // if it's Safari, the default <audio> player needs to be wider
-  else if (navigator.userAgent.includes('Safari')) {
-    SoundLister.player.classList.add('safari')
-    SoundLister.playerButtons.classList.add('safari')
-  }
-};
-
-(async() => {
+;(async() => {
   // create array of file names, e.g. ['song1.mp3', 'song2.mp3'...'songN.mp3']
   const titles = await SoundLister._getFiles()
 
@@ -310,13 +295,5 @@ SoundLister._fixBrowserIssues = function() {
   SoundLister.attachEventListeners()
 
   // fill in durations after the fact
-  // SoundLister._getSongDurations(songs)
-  // add new m3u playlist to <audio>
-  // SoundLister.player.querySelector('source')
-  //   .setAttribute('src', './assets/audio/playlist.m3u')
-  // SoundLister.player.querySelector('source')
-  //   .setAttribute('type', 'audio/mp3')
-
-  // browser inconsistencies in UI need fixing
-  SoundLister._fixBrowserIssues()
+  SoundLister._getSongDurations(songs)
 })()
