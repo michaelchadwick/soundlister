@@ -266,6 +266,7 @@ section#main {
   background: #666;
   margin: 5px auto 22px;
   max-width: 500px;
+  overflow-y: auto;
 }
   #playlist li {
     display: grid;

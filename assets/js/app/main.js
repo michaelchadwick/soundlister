@@ -123,11 +123,17 @@ SoundLister.attachEventListeners = function() {
   SoundLister.player.addEventListener('error', (e) => {
     console.error('audio error', e)
   })
+
+  window.onresize = SoundLister._resizePlaylist
 }
 
 /* ********************************* */
 /* _private functions                */
 /* ********************************* */
+
+SoundLister._resizePlaylist = () => {
+  SoundLister.playlist.style.maxHeight = `${window.innerHeight - 260}px`
+}
 
 SoundLister._getSongDurations = function(songs) {
   // create audio elements - to read songs duration
