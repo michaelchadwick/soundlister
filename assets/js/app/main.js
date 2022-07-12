@@ -18,7 +18,8 @@ SoundLister.player.volume = 1.0
 /* public functions                  */
 /* ********************************* */
 
-SoundLister.goBack = function(e) {
+// go back one track in the playlist
+SoundLister.goBack = (e) => {
   e.preventDefault()
 
   const len = document.querySelectorAll('#playlist li').length - 1
@@ -28,7 +29,8 @@ SoundLister.goBack = function(e) {
   SoundLister.changeTrack(SoundLister.current)
 }
 
-SoundLister.goForward = function(e = null) {
+// go forward one track in the playlist
+SoundLister.goForward = (e = null) => {
   if (e) {
     e.preventDefault()
 
@@ -44,7 +46,7 @@ SoundLister.goForward = function(e = null) {
   SoundLister.changeTrack(SoundLister.current)
 }
 
-SoundLister.changeTrack = function(current) {
+SoundLister.changeTrack = (current) => {
   // console.log('changing track...')
 
   const tracks = document.querySelectorAll('#playlist li')
@@ -52,7 +54,7 @@ SoundLister.changeTrack = function(current) {
   SoundLister.play(tracks[current].querySelectorAll('a')[0])
 }
 
-SoundLister.play = function(track) {
+SoundLister.play = (track) => {
   // change <audio> source
   SoundLister.player.src = track.getAttribute('href')
 
@@ -65,7 +67,7 @@ SoundLister.play = function(track) {
   // SoundLister.player.play()
 }
 
-SoundLister.attachEventListeners = function() {
+SoundLister.attachEventListeners = () => {
   // click/tap audio track on playlist
   SoundLister.playlist.addEventListener('click', (e) => {
     e.preventDefault()
@@ -131,11 +133,13 @@ SoundLister.attachEventListeners = function() {
 /* _private functions                */
 /* ********************************* */
 
+// change max-height of playlist to match viewport
 SoundLister._resizePlaylist = () => {
   SoundLister.playlist.style.maxHeight = `${window.innerHeight - 260}px`
 }
 
-SoundLister._getSongDurations = function(songs) {
+// add song durations to playlist
+SoundLister._getSongDurations = (songs) => {
   // create audio elements - to read songs duration
   let audio_arr = [];
 
@@ -157,7 +161,8 @@ SoundLister._getSongDurations = function(songs) {
   });
 }
 
-SoundLister._getID3Tags = function(buffer) {
+// use mp3tag to read ID3 tags from songs
+SoundLister._getID3Tags = (buffer) => {
   const mp3tag = new MP3Tag(buffer)
 
   mp3tag.read()
@@ -166,7 +171,7 @@ SoundLister._getID3Tags = function(buffer) {
 }
 
 // add DOM element to playlist
-SoundLister._createPlaylistItem = function(song) {
+SoundLister._createPlaylistItem = (song) => {
   const track = document.createElement('li')
 
   if (SoundLister.index == 0) {
@@ -213,7 +218,7 @@ SoundLister._createPlaylistItem = function(song) {
 }
 
 // convert filename to a title, if needed
-SoundLister._filenameToTitle = function(filename) {
+SoundLister._filenameToTitle = (filename) => {
   // change '-' to ' ', remove track numbers, remove file extension
   let t = filename
     .replaceAll('-', ' ')
@@ -228,24 +233,8 @@ SoundLister._filenameToTitle = function(filename) {
   return t_split.join(' ')
 }
 
-SoundLister._readFileAsync = function(file) {
-  return new Promise((resolve, reject) => {
-    let reader = new FileReader()
-
-    reader.onload = function() {
-      resolve(reader.result)
-    }
-
-    reader.onloadend = function() {
-      // console.log('file finished loading')
-    }
-
-    reader.readAsArrayBuffer(file)
-  })
-}
-
 // fill songs object[] with JSON
-SoundLister._fillSongs = async function(files) {
+SoundLister._fillSongs = async (files) => {
   const songArr = []
 
   // put all file information into 'songs' object[]
@@ -258,8 +247,8 @@ SoundLister._fillSongs = async function(files) {
 
     // when FileReader loads, read ID3 tags from file via MP3Tag
     // if found, use; otherwise use defaults
-    const buffer = await SoundLister._readFileAsync(data)
-    tags = await SoundLister._getID3Tags(buffer)
+    const buffer = await SoundLister.__readFileAsync(data)
+    const tags = await SoundLister._getID3Tags(buffer)
 
     const defaultTitle = SoundLister._filenameToTitle(baseName)
     const defaultArtist = 'Unknown Artist'
@@ -284,13 +273,38 @@ SoundLister._fillSongs = async function(files) {
 
 // use PHP script to scan audio directory
 // return titles of files
-SoundLister._getFiles = async function() {
+SoundLister._getFiles = async () => {
   let fileList = await fetch('./assets/dir.php')
   let titlesArray = await fileList.text()
   let titlesJSON = JSON.parse(titlesArray)
 
   return titlesJSON
 }
+
+/* ********************************* */
+/* _private __helper functions       */
+/* ********************************* */
+
+// asynchronously read a file from disk
+SoundLister.__readFileAsync = (file) => {
+  return new Promise((resolve, reject) => {
+    let reader = new FileReader()
+
+    reader.onload = function() {
+      resolve(reader.result)
+    }
+
+    reader.onloadend = function() {
+      // console.log('file finished loading')
+    }
+
+    reader.readAsArrayBuffer(file)
+  })
+}
+
+/* ********************************* */
+/* start the engine                  */
+/* ********************************* */
 
 ;(async() => {
   // create object array of file info
