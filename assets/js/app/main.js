@@ -46,6 +46,7 @@ SoundLister.goForward = (e = null) => {
   SoundLister.changeTrack(SoundLister.current)
 }
 
+// change the currently-playing track
 SoundLister.changeTrack = (current) => {
   // console.log('changing track...')
 
@@ -54,6 +55,7 @@ SoundLister.changeTrack = (current) => {
   SoundLister.play(tracks[current].querySelectorAll('a')[0])
 }
 
+// play track
 SoundLister.play = (track) => {
   // change <audio> source
   SoundLister.player.src = track.getAttribute('href')
@@ -67,6 +69,7 @@ SoundLister.play = (track) => {
   // SoundLister.player.play()
 }
 
+// attach DOM event listeners
 SoundLister.attachEventListeners = () => {
   // click/tap audio track on playlist
   SoundLister.playlist.addEventListener('click', (e) => {
@@ -281,6 +284,10 @@ SoundLister._getFiles = async () => {
   return titlesJSON
 }
 
+SoundLister._seedCollections = () => {
+
+}
+
 /* ********************************* */
 /* _private __helper functions       */
 /* ********************************* */
@@ -312,6 +319,8 @@ SoundLister.__readFileAsync = (file) => {
 
   // create JSON object with title, artist, album, etc. of all songs
   const songs = await SoundLister._fillSongs(files)
+
+  SoundLister._seedCollections()
 
   // hide loader gif once songs are loaded
   document.querySelector('.loader').style.display = 'none'
