@@ -117,7 +117,7 @@ header {
 }
 
 section#main {
-  background: #000;
+  background: #000000dd;
   padding: 5px 0;
 }
   section#main #wrapper {
@@ -334,15 +334,17 @@ footer {
   bottom: 0;
   color: #f3f3f3;
   font-size: 0.75rem;
-  height: 20px;
-  padding: 5px 10px;
+  height: 30px;
   position: fixed;
   width: 100%;
   z-index: 2;
 }
-footer a {
-  color: #f0be5b;
-}
+  footer div {
+    padding: 7px 10px;
+  }
+    footer div a {
+      color: #f0be5b;
+    }
 
 .loader {
   margin: 0 auto;
