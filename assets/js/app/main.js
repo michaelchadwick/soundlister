@@ -80,7 +80,10 @@ SoundLister.attachEventListeners = function() {
     SoundLister.current = parseInt(track.dataset.index)
 
     SoundLister.play(track)
+
+    SoundLister._updatePlayButton(true)
   })
+
   // click/tap Prev button
   SoundLister.backward.addEventListener('click', (e) => SoundLister.goBack(e))
   // click/tap Next button
@@ -143,7 +146,7 @@ SoundLister._getSongDurations = function(songs) {
       const minutes = Math.floor(audio.duration / 60);
       const seconds = Math.floor(audio.duration % 60);
 
-      document.querySelectorAll('.track-duration')[index].innerHTML = `${minutes}:${seconds > 10 ? seconds : '0' + seconds}`;
+      document.querySelectorAll('.track-duration')[index].innerHTML = `${minutes}:${seconds >= 10 ? seconds : '0' + seconds}`;
     });
   });
 }
@@ -173,7 +176,7 @@ SoundLister._createPlaylistItem = function(song) {
 
       const trackNum = document.createElement('label')
       trackNum.classList.add('track-attribute', 'track-num')
-      trackNum.innerHTML = SoundLister.index + 1
+      trackNum.innerHTML = (SoundLister.index + 1).toString().padStart(2, '0')
 
       const trackTitles = document.createElement('div')
       trackTitles.classList.add('track-attribute', 'titles')
@@ -236,12 +239,14 @@ SoundLister._readFileAsync = function(file) {
 }
 
 // fill songs object[] with JSON
-SoundLister._fillSongs = async function(titles) {
+SoundLister._fillSongs = async function(files) {
   const songArr = []
 
   // put all file information into 'songs' object[]
-  for (const f in titles) {
-    const filePath = `${SoundLister.audioDir}/${titles[f]}`
+  for (const f in files) {
+    const dirPath = `./assets/${files[f]['dirname']}`
+    const baseName = files[f]['basename']
+    const filePath = `${dirPath}/${baseName}`
     const response = await fetch(filePath)
     const data = await response.blob()
 
@@ -250,7 +255,7 @@ SoundLister._fillSongs = async function(titles) {
     const buffer = await SoundLister._readFileAsync(data)
     tags = await SoundLister._getID3Tags(buffer)
 
-    const defaultTitle = SoundLister._filenameToTitle(titles[f])
+    const defaultTitle = SoundLister._filenameToTitle(baseName)
     const defaultArtist = 'Unknown Artist'
     const defaultAlbum = 'Unknown Album'
 
@@ -282,11 +287,11 @@ SoundLister._getFiles = async function() {
 }
 
 ;(async() => {
-  // create array of file names, e.g. ['song1.mp3', 'song2.mp3'...'songN.mp3']
-  const titles = await SoundLister._getFiles()
+  // create object array of file info
+  const files = await SoundLister._getFiles()
 
   // create JSON object with title, artist, album, etc. of all songs
-  const songs = await SoundLister._fillSongs(titles)
+  const songs = await SoundLister._fillSongs(files)
 
   // hide loader gif once songs are loaded
   document.querySelector('.loader').style.display = 'none'

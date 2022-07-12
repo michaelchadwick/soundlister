@@ -24,33 +24,12 @@ SoundLister.dom.muteButtonIcon = document.querySelector('#mute-icon i')
 SoundLister.attachPresentationListeners = () => {
   // play/pause button
   SoundLister.dom.playButton.addEventListener('click', () => {
-    if (SoundLister.playIconState === 'play') {
-      SoundLister.dom.audio.play()
-
-      requestAnimationFrame(SoundLister._whilePlaying)
-      SoundLister.playIconState = 'pause'
-    } else {
-      SoundLister.dom.audio.pause()
-
-      cancelAnimationFrame(SoundLister.raf)
-      SoundLister.playIconState = 'play'
-    }
-
-    SoundLister.dom.playButtonIcon.classList.toggle('fa-play')
-    SoundLister.dom.playButtonIcon.classList.toggle('fa-pause')
-  });
+    SoundLister._updatePlayButton()
+  })
 
   // mute/unmute button
   SoundLister.dom.muteButton.addEventListener('click', () => {
-    if (SoundLister.muteIconState === 'unmute') {
-      SoundLister.dom.audio.muted = true
-      SoundLister.muteIconState = 'mute'
-    } else {
-      SoundLister.dom.audio.muted = false
-      SoundLister.muteIconState = 'unmute'
-    }
-
-    SoundLister.dom.muteButtonIcon.classList.toggle('fa-volume-mute')
+    SoundLister._updateMuteButton()
   })
 
   // audio seek slider
@@ -112,6 +91,48 @@ SoundLister.attachFunctionalListeners = () => {
 /* ********************************* */
 /* _private functions                */
 /* ********************************* */
+
+SoundLister._updatePlayButton = (playlist = false) => {
+  if (playlist) {
+    requestAnimationFrame(SoundLister._whilePlaying)
+    SoundLister.playIconState = 'pause'
+
+    if (SoundLister.dom.playButtonIcon.classList.contains('fa-play')) {
+      SoundLister.dom.playButtonIcon.classList.remove('fa-play')
+
+      if (!SoundLister.dom.playButtonIcon.classList.contains('fa-pause')) {
+        SoundLister.dom.playButtonIcon.classList.add('fa-pause')
+      }
+    }
+  } else {
+    if (SoundLister.playIconState === 'play') {
+      SoundLister.dom.audio.play()
+
+      requestAnimationFrame(SoundLister._whilePlaying)
+      SoundLister.playIconState = 'pause'
+    } else {
+      SoundLister.dom.audio.pause()
+
+      cancelAnimationFrame(SoundLister.raf)
+      SoundLister.playIconState = 'play'
+    }
+
+    SoundLister.dom.playButtonIcon.classList.toggle('fa-play')
+    SoundLister.dom.playButtonIcon.classList.toggle('fa-pause')
+  }
+}
+
+SoundLister._updateMuteButton = () => {
+  if (SoundLister.muteIconState === 'unmute') {
+    SoundLister.dom.audio.muted = true
+    SoundLister.muteIconState = 'mute'
+  } else {
+    SoundLister.dom.audio.muted = false
+    SoundLister.muteIconState = 'unmute'
+  }
+
+  SoundLister.dom.muteButtonIcon.classList.toggle('fa-volume-mute')
+}
 
 SoundLister._calculateTime = (secs) => {
   const minutes = Math.floor(secs / 60)

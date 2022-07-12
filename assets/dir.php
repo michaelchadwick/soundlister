@@ -2,9 +2,9 @@
 
   $titles = array();
 
-  foreach (glob('audio/*.{aac,flac,m4a,mp3,mp4,ogg,wav,webm}', GLOB_BRACE) as $filename) {
+  foreach (glob('audio/*/*.{aac,flac,m4a,mp3,mp4,ogg,wav,webm}', GLOB_BRACE) as $filename) {
     $path = pathinfo($filename);
-    $titles[] = $path['basename'];
+    $titles[] = $path;
   }
 
   if (sizeof($titles)) {
