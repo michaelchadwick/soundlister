@@ -5,6 +5,7 @@ SoundLister.player = document.getElementsByTagName('audio')[0]
 SoundLister.playerButtons = document.getElementById('audio-controls')
 SoundLister.backward = document.getElementById('backward')
 SoundLister.forward = document.getElementById('forward')
+SoundLister.collections = document.querySelector('#collections select')
 SoundLister.playlist = document.getElementById('playlist')
 SoundLister.track = null
 SoundLister.audioDir = 'assets/audio'
@@ -71,29 +72,6 @@ SoundLister.play = (track) => {
 
 // attach DOM event listeners
 SoundLister.attachEventListeners = () => {
-  // click/tap audio track on playlist
-  SoundLister.playlist.addEventListener('click', (e) => {
-    e.preventDefault()
-
-    track = e.target
-
-    // if we "miss" the correct position to click, bubble up to the a
-    if (track.classList.contains('track-attribute')) {
-      track = track.closest('a')
-    }
-
-    SoundLister.current = parseInt(track.dataset.index)
-
-    SoundLister.play(track)
-
-    SoundLister._updatePlayButton(true)
-  })
-
-  // click/tap Prev button
-  SoundLister.backward.addEventListener('click', (e) => SoundLister.goBack(e))
-  // click/tap Next button
-  SoundLister.forward.addEventListener('click', (e) => SoundLister.goForward(e))
-
   // audio has started loading
   SoundLister.player.addEventListener('loadstart', (e) => {
     // console.log('audio loading begun', e)
@@ -129,6 +107,48 @@ SoundLister.attachEventListeners = () => {
     console.error('audio error', e)
   })
 
+  SoundLister.collections.addEventListener('change', (e) => {
+    const choice = e.target.value
+    const tracks = SoundLister.playlist.querySelectorAll('#playlist li')
+
+    if (choice !== '_') {
+      tracks.forEach(track => {
+        const col = track.querySelector('a').dataset.col
+
+        if (track.querySelector('a').dataset.col !== choice) {
+          track.style.display = 'none'
+        } else {
+          track.style.display = 'grid'
+        }
+      })
+    } else {
+      tracks.forEach(track => track.style.display = 'grid')
+    }
+  })
+
+  // click/tap Prev button
+  SoundLister.backward.addEventListener('click', (e) => SoundLister.goBack(e))
+  // click/tap Next button
+  SoundLister.forward.addEventListener('click', (e) => SoundLister.goForward(e))
+
+  // click/tap audio track on playlist
+  SoundLister.playlist.addEventListener('click', (e) => {
+    e.preventDefault()
+
+    track = e.target
+
+    // if we "miss" the correct position to click, bubble up to the a
+    if (track.classList.contains('track-attribute')) {
+      track = track.closest('a')
+    }
+
+    SoundLister.current = parseInt(track.dataset.index)
+
+    SoundLister.play(track)
+
+    SoundLister._updatePlayButton(true)
+  })
+
   window.onresize = SoundLister._resizePlaylist
 }
 
@@ -138,7 +158,7 @@ SoundLister.attachEventListeners = () => {
 
 // change max-height of playlist to match viewport
 SoundLister._resizePlaylist = () => {
-  SoundLister.playlist.style.maxHeight = `${window.innerHeight - 260}px`
+  SoundLister.playlist.style.maxHeight = `${window.innerHeight - 285}px`
 }
 
 // add song durations to playlist
@@ -186,6 +206,7 @@ SoundLister._createPlaylistItem = (song) => {
     trackLink.setAttribute('title', song.title)
     trackLink.setAttribute('alt', song.title)
     trackLink.dataset.index = SoundLister.index
+    trackLink.dataset.col = song.col
     trackLink.href = song.url
 
       const trackNum = document.createElement('label')
@@ -241,34 +262,40 @@ SoundLister._fillSongs = async (files) => {
   const songArr = []
 
   // put all file information into 'songs' object[]
-  for (const f in files) {
-    const dirPath = `./assets/${files[f]['dirname']}`
-    const baseName = files[f]['basename']
-    const filePath = `${dirPath}/${baseName}`
-    const response = await fetch(filePath)
-    const data = await response.blob()
+  for (const col in files) {
+    const dirPath = `./assets/audio/${col}`
 
-    // when FileReader loads, read ID3 tags from file via MP3Tag
-    // if found, use; otherwise use defaults
-    const buffer = await SoundLister.__readFileAsync(data)
-    const tags = await SoundLister._getID3Tags(buffer)
+    SoundLister.collections.options.add(new Option(col, col))
 
-    const defaultTitle = SoundLister._filenameToTitle(baseName)
-    const defaultArtist = 'Unknown Artist'
-    const defaultAlbum = 'Unknown Album'
+    for (const index in files[col]) {
+      const baseName = files[col][index]['basename']
+      const filePath = `${dirPath}/${baseName}`
+      const response = await fetch(filePath)
+      const data = await response.blob()
 
-    const newSong = {
-      "title": tags.title || defaultTitle,
-      "artist": tags.artist || defaultArtist,
-      "album": tags.album || defaultAlbum,
-      "url": filePath
+      // when FileReader loads, read ID3 tags from file via MP3Tag
+      // if found, use; otherwise use defaults
+      const buffer = await SoundLister.__readFileAsync(data)
+      const tags = await SoundLister._getID3Tags(buffer)
+
+      const defaultTitle = SoundLister._filenameToTitle(baseName)
+      const defaultArtist = 'Unknown Artist'
+      const defaultAlbum = 'Unknown Album'
+
+      const newSong = {
+        "title": tags.title || defaultTitle,
+        "artist": tags.artist || defaultArtist,
+        "album": tags.album || defaultAlbum,
+        "col": col,
+        "url": filePath
+      }
+
+      songArr.push(newSong)
+
+      SoundLister._createPlaylistItem(newSong)
+
+      SoundLister.index++
     }
-
-    songArr.push(newSong)
-
-    SoundLister._createPlaylistItem(newSong)
-
-    SoundLister.index++
   }
 
   return songArr
@@ -282,10 +309,6 @@ SoundLister._getFiles = async () => {
   let titlesJSON = JSON.parse(titlesArray)
 
   return titlesJSON
-}
-
-SoundLister._seedCollections = () => {
-
 }
 
 /* ********************************* */
@@ -319,8 +342,6 @@ SoundLister.__readFileAsync = (file) => {
 
   // create JSON object with title, artist, album, etc. of all songs
   const songs = await SoundLister._fillSongs(files)
-
-  SoundLister._seedCollections()
 
   // hide loader gif once songs are loaded
   document.querySelector('.loader').style.display = 'none'

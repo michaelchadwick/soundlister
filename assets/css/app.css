@@ -186,7 +186,7 @@ section#main {
 
   #audio-player-container #play-icon,
   #audio-player-container #mute-icon {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
   }
   #audio-player-container #play-icon:hover,
   #audio-player-container #mute-icon:hover {
@@ -200,7 +200,7 @@ section#main {
   }
 
   #audio-player-container .time {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
   }
 
   #audio-player-container output {
@@ -263,9 +263,21 @@ section#main {
           margin: 2px 0 0 7px;
         }
 
+#collections {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin: 5px;
+  max-width: 500px;
+}
+  #collections select {
+    font-size: 1.25rem;
+    text-transform: uppercase;
+  }
+
 #playlist {
   background: #666;
-  margin: 5px auto 22px;
+  margin: 5px auto 0;
   max-width: 500px;
   overflow-y: auto;
 }
@@ -285,7 +297,7 @@ section#main {
         background: #333;
         color: #eeeedd;
         display: block;
-        padding: 0.375rem 0.5rem;
+        padding: 0.5rem 0.5rem 0.75rem;
         position: relative;
         z-index: 2;
       }
