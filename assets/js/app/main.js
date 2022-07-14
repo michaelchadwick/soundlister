@@ -170,6 +170,19 @@ SoundLister.attachFunctionalListeners = () => {
 
     SoundLister.dom.audio.volume = volume / 100
   })
+
+  // gotta use keydown, not keypress, or else Delete/Backspace aren't recognized
+  document.addEventListener('keydown', (event) => {
+    if (event.code == 'Space') {
+      SoundLister._updatePlayButton()
+    } else {
+      if (event.metaKey && event.code == 'ArrowRight') {
+        SoundLister.goForward()
+      } else if (event.metaKey && event.code == 'ArrowLeft') {
+        SoundLister.goBack()
+      }
+    }
+  })
 }
 
 // gets tracklist with potential collection filter
@@ -186,10 +199,12 @@ SoundLister.tracks = () => {
 }
 
 // go back one track in the playlist
-SoundLister.goBack = (e) => {
+SoundLister.goBack = (e = null) => {
   // console.log('goBack()')
 
-  e.preventDefault()
+  if (e) {
+    e.preventDefault()
+  }
 
   const len = SoundLister.tracks().length - 1
 
