@@ -36,6 +36,7 @@
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <!-- CUSTOM -->
   <link rel="stylesheet" href="./assets/css/app.css">
+  <!-- STUB: <link rel="stylesheet" href="./assets/css/custom-select.css">-->
   <!-- CUSTOM - USER -->
   <link rel="stylesheet" href="./assets/css/colors.css">
 </head>
@@ -103,10 +104,26 @@
       </div>
 
       <div id="collections">
-        <select>
+        <select class="standard">
           <option value="_">- all -</option>
         </select>
+
+        <!-- STUB
+        <div class="select">
+          <span class="selectLabel" id="colLabel">Collection</span>
+          <div class="selectWrapper">
+            <select class="selectNative js-selectNative" aria-labelledby="colLabel">
+              <option value="_" disabled="" selected="">- all -</option>
+            </select>
+
+            <div class="selectCustom js-selectCustom" aria-hidden="true">
+              <div class="selectCustom-trigger">- all -</div>
+              <div class="selectCustom-options"></div>
+            </div>
+          </div>
+        </div>
       </div>
+      -->
 
       <div class="loader"></div>
 
@@ -132,6 +149,7 @@
   <!-- CUSTOM -->
   <script type="text/javascript" src="./assets/js/app.js"></script>
   <script type="text/javascript" src="./assets/js/app/main.js"></script>
+  <!--STUB: <script type="text/javascript" src="./assets/js/app/custom-select.js"></script>-->
 
 </body>
 </html>

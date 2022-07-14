@@ -22,7 +22,10 @@ SoundLister.dom.muteButton = document.getElementById('mute-icon')
 SoundLister.dom.muteButtonIcon = document.querySelector('#mute-icon i')
 SoundLister.dom.prevButton = document.getElementById('backward')
 SoundLister.dom.nextButton = document.getElementById('forward')
-SoundLister.dom.collections = document.querySelector('#collections select')
+SoundLister.dom.collDropdown = document.querySelector('#collections select')
+// STUB:
+// SoundLister.dom.collNative = document.querySelector('#collections select.selectNative')
+// SoundLister.dom.collCustom = document.querySelector('#collections .selectCustom')
 SoundLister.dom.playlist = document.getElementById('playlist')
 
 /* ********************************* */
@@ -57,7 +60,7 @@ SoundLister.attachPresentationListeners = () => {
   SoundLister.dom.nextButton.addEventListener('click', (e) => SoundLister.goForward(e))
 
   // collection filter changes
-  SoundLister.dom.collections.addEventListener('change', (e) => {
+  SoundLister.dom.collDropdown.addEventListener('change', (e) => {
     // update SoundLister current collection
     SoundLister.col = e.target.value
 
@@ -272,6 +275,33 @@ SoundLister._resizePlaylist = () => {
   SoundLister.dom.playlist.style.maxHeight = `${window.innerHeight - 285}px`
 }
 
+// remake playlist with collection filter
+SoundLister._remakePlaylist = () => {
+  // console.log('_remakePlaylist()')
+
+  // empty playlist
+  SoundLister.dom.playlist.innerHTML = ''
+  SoundLister.index = 0
+
+  // remake playlist
+  SoundLister.songs.forEach(song => {
+    if (SoundLister.col !== '_') {
+      if (song.col == SoundLister.col) {
+        SoundLister._createPlaylistItem(song)
+      }
+    } else {
+      SoundLister._createPlaylistItem(song)
+    }
+
+    // SoundLister.index = SoundLister.index + 1
+  })
+
+  // update new playlist song durations
+  SoundLister._getSongDurations()
+
+  SoundLister._updatePlayButton('collection')
+}
+
 // add song durations to playlist
 SoundLister._getSongDurations = () => {
   // create audio elements - to read songs duration
@@ -375,7 +405,7 @@ SoundLister._fillSongs = async (files) => {
   for (const col in files) {
     const dirPath = `./assets/audio/${col}`
 
-    SoundLister.dom.collections.options.add(new Option(col, col))
+    SoundLister._addCollectionOption(col)
 
     for (const index in files[col]) {
       const baseName = files[col][index]['basename']
@@ -409,33 +439,6 @@ SoundLister._fillSongs = async (files) => {
   return songArr
 }
 
-// remake playlist with collection filter
-SoundLister._remakePlaylist = () => {
-  // console.log('_remakePlaylist()')
-
-  // empty playlist
-  SoundLister.dom.playlist.innerHTML = ''
-  SoundLister.index = 0
-
-  // remake playlist
-  SoundLister.songs.forEach(song => {
-    if (SoundLister.col !== '_') {
-      if (song.col == SoundLister.col) {
-        SoundLister._createPlaylistItem(song)
-      }
-    } else {
-      SoundLister._createPlaylistItem(song)
-    }
-
-    // SoundLister.index = SoundLister.index + 1
-  })
-
-  // update new playlist song durations
-  SoundLister._getSongDurations()
-
-  SoundLister._updatePlayButton('collection')
-}
-
 // use PHP script to scan audio directory
 // add to CacheStorage
 // return titles of files
@@ -444,28 +447,45 @@ SoundLister._getFiles = async () => {
   let titlesArray = await fileList.text()
   let titlesJSON = JSON.parse(titlesArray)
 
-  if (window.Worker) {
-    SoundLister.config.cacheWorker = new Worker('assets/js/app/worker.js')
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('assets/js/app/worker.js')
+      .then(() => {
+        console.log('Service Worker registered')
 
-    if (SoundLister.config.cacheWorker) {
-      SoundLister.config.cacheWorker.onmessage = (response) => {
-        const cmd = response.data.command
-        const val = response.data.value
+        navigator.serviceWorker.onmessage = (response) => {
+          const cmd = response.data.command
+          const val = response.data.value
 
-        if (cmd) {
-          console.log(`cacheWorker.data.command: ${cmd}, cacheWorker.data.value: ${val}`)
+          if (cmd) {
+            console.log(`cacheWorker.data.command: ${cmd}, cacheWorker.data.value: ${val}`)
+          }
         }
-      }
-
-      SoundLister.config.cacheWorker.postMessage({ command: 'init', value: titlesJSON })
-    } else {
-      console.error('creation of Web Worker failed')
-    }
+      },
+      (e) => {
+        console.error('creation of Service Worker failed')
+      })
   } else {
-    console.error('Web Worker not supported by browser')
+    console.error('Service Worker not supported by browser')
   }
 
   return titlesJSON
+}
+
+SoundLister._addCollectionOption = (col) => {
+  // bog-standard <select>
+  SoundLister.dom.collDropdown.options.add(new Option(col, col))
+
+  // STUB
+  // Blog: https://css-tricks.com/striking-a-balance-between-native-and-custom-select-elements/
+  // Codepen: https://codepen.io/sandrina-p/pen/YzyOYRr
+
+  // SoundLister.dom.collNative.options.add(new Option(col, col))
+
+  // const option = document.createElement('div')
+  // option.classList.add('selectCustom-option')
+  // option.dataset.value = col
+  // option.textContent = col
+  // SoundLister.dom.collCustom.querySelector('.selectCustom-options').appendChild(option)
 }
 
 // change play/pause icon depending on context
@@ -622,8 +642,6 @@ SoundLister.__readFileAsync = (file) => {
 
   // create JSON object with title, artist, album, etc. of all songs
   SoundLister.songs = await SoundLister._fillSongs(SoundLister.fileObjArr)
-
-  console.log('SoundLister.songs', SoundLister.songs)
 
   // hide loader gif once songs are loaded
   document.querySelector('.loader').style.display = 'none'
