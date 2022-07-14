@@ -56,21 +56,11 @@ SoundLister.attachPresentationListeners = () => {
 
   // collection filter changes
   SoundLister.dom.collections.addEventListener('change', (e) => {
+    // update SoundLister current collection
     SoundLister.col = e.target.value
 
-    if (SoundLister.col !== '_') {
-      SoundLister.tracks().forEach(track => {
-        if (track.dataset.col !== SoundLister.col) {
-          track.style.display = 'none'
-        } else {
-          track.style.display = 'grid'
-        }
-      })
-    } else {
-      SoundLister.tracks().forEach(track => track.style.display = 'grid')
-    }
-
-    SoundLister._updatePlayButton('collection')
+    // remake playlist
+    SoundLister._remakePlaylist()
   })
 
   // click/tap audio track on playlist
@@ -98,7 +88,7 @@ SoundLister.attachPresentationListeners = () => {
 SoundLister.attachFunctionalListeners = () => {
   // <audio> element has started loading
   SoundLister.dom.audio.addEventListener('loadstart', (e) => {
-    console.log('audio loading begun', e)
+    // console.log('audio loading begun', e)
   })
   // <audio> element is loaded enough to start playing
   SoundLister.dom.audio.addEventListener('canplay', (e) => {
@@ -147,7 +137,7 @@ SoundLister.attachFunctionalListeners = () => {
     }
   })
   SoundLister.dom.seekSlider.addEventListener('change', () => {
-    console.log('manually seeked through song')
+    // console.log('manually seeked through song')
 
     SoundLister.dom.audio.currentTime = SoundLister.dom.seekSlider.value
 
@@ -192,14 +182,12 @@ SoundLister.tracks = () => {
     tracks = document.querySelectorAll('#playlist a')
   }
 
-  console.log('SoundLister.tracks()', tracks)
-
   return tracks
 }
 
 // go back one track in the playlist
 SoundLister.goBack = (e) => {
-  console.log('goBack()')
+  // console.log('goBack()')
 
   e.preventDefault()
 
@@ -212,14 +200,14 @@ SoundLister.goBack = (e) => {
 
 // go forward one track in the playlist
 SoundLister.goForward = (e = null) => {
-  console.log('goForward()')
+  // console.log('goForward()')
 
   if (e) {
     e.preventDefault()
 
-    console.log('manual change to next song')
+    // console.log('manual change to next song')
   } else {
-    console.log('song ended and changing to next one')
+    // console.log('song ended and changing to next one')
   }
 
   const len = SoundLister.tracks().length - 1
@@ -231,14 +219,14 @@ SoundLister.goForward = (e = null) => {
 
 // change the currently-playing track
 SoundLister.changeTrack = (current) => {
-  console.log('changeTrack()', current)
+  // console.log('changeTrack()', current)
 
   SoundLister.playTrack(SoundLister.tracks()[current])
 }
 
 // play currently-loaded track
 SoundLister.playTrack = (track) => {
-  console.log('playTrack()', track)
+  // console.log('playTrack()', track)
 
   // change <audio> source
   SoundLister.dom.audio.src = track.getAttribute('href')
@@ -263,26 +251,26 @@ SoundLister._resizePlaylist = () => {
 }
 
 // add song durations to playlist
-SoundLister._getSongDurations = (songs) => {
+SoundLister._getSongDurations = () => {
   // create audio elements - to read songs duration
   let audio_arr = [];
 
-  songs.forEach((song) => {
-    const audio = document.createElement('audio');
+  SoundLister.tracks().forEach((song) => {
+    const audio = document.createElement('audio')
 
-    audio.src = song.url;
+    audio.src = song.href
     audio_arr.push(audio)
-  });
+  })
 
   // get each song duration and put it in html element with '.song-duration' class name
   audio_arr.forEach((audio, index) => {
     audio.addEventListener('loadeddata', () => {
-      const minutes = Math.floor(audio.duration / 60);
-      const seconds = Math.floor(audio.duration % 60);
+      const minutes = Math.floor(audio.duration / 60)
+      const seconds = Math.floor(audio.duration % 60)
 
-      document.querySelectorAll('.track-duration')[index].innerHTML = `${minutes}:${seconds >= 10 ? seconds : '0' + seconds}`;
-    });
-  });
+      document.querySelectorAll('.track-duration')[index].innerHTML = `${minutes}:${seconds >= 10 ? seconds : '0' + seconds}`
+    })
+  })
 }
 
 // use mp3tag to read ID3 tags from songs
@@ -337,6 +325,8 @@ SoundLister._createPlaylistItem = (song) => {
     track.append(trackDuration)
 
   SoundLister.dom.playlist.appendChild(track)
+
+  SoundLister.index++
 }
 
 // convert filename to a title, if needed
@@ -391,12 +381,37 @@ SoundLister._fillSongs = async (files) => {
       songArr.push(newSong)
 
       SoundLister._createPlaylistItem(newSong)
-
-      SoundLister.index++
     }
   }
 
   return songArr
+}
+
+// remake playlist with collection filter
+SoundLister._remakePlaylist = () => {
+  // console.log('_remakePlaylist()')
+
+  // empty playlist
+  SoundLister.dom.playlist.innerHTML = ''
+  SoundLister.index = 0
+
+  // remake playlist
+  SoundLister.songs.forEach(song => {
+    if (SoundLister.col !== '_') {
+      if (song.col == SoundLister.col) {
+        SoundLister._createPlaylistItem(song)
+      }
+    } else {
+      SoundLister._createPlaylistItem(song)
+    }
+
+    // SoundLister.index = SoundLister.index + 1
+  })
+
+  // update new playlist song durations
+  SoundLister._getSongDurations()
+
+  SoundLister._updatePlayButton('collection')
 }
 
 // use PHP script to scan audio directory
@@ -411,7 +426,7 @@ SoundLister._getFiles = async () => {
 
 // change play/pause icon depending on context
 SoundLister._updatePlayButton = (source = null) => {
-  console.log('_updatePlayButton', source)
+  // console.log('_updatePlayButton', source)
 
   switch (source) {
     case 'playlist':
@@ -430,7 +445,6 @@ SoundLister._updatePlayButton = (source = null) => {
     case 'collection':
       cancelAnimationFrame(SoundLister.raf)
       SoundLister.playIconState = 'play'
-      console.log('SoundLister.tracks', SoundLister.tracks())
       SoundLister.dom.audio.src = SoundLister.tracks()[0]
 
       if (SoundLister.dom.playButtonIcon.classList.contains('fa-pause')) {
@@ -559,11 +573,11 @@ SoundLister.__readFileAsync = (file) => {
 /* ********************************* */
 
 ;(async() => {
-  // create object array of file info
-  const files = await SoundLister._getFiles()
+  // create SoundLister.files object array of file info
+  SoundLister.fileObjArr = await SoundLister._getFiles()
 
   // create JSON object with title, artist, album, etc. of all songs
-  const songs = await SoundLister._fillSongs(files)
+  SoundLister.songs = await SoundLister._fillSongs(SoundLister.fileObjArr)
 
   // hide loader gif once songs are loaded
   document.querySelector('.loader').style.display = 'none'
@@ -571,7 +585,7 @@ SoundLister.__readFileAsync = (file) => {
   SoundLister.attachPresentationListeners()
 
   // fill in durations after the fact
-  SoundLister._getSongDurations(songs)
+  SoundLister._getSongDurations()
 
   SoundLister.dom.currentTime = document.getElementById('time-current')
   SoundLister.dom.totalTime = document.getElementById('time-total')
