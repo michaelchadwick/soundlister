@@ -222,6 +222,11 @@ SoundLister.changeTrack = (current) => {
   // console.log('changeTrack()', current)
 
   SoundLister.playTrack(SoundLister.tracks()[current])
+
+  document.querySelector('#playlist a.active').scrollIntoView({
+    'behavior': 'smooth',
+    'block': 'end'
+  })
 }
 
 // play currently-loaded track
