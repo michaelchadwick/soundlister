@@ -1,6 +1,20 @@
-# Soundlister
+# SoundLister
 
 Create a quick one-page website playlist for just about any[^1] HTML5 audio[^2]. Custom colors for body background, link color, playlist border, and active song background color can be specified in `custom.css`.
+
+## How to Use
+
+SoundLister will load all audio files it supports in the `/assets/audio` directory, including subdirectories.
+
+Click on the play button or click a track in the playlist to begin playback. When a track is done, it will immediately go to the next track and begin playing. When the playlist is complete, it will loop back to the first track.
+
+If the audio source contains multiple directories (a "collection"), then the dropdown below the audio player can be changed to filter the playlist to only use a specific collection.
+
+Keyboard shortcuts:
+
+* Space - toggles playback and pause
+* Cmd/Win+Right - go to next track in playlist
+* Cmd/Win+Left - go to previous track in playlist
 
 ## Dependencies
 
