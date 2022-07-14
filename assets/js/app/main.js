@@ -9,6 +9,8 @@ SoundLister.playIconState = 'play'
 SoundLister.muteIconState = 'unmute'
 SoundLister.raf = null
 
+SoundLister.config = {}
+
 SoundLister.dom = {}
 SoundLister.dom.audioPlayerContainer = document.getElementById('audio-player-container')
 SoundLister.dom.audio = document.querySelector('audio')
@@ -435,11 +437,33 @@ SoundLister._remakePlaylist = () => {
 }
 
 // use PHP script to scan audio directory
+// add to CacheStorage
 // return titles of files
 SoundLister._getFiles = async () => {
   let fileList = await fetch('./assets/dir.php')
   let titlesArray = await fileList.text()
   let titlesJSON = JSON.parse(titlesArray)
+
+  if (window.Worker) {
+    SoundLister.config.cacheWorker = new Worker('assets/js/app/worker.js')
+
+    if (SoundLister.config.cacheWorker) {
+      SoundLister.config.cacheWorker.onmessage = (response) => {
+        const cmd = response.data.command
+        const val = response.data.value
+
+        if (cmd) {
+          console.log(`cacheWorker.data.command: ${cmd}, cacheWorker.data.value: ${val}`)
+        }
+      }
+
+      SoundLister.config.cacheWorker.postMessage({ command: 'init', value: titlesJSON })
+    } else {
+      console.error('creation of Web Worker failed')
+    }
+  } else {
+    console.error('Web Worker not supported by browser')
+  }
 
   return titlesJSON
 }
@@ -598,6 +622,8 @@ SoundLister.__readFileAsync = (file) => {
 
   // create JSON object with title, artist, album, etc. of all songs
   SoundLister.songs = await SoundLister._fillSongs(SoundLister.fileObjArr)
+
+  console.log('SoundLister.songs', SoundLister.songs)
 
   // hide loader gif once songs are loaded
   document.querySelector('.loader').style.display = 'none'
