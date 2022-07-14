@@ -277,67 +277,58 @@ section#main {
 
 #playlist {
   background: #666;
+  display: flex;
+  flex-direction: column;
   margin: 5px auto 0;
   max-width: 500px;
   overflow-y: auto;
 }
-  #playlist li {
-    display: grid;
-    list-style-type: none;
+  #playlist a {
+    align-items: center;
+    background: #333;
+    color: #eeeedd;
+    display: flex;
+    justify-content: space-around;
+    padding: 0.5rem 0.5rem 0.75rem;
+    position: relative;
+    text-decoration: none;
+    z-index: 2;
   }
-    #playlist li.active a {
+    #playlist a:hover {
+      background-color: #555;
+    }
+    #playlist a.active {
       background: #153950;
       color: #5db0e6;
       text-decoration: none;
     }
-      #playlist li.active a div.translation {
+      #playlist a.active div.translation {
         color: #85b2d0;
       }
-      #playlist li a {
-        background: #333;
-        color: #eeeedd;
+    #playlist a label.track-num {
+      cursor: pointer;
+      font-size: 1.5em;
+      text-decoration: none;
+    }
+    #playlist a div.titles {
+      z-index: 1;
+    }
+      #playlist a div.titles div.track-name {
+        font-size: 1.1em;
+      }
+      #playlist a div.titles div.track-artist-album {
+        color: #cdcdbd;
         display: block;
-        padding: 0.5rem 0.5rem 0.75rem;
-        position: relative;
-        z-index: 2;
+        font-size: 0.8em;
       }
-      #playlist li a:hover {
-        background-color: #555;
-      }
-      #playlist li a label.track-num {
-        clear: left;
-        cursor: pointer;
-        float: left;
-        font-size: 1.5em;
-        margin-right: 12px;
-        position: relative;
-        top: 4px;
-      }
-      #playlist li a div.titles {
-        float: left;
-        padding-top: 4px;
-        z-index: 1;
-      }
-        #playlist li a div.titles div.track-name {
-          font-size: 1.1em;
+        #playlist a div.titles div.track-artist-album span.highlight {
+          color: #dfdf86;
+          font-weight: bold;
         }
-        #playlist li a div.titles div.track-artist-album {
-          color: #cdcdbd;
-          display: block;
-          font-size: 0.8em;
-        }
-          #playlist li a div.titles div.track-artist-album span.highlight {
-            color: #dfdf86;
-            font-weight: bold;
-          }
-      #playlist li a div.track-duration {
-        font-weight: 400;
-        font-size: 1em;
-        float: right;
-        position: relative;
-        right: 5px;
-        top: 13px;
-      }
+    #playlist a div.track-duration {
+      font-weight: 400;
+      font-size: 1em;
+    }
 
 
 footer {

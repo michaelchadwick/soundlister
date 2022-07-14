@@ -1,155 +1,257 @@
+/* main */
 /* global SoundLister, MP3Tag */
 
-SoundLister.current = 0
-SoundLister.player = document.getElementsByTagName('audio')[0]
-SoundLister.playerButtons = document.getElementById('audio-controls')
-SoundLister.backward = document.getElementById('backward')
-SoundLister.forward = document.getElementById('forward')
-SoundLister.collections = document.querySelector('#collections select')
-SoundLister.playlist = document.getElementById('playlist')
-SoundLister.track = null
-SoundLister.audioDir = 'assets/audio'
+SoundLister.currentIndex = 0
 SoundLister.tags = {}
 SoundLister.index = 0
+SoundLister.col = '_'
+SoundLister.playIconState = 'play'
+SoundLister.muteIconState = 'unmute'
+SoundLister.raf = null
 
-// set initial volume
-SoundLister.player.volume = 1.0
+SoundLister.dom = {}
+SoundLister.dom.audioPlayerContainer = document.getElementById('audio-player-container')
+SoundLister.dom.audio = document.querySelector('audio')
+SoundLister.dom.playButton = document.getElementById('play-icon')
+SoundLister.dom.playButtonIcon = document.querySelector('#play-icon i')
+SoundLister.dom.seekSlider = document.getElementById('seek-slider')
+SoundLister.dom.volumeSlider = document.getElementById('volume-slider')
+SoundLister.dom.muteButton = document.getElementById('mute-icon')
+SoundLister.dom.muteButtonIcon = document.querySelector('#mute-icon i')
+SoundLister.dom.prevButton = document.getElementById('backward')
+SoundLister.dom.nextButton = document.getElementById('forward')
+SoundLister.dom.collections = document.querySelector('#collections select')
+SoundLister.dom.playlist = document.getElementById('playlist')
 
 /* ********************************* */
 /* public functions                  */
 /* ********************************* */
 
-// go back one track in the playlist
-SoundLister.goBack = (e) => {
-  e.preventDefault()
-
-  const len = document.querySelectorAll('#playlist li').length - 1
-
-  SoundLister.current = SoundLister.current === 0 ? len : SoundLister.current - 1
-
-  SoundLister.changeTrack(SoundLister.current)
-}
-
-// go forward one track in the playlist
-SoundLister.goForward = (e = null) => {
-  if (e) {
-    e.preventDefault()
-
-    // console.log('manual change to next song')
-  } else {
-    // console.log('song ended and changing to next one')
-  }
-
-  const len = document.querySelectorAll('#playlist li').length - 1
-
-  SoundLister.current = SoundLister.current === len ? 0 : SoundLister.current + 1
-
-  SoundLister.changeTrack(SoundLister.current)
-}
-
-// change the currently-playing track
-SoundLister.changeTrack = (current) => {
-  // console.log('changing track...')
-
-  const tracks = document.querySelectorAll('#playlist li')
-
-  SoundLister.play(tracks[current].querySelectorAll('a')[0])
-}
-
-// play track
-SoundLister.play = (track) => {
-  // change <audio> source
-  SoundLister.player.src = track.getAttribute('href')
-
-  // switch active track
-  document.querySelectorAll('#playlist li').forEach(t => t.classList.remove('active'))
-  track.parentNode.classList.add('active')
-
-  // load and play song
-  SoundLister.player.load()
-  // SoundLister.player.play()
-}
-
-// attach DOM event listeners
-SoundLister.attachEventListeners = () => {
-  // audio has started loading
-  SoundLister.player.addEventListener('loadstart', (e) => {
-    // console.log('audio loading begun', e)
-  })
-  // audio is loaded enough to start playing
-  SoundLister.player.addEventListener('canplay', (e) => {
-    // console.log('audio can play', e)
-  })
-  // audio is loaded enough to play to end
-  SoundLister.player.addEventListener('canplaythrough', (e) => {
-    // console.log('audio can play through', e)
-    SoundLister.player.play()
-  })
-  // audio has started playing
-  SoundLister.player.addEventListener('play', (e) => {
-    // console.log('audio has started playing', e)
-  })
-  // audio is playing
-  SoundLister.player.addEventListener('playing', (e) => {
-    // console.log('audio is playing', e)
-  })
-  // audio has been paused
-  SoundLister.player.addEventListener('paused', (e) => {
-    // console.log('audio has been paused', e)
-  })
-  // audio ended
-  SoundLister.player.addEventListener('ended', (e) => {
-    // console.log('audio ended', e)
-    SoundLister.goForward()
-  })
-  // error occurs
-  SoundLister.player.addEventListener('error', (e) => {
-    console.error('audio error', e)
+// attach DOM presentation event listeners
+SoundLister.attachPresentationListeners = () => {
+  // play/pause button
+  SoundLister.dom.playButton.addEventListener('click', () => {
+    SoundLister._updatePlayButton()
   })
 
-  SoundLister.collections.addEventListener('change', (e) => {
-    const choice = e.target.value
-    const tracks = SoundLister.playlist.querySelectorAll('#playlist li')
+  // mute/unmute button
+  SoundLister.dom.muteButton.addEventListener('click', () => {
+    SoundLister._updateMuteButton()
+  })
 
-    if (choice !== '_') {
-      tracks.forEach(track => {
-        const col = track.querySelector('a').dataset.col
+  // audio seek slider
+  SoundLister.dom.seekSlider.addEventListener('input', (e) => {
+    SoundLister._showRangeProgress(e.target)
+  })
 
-        if (track.querySelector('a').dataset.col !== choice) {
+  // audio volume slider
+  SoundLister.dom.volumeSlider.addEventListener('input', (e) => {
+    SoundLister._showRangeProgress(e.target)
+  })
+
+  // click/tap Prev button
+  SoundLister.dom.prevButton.addEventListener('click', (e) => SoundLister.goBack(e))
+  // click/tap Next button
+  SoundLister.dom.nextButton.addEventListener('click', (e) => SoundLister.goForward(e))
+
+  // collection filter changes
+  SoundLister.dom.collections.addEventListener('change', (e) => {
+    SoundLister.col = e.target.value
+
+    if (SoundLister.col !== '_') {
+      SoundLister.tracks().forEach(track => {
+        if (track.dataset.col !== SoundLister.col) {
           track.style.display = 'none'
         } else {
           track.style.display = 'grid'
         }
       })
     } else {
-      tracks.forEach(track => track.style.display = 'grid')
+      SoundLister.tracks().forEach(track => track.style.display = 'grid')
     }
+
+    SoundLister._updatePlayButton('collection')
   })
 
-  // click/tap Prev button
-  SoundLister.backward.addEventListener('click', (e) => SoundLister.goBack(e))
-  // click/tap Next button
-  SoundLister.forward.addEventListener('click', (e) => SoundLister.goForward(e))
-
   // click/tap audio track on playlist
-  SoundLister.playlist.addEventListener('click', (e) => {
+  SoundLister.dom.playlist.addEventListener('click', (e) => {
     e.preventDefault()
 
-    track = e.target
+    let track = e.target
 
     // if we "miss" the correct position to click, bubble up to the a
     if (track.classList.contains('track-attribute')) {
       track = track.closest('a')
     }
 
-    SoundLister.current = parseInt(track.dataset.index)
+    SoundLister.currentIndex = parseInt(track.dataset.index)
 
-    SoundLister.play(track)
+    console.log('playlist click', track)
 
-    SoundLister._updatePlayButton(true)
+    SoundLister.playTrack(track)
+
+    SoundLister._updatePlayButton('playlist')
   })
 
   window.onresize = SoundLister._resizePlaylist
+}
+
+// attach DOM functional event listeners
+SoundLister.attachFunctionalListeners = () => {
+  // <audio> element has started loading
+  SoundLister.dom.audio.addEventListener('loadstart', (e) => {
+    // console.log('audio loading begun', e)
+  })
+  // <audio> element is loaded enough to start playing
+  SoundLister.dom.audio.addEventListener('canplay', (e) => {
+    console.log('audio can play', e)
+    SoundLister._displayAudioDuration()
+    SoundLister._setSliderMax()
+  })
+  // <audio> element is loaded enough to play to end
+  SoundLister.dom.audio.addEventListener('canplaythrough', (e) => {
+    console.log('audio can play through, so playing', e)
+    SoundLister.dom.audio.play()
+  })
+  // <audio> element has started playing
+  SoundLister.dom.audio.addEventListener('play', (e) => {
+    console.log('audio has started playing', e)
+  })
+  // <audio> element is playing
+  SoundLister.dom.audio.addEventListener('playing', (e) => {
+    // console.log('audio is playing', e)
+  })
+  // <audio> element has been paused
+  SoundLister.dom.audio.addEventListener('paused', (e) => {
+    console.log('audio has been paused', e)
+  })
+  // <audio> element ended
+  SoundLister.dom.audio.addEventListener('ended', (e) => {
+    console.log('audio ended', e)
+    SoundLister.goForward()
+  })
+  // <audio> element had an error occur
+  SoundLister.dom.audio.addEventListener('error', (e) => {
+    console.error('audio error', e)
+  })
+
+  // <audio> element progress
+  SoundLister.dom.audio.addEventListener('progress', () => {
+    SoundLister._displayBufferedAmount()
+  })
+
+  // <audio> element progress seek slider
+  SoundLister.dom.seekSlider.addEventListener('input', () => {
+    console.log('updating currentTime')
+
+    SoundLister.dom.currentTime.textContent = SoundLister.__calculateTime(SoundLister.dom.seekSlider.value);
+
+    if (!SoundLister.dom.audio.paused) {
+      cancelAnimationFrame(SoundLister.raf)
+    }
+  })
+  SoundLister.dom.seekSlider.addEventListener('change', () => {
+    console.log('manually seeking through song')
+
+    SoundLister.dom.audio.currentTime = SoundLister.dom.seekSlider.value
+
+    if (!SoundLister.dom.audio.paused) {
+      requestAnimationFrame(SoundLister._whilePlaying)
+    }
+  })
+
+  // <audio> element volume slider
+  SoundLister.dom.volumeSlider.addEventListener('input', (e) => {
+    const volume = e.target.value
+
+    if (parseInt(volume) > 0) {
+      SoundLister.dom.muteButtonIcon.classList.remove('fa-volume-off')
+      if (parseInt(volume) > 49) {
+        SoundLister.dom.muteButtonIcon.classList.remove('fa-volume-low')
+        SoundLister.dom.muteButtonIcon.classList.add('fa-volume-high')
+      } else {
+        SoundLister.dom.muteButtonIcon.classList.remove('fa-volume-high')
+        SoundLister.dom.muteButtonIcon.classList.add('fa-volume-low')
+      }
+    } else {
+      SoundLister.dom.muteButtonIcon.classList.remove('fa-volume-low')
+      SoundLister.dom.muteButtonIcon.classList.remove('fa-volume-high')
+      SoundLister.dom.muteButtonIcon.classList.add('fa-volume-off')
+    }
+
+    // SoundLister.dom.outputVolume.textContent = volume.padStart(3, '0')
+
+    SoundLister.dom.audio.volume = volume / 100
+  })
+}
+
+// gets tracklist with potential collection filter
+SoundLister.tracks = () => {
+  let tracks = null
+
+  if (SoundLister.col !== '_') {
+    tracks = document.querySelectorAll(`#playlist a[data-col=${SoundLister.col}]`)
+  } else {
+    tracks = document.querySelectorAll('#playlist a')
+  }
+
+  console.log('SoundLister.tracks()', tracks)
+
+  return tracks
+}
+
+// go back one track in the playlist
+SoundLister.goBack = (e) => {
+  console.log('goBack()')
+
+  e.preventDefault()
+
+  const len = SoundLister.tracks().length - 1
+
+  SoundLister.currentIndex = SoundLister.currentIndex === 0 ? len : SoundLister.currentIndex - 1
+
+  SoundLister.changeTrack(SoundLister.currentIndex)
+}
+
+// go forward one track in the playlist
+SoundLister.goForward = (e = null) => {
+  console.log('goForward()')
+
+  if (e) {
+    e.preventDefault()
+
+    console.log('manual change to next song')
+  } else {
+    console.log('song ended and changing to next one')
+  }
+
+  const len = SoundLister.tracks().length - 1
+
+  SoundLister.currentIndex = SoundLister.currentIndex === len ? 0 : SoundLister.currentIndex + 1
+
+  SoundLister.changeTrack(SoundLister.currentIndex)
+}
+
+// change the currently-playing track
+SoundLister.changeTrack = (current) => {
+  console.log('changeTrack()', current)
+
+  SoundLister.playTrack(SoundLister.tracks()[current])
+}
+
+// play currently-loaded track
+SoundLister.playTrack = (track) => {
+  console.log('playTrack()', track)
+
+  // change <audio> source
+  SoundLister.dom.audio.src = track.getAttribute('href')
+
+  // switch DOM's active track
+  SoundLister.tracks().forEach(t => t.classList.remove('active'))
+  track.classList.add('active')
+
+  // load (and play) song
+  SoundLister.dom.audio.load()
 }
 
 /* ********************************* */
@@ -158,7 +260,7 @@ SoundLister.attachEventListeners = () => {
 
 // change max-height of playlist to match viewport
 SoundLister._resizePlaylist = () => {
-  SoundLister.playlist.style.maxHeight = `${window.innerHeight - 285}px`
+  SoundLister.dom.playlist.style.maxHeight = `${window.innerHeight - 285}px`
 }
 
 // add song durations to playlist
@@ -195,50 +297,47 @@ SoundLister._getID3Tags = (buffer) => {
 
 // add DOM element to playlist
 SoundLister._createPlaylistItem = (song) => {
-  const track = document.createElement('li')
+  const track = document.createElement('a')
 
   if (SoundLister.index == 0) {
     track.classList.add('active')
-    SoundLister.player.setAttribute('src', song.url)
+    SoundLister.dom.audio.setAttribute('src', song.url)
   }
 
-    const trackLink = document.createElement('a')
-    trackLink.setAttribute('title', song.title)
-    trackLink.setAttribute('alt', song.title)
-    trackLink.dataset.index = SoundLister.index
-    trackLink.dataset.col = song.col
-    trackLink.href = song.url
+  track.setAttribute('title', song.title)
+  track.setAttribute('alt', song.title)
+  track.dataset.index = SoundLister.index
+  track.dataset.col = song.col
+  track.href = song.url
 
-      const trackNum = document.createElement('label')
-      trackNum.classList.add('track-attribute', 'track-num')
-      trackNum.innerHTML = (SoundLister.index + 1).toString().padStart(2, '0')
+    const trackNum = document.createElement('label')
+    trackNum.classList.add('track-attribute', 'track-num')
+    trackNum.innerHTML = (SoundLister.index + 1).toString().padStart(2, '0')
 
-      const trackTitles = document.createElement('div')
-      trackTitles.classList.add('track-attribute', 'titles')
+    const trackTitles = document.createElement('div')
+    trackTitles.classList.add('track-attribute', 'titles')
 
-        const trackName = document.createElement('div')
-        trackName.classList.add('track-attribute', 'track-name')
-        trackName.innerHTML = song.title
+      const trackName = document.createElement('div')
+      trackName.classList.add('track-attribute', 'track-name')
+      trackName.innerHTML = song.title
 
-        const trackArtistAlbum = document.createElement('div')
-        trackArtistAlbum.classList.add('track-attribute', 'track-artist-album')
-        trackArtistAlbum.innerHTML = `
-          by <span class='track-attribute highlight'>${song.artist}</span> on <span class='track-attribute highlight'>${song.album}</span>
-        `
+      const trackArtistAlbum = document.createElement('div')
+      trackArtistAlbum.classList.add('track-attribute', 'track-artist-album')
+      trackArtistAlbum.innerHTML = `
+        by <span class='track-attribute highlight'>${song.artist}</span> on <span class='track-attribute highlight'>${song.album}</span>
+      `
 
-        trackTitles.append(trackName)
-        trackTitles.append(trackArtistAlbum)
+      trackTitles.append(trackName)
+      trackTitles.append(trackArtistAlbum)
 
-      const trackDuration = document.createElement('div')
-      trackDuration.classList.add('track-attribute', 'track-duration')
+    const trackDuration = document.createElement('div')
+    trackDuration.classList.add('track-attribute', 'track-duration')
 
-      trackLink.append(trackNum)
-      trackLink.append(trackTitles)
-      trackLink.append(trackDuration)
+    track.append(trackNum)
+    track.append(trackTitles)
+    track.append(trackDuration)
 
-    track.append(trackLink)
-
-  SoundLister.playlist.appendChild(track)
+  SoundLister.dom.playlist.appendChild(track)
 }
 
 // convert filename to a title, if needed
@@ -265,7 +364,7 @@ SoundLister._fillSongs = async (files) => {
   for (const col in files) {
     const dirPath = `./assets/audio/${col}`
 
-    SoundLister.collections.options.add(new Option(col, col))
+    SoundLister.dom.collections.options.add(new Option(col, col))
 
     for (const index in files[col]) {
       const baseName = files[col][index]['basename']
@@ -311,9 +410,135 @@ SoundLister._getFiles = async () => {
   return titlesJSON
 }
 
+// change play/pause icon depending on context
+SoundLister._updatePlayButton = (source = null) => {
+  console.log('_updatePlayButton', source)
+
+  switch (source) {
+    case 'playlist':
+      requestAnimationFrame(SoundLister._whilePlaying)
+      SoundLister.playIconState = 'pause'
+
+      if (SoundLister.dom.playButtonIcon.classList.contains('fa-play')) {
+        SoundLister.dom.playButtonIcon.classList.remove('fa-play')
+
+        if (!SoundLister.dom.playButtonIcon.classList.contains('fa-pause')) {
+          SoundLister.dom.playButtonIcon.classList.add('fa-pause')
+        }
+      }
+      break
+
+    case 'collection':
+      cancelAnimationFrame(SoundLister.raf)
+      SoundLister.playIconState = 'play'
+      console.log('SoundLister.tracks', SoundLister.tracks())
+      SoundLister.dom.audio.src = SoundLister.tracks()[0]
+
+      if (SoundLister.dom.playButtonIcon.classList.contains('fa-pause')) {
+        SoundLister.dom.playButtonIcon.classList.remove('fa-pause')
+
+        if (!SoundLister.dom.playButtonIcon.classList.contains('fa-play')) {
+          SoundLister.dom.playButtonIcon.classList.add('fa-play')
+        }
+      }
+      break
+
+    default:
+      if (SoundLister.playIconState === 'play') {
+        SoundLister.dom.audio.load()
+
+        requestAnimationFrame(SoundLister._whilePlaying)
+        SoundLister.playIconState = 'pause'
+      } else {
+        SoundLister.dom.audio.pause()
+
+        cancelAnimationFrame(SoundLister.raf)
+        SoundLister.playIconState = 'play'
+      }
+
+      SoundLister.dom.playButtonIcon.classList.toggle('fa-play')
+      SoundLister.dom.playButtonIcon.classList.toggle('fa-pause')
+
+      break
+  }
+}
+
+// toggle mute button icon
+SoundLister._updateMuteButton = () => {
+  if (SoundLister.muteIconState === 'unmute') {
+    SoundLister.dom.audio.muted = true
+    SoundLister.muteIconState = 'mute'
+  } else {
+    SoundLister.dom.audio.muted = false
+    SoundLister.muteIconState = 'unmute'
+  }
+
+  SoundLister.dom.muteButtonIcon.classList.toggle('fa-volume-mute')
+}
+
+SoundLister._displayBufferedAmount = () => {
+  // const bufferedLength = SoundLister.dom.audio.buffered.length - 1
+
+  // console.log('audio.buffered', SoundLister.dom.audio.buffered)
+  // console.log('bufferedLength', bufferedLength)
+
+  // const bufferedAmount = Math.floor(SoundLister.dom.audio.buffered.end(bufferedLength))
+
+  // SoundLister.dom.audioPlayerContainer.style.setProperty(
+  //   '--buffered-width',
+  //   `${(bufferedAmount / SoundLister.dom.seekSlider.max) * 100}%`
+  // )
+}
+
+SoundLister._displayAudioDuration = () => {
+  const duration = SoundLister.__calculateTime(SoundLister.dom.audio.duration)
+
+  SoundLister.dom.totalTime.textContent = duration
+}
+
+SoundLister._setSliderMax = () => {
+  const duration = Math.floor(SoundLister.dom.audio.duration)
+
+  SoundLister.dom.seekSlider.max = duration
+}
+
+SoundLister._showRangeProgress = (rangeInput) => {
+  if (rangeInput === SoundLister.dom.seekSlider) {
+    SoundLister.dom.audioPlayerContainer.style.setProperty(
+      '--seek-before-width',
+      rangeInput.value / rangeInput.max * 100 + '%'
+    )
+  } else {
+    SoundLister.dom.audioPlayerContainer.style.setProperty(
+      '--volume-before-width',
+      rangeInput.value / rangeInput.max * 100 + '%'
+    )
+  }
+}
+
+SoundLister._whilePlaying = () => {
+  SoundLister.dom.seekSlider.value = Math.floor(SoundLister.dom.audio.currentTime)
+  SoundLister.dom.currentTime.textContent = SoundLister.__calculateTime(SoundLister.dom.seekSlider.value)
+
+  SoundLister.dom.audioPlayerContainer.style.setProperty(
+    '--seek-before-width',
+    `${SoundLister.dom.seekSlider.value / SoundLister.dom.seekSlider.max * 100}%`
+  )
+
+  SoundLister.raf = requestAnimationFrame(SoundLister._whilePlaying)
+}
+
 /* ********************************* */
 /* _private __helper functions       */
 /* ********************************* */
+
+SoundLister.__calculateTime = (secs) => {
+  const minutes = Math.floor(secs / 60)
+  const seconds = Math.floor(secs % 60)
+  const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`
+
+  return `${minutes}:${returnedSeconds}`
+}
 
 // asynchronously read a file from disk
 SoundLister.__readFileAsync = (file) => {
@@ -346,9 +571,26 @@ SoundLister.__readFileAsync = (file) => {
   // hide loader gif once songs are loaded
   document.querySelector('.loader').style.display = 'none'
 
-  // attach all our event listeners once songs are loaded
-  SoundLister.attachEventListeners()
+  SoundLister.attachPresentationListeners()
 
   // fill in durations after the fact
   SoundLister._getSongDurations(songs)
+
+  SoundLister.dom.currentTime = document.getElementById('time-current')
+  SoundLister.dom.totalTime = document.getElementById('time-total')
+  SoundLister.dom.outputVolume = document.getElementById('output-volume')
+
+  if (SoundLister.dom.audio.readyState == 4) {
+    SoundLister._displayAudioDuration()
+    SoundLister._setSliderMax()
+    SoundLister._displayBufferedAmount()
+  } else {
+    SoundLister.dom.audio.addEventListener('loadedmetadata', () => {
+      SoundLister._displayAudioDuration()
+      SoundLister._setSliderMax()
+      SoundLister._displayBufferedAmount()
+    })
+  }
+
+  SoundLister.attachFunctionalListeners()
 })()
