@@ -196,7 +196,9 @@ section#main {
     padding-right: 10px;
   }
   #audio-player-container #mute-icon {
+    height: 33px;
     padding-left: 10px;
+    width: 48px;
   }
 
   #audio-player-container .time {
@@ -219,7 +221,7 @@ section#main {
       background: none;
     }
     #audio-player-container #volume-slider::-moz-range-track {
-      background: rgba(0, 125, 181, 0.6);
+      background: none;
     }
     #audio-player-container #volume-slider::-ms-fill-upper {
       background: rgba(0, 125, 181, 0.6);
