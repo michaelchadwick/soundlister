@@ -86,8 +86,6 @@ SoundLister.attachPresentationListeners = () => {
 
     SoundLister.currentIndex = parseInt(track.dataset.index)
 
-    console.log('playlist click', track)
-
     SoundLister.playTrack(track)
 
     SoundLister._updatePlayButton('playlist')
@@ -100,22 +98,22 @@ SoundLister.attachPresentationListeners = () => {
 SoundLister.attachFunctionalListeners = () => {
   // <audio> element has started loading
   SoundLister.dom.audio.addEventListener('loadstart', (e) => {
-    // console.log('audio loading begun', e)
+    console.log('audio loading begun', e)
   })
   // <audio> element is loaded enough to start playing
   SoundLister.dom.audio.addEventListener('canplay', (e) => {
-    console.log('audio can play', e)
+    // console.log('audio can play', e)
     SoundLister._displayAudioDuration()
     SoundLister._setSliderMax()
+    SoundLister._displayBufferedAmount()
   })
   // <audio> element is loaded enough to play to end
   SoundLister.dom.audio.addEventListener('canplaythrough', (e) => {
-    console.log('audio can play through, so playing', e)
-    SoundLister.dom.audio.play()
+    // console.log('audio can play through', e)
   })
   // <audio> element has started playing
   SoundLister.dom.audio.addEventListener('play', (e) => {
-    console.log('audio has started playing', e)
+    // console.log('audio has started playing', e)
   })
   // <audio> element is playing
   SoundLister.dom.audio.addEventListener('playing', (e) => {
@@ -123,11 +121,11 @@ SoundLister.attachFunctionalListeners = () => {
   })
   // <audio> element has been paused
   SoundLister.dom.audio.addEventListener('paused', (e) => {
-    console.log('audio has been paused', e)
+    // console.log('audio has been paused', e)
   })
   // <audio> element ended
   SoundLister.dom.audio.addEventListener('ended', (e) => {
-    console.log('audio ended', e)
+    // console.log('audio ended', e)
     SoundLister.goForward()
   })
   // <audio> element had an error occur
@@ -142,8 +140,6 @@ SoundLister.attachFunctionalListeners = () => {
 
   // <audio> element progress seek slider
   SoundLister.dom.seekSlider.addEventListener('input', () => {
-    console.log('updating currentTime')
-
     SoundLister.dom.currentTime.textContent = SoundLister.__calculateTime(SoundLister.dom.seekSlider.value);
 
     if (!SoundLister.dom.audio.paused) {
@@ -151,12 +147,13 @@ SoundLister.attachFunctionalListeners = () => {
     }
   })
   SoundLister.dom.seekSlider.addEventListener('change', () => {
-    console.log('manually seeking through song')
+    console.log('manually seeked through song')
 
     SoundLister.dom.audio.currentTime = SoundLister.dom.seekSlider.value
 
     if (!SoundLister.dom.audio.paused) {
       requestAnimationFrame(SoundLister._whilePlaying)
+      SoundLister.dom.audio.play()
     }
   })
 
@@ -250,8 +247,10 @@ SoundLister.playTrack = (track) => {
   SoundLister.tracks().forEach(t => t.classList.remove('active'))
   track.classList.add('active')
 
-  // load (and play) song
-  SoundLister.dom.audio.load()
+  // play song
+  SoundLister.dom.audio.play()
+
+  SoundLister._updatePlayButton('playlist')
 }
 
 /* ********************************* */
@@ -445,7 +444,7 @@ SoundLister._updatePlayButton = (source = null) => {
 
     default:
       if (SoundLister.playIconState === 'play') {
-        SoundLister.dom.audio.load()
+        SoundLister.dom.audio.play()
 
         requestAnimationFrame(SoundLister._whilePlaying)
         SoundLister.playIconState = 'pause'
@@ -549,9 +548,7 @@ SoundLister.__readFileAsync = (file) => {
       resolve(reader.result)
     }
 
-    reader.onloadend = function() {
-      // console.log('file finished loading')
-    }
+    reader.onloadend = function() {}
 
     reader.readAsArrayBuffer(file)
   })
