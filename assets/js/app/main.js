@@ -125,7 +125,7 @@ SoundLister.attachFunctionalListeners = () => {
   })
   // <audio> element had an error occur
   SoundLister.dom.audio.addEventListener('error', (e) => {
-    console.error('audio error', e)
+    console.error('<audio> element error', e)
   })
 
   // <audio> element progress
@@ -250,11 +250,11 @@ SoundLister.changeTrack = (current) => {
 }
 
 // play currently-loaded track
-SoundLister.playTrack = (track) => {
-  // console.log('playTrack()', track)
+SoundLister.playTrack = async (track) => {
+  console.log('playTrack()', track.href)
 
   // change <audio> source
-  SoundLister.dom.audio.src = track.getAttribute('href')
+  SoundLister.dom.audio.src = track.href
 
   // switch DOM's active track
   SoundLister.tracks().forEach(t => t.classList.remove('active'))
@@ -269,6 +269,27 @@ SoundLister.playTrack = (track) => {
 /* ********************************* */
 /* _private functions                */
 /* ********************************* */
+
+SoundLister._registerServiceWorker = async () => {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker
+      .register(SL_SERVICE_WORKER_PATH, { scope: 'assets/js/app/' })
+      .then((registration) => {
+        console.log('Service Worker registered', registration)
+
+        if (registration.installing) {
+          console.log('Service worker installing');
+        } else if (registration.waiting) {
+          console.log('Service worker installed');
+        } else if (registration.active) {
+          console.log('Service worker active');
+        }
+      })
+      .catch((err) => {
+        console.error('Service Worker failed to register', err)
+      })
+  }
+}
 
 // change max-height of playlist to match viewport
 SoundLister._resizePlaylist = () => {
@@ -307,10 +328,10 @@ SoundLister._getSongDurations = () => {
   // create audio elements - to read songs duration
   let audio_arr = [];
 
-  SoundLister.tracks().forEach((song) => {
+  SoundLister.tracks().forEach((track) => {
     const audio = document.createElement('audio')
 
-    audio.src = song.href
+    audio.src = track.href
     audio_arr.push(audio)
   })
 
@@ -449,32 +470,13 @@ SoundLister._getFiles = async () => {
   let titlesArray = await fileList.text()
   let titlesJSON = JSON.parse(titlesArray)
 
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('assets/js/app/worker.js')
-      .then(() => {
-        console.log('Service Worker registered')
-
-        navigator.serviceWorker.onmessage = (response) => {
-          const cmd = response.data.command
-          const val = response.data.value
-
-          if (cmd) {
-            console.log(`cacheWorker.data.command: ${cmd}, cacheWorker.data.value: ${val}`)
-          }
-        }
-
-        navigator.serviceWorker.controller.postMessage({ command: 'test', value: 'foo' })
-      },
-      (e) => {
-        console.error('creation of Service Worker failed')
-      })
-  } else {
-    console.error('Service Worker not supported by browser')
-  }
+  // TODO: use a Service Worker to intercept requests and return cached versions if possible
+  // SoundLister._registerServiceWorker()
 
   return titlesJSON
 }
 
+// add new option to collections dropdown
 SoundLister._addCollectionOption = (col) => {
   // bog-standard <select>
   SoundLister.dom.collDropdown.options.add(new Option(col, col))
@@ -512,8 +514,10 @@ SoundLister._updatePlayButton = (source = null) => {
 
     case 'collection':
       cancelAnimationFrame(SoundLister.raf)
-      SoundLister.playIconState = 'play'
-      SoundLister.dom.audio.src = SoundLister.tracks()[0]
+
+      const track = SoundLister.tracks()[0]
+
+      SoundLister.dom.audio.src = track.href
 
       if (SoundLister.dom.playButtonIcon.classList.contains('fa-pause')) {
         SoundLister.dom.playButtonIcon.classList.remove('fa-pause')
@@ -609,10 +613,50 @@ SoundLister._whilePlaying = () => {
   SoundLister.raf = requestAnimationFrame(SoundLister._whilePlaying)
 }
 
+SoundLister._addAudioToCache = async (collections) => {
+  await caches.open(SL_CACHE_TEXT_KEY).then(async cache => {
+    await cache.keys().then(async function(keys) {
+      if (!keys.length) {
+        console.log(`${SL_CACHE_TEXT_KEY} is non-existing or empty, so adding files to it...`)
+
+        let filesToAdd = []
+
+        Object.keys(collections).forEach(col => {
+          collections[col].forEach(song => {
+            filesToAdd.push(`/assets/${song.dirname}/${song.basename}`)
+          })
+        })
+
+        await cache.addAll(filesToAdd)
+
+        console.log(`added files to ${SL_CACHE_TEXT_KEY} cache`)
+      } else {
+        console.log(`${SL_CACHE_TEXT_KEY} is full, so no need to initialize`)
+      }
+    })
+  })
+}
+
+SoundLister._loadQSCollection = () => {
+  const params = new Proxy(new URLSearchParams(window.location.search), {
+    get: (searchParams, prop) => searchParams.get(prop),
+  })
+
+  const colToLoad = params.collection
+
+  if (colToLoad) {
+    if (Array.from(SoundLister.dom.collDropdown.options).map(op => op.value).includes(colToLoad)) {
+      SoundLister.dom.collDropdown.value = params.collection
+      SoundLister.dom.collDropdown.dispatchEvent(new Event('change'))
+    }
+  }
+}
+
 /* ********************************* */
 /* _private __helper functions       */
 /* ********************************* */
 
+// get a mm:ss styled time display
 SoundLister.__calculateTime = (secs) => {
   const minutes = Math.floor(secs / 60)
   const seconds = Math.floor(secs % 60)
@@ -636,29 +680,54 @@ SoundLister.__readFileAsync = (file) => {
   })
 }
 
+SoundLister.__isCached = (filename) => {
+  return window.caches.open(SL_CACHE_TEXT_KEY)
+    .then(cache => cache.match(filename))
+    .then(Boolean);
+}
+
+SoundLister.__addToCache = (filename) => {
+  window.caches.open(SL_CACHE_TEXT_KEY)
+    .then(cache => cache.add(filename))
+    .then(() => console.log(`added '${filename}' to cache`))
+    .catch(e => console.error(`failed to cache '${filename}'`, e))
+}
+
+SoundLister.__removeFromCache = (filename) => {
+  window.caches.open(SL_CACHE_TEXT_KEY)
+    .then(cache => cache.delete(filename))
+    .then(() => console.log(`removed '${filename}' from cache`))
+    .catch(e => console.error(`failed to remove '${filename}' from cache`, e))
+}
+
 /* ********************************* */
 /* start the engine                  */
 /* ********************************* */
 
 ;(async() => {
-  // create SoundLister.files object array of file info
-  SoundLister.fileObjArr = await SoundLister._getFiles()
+  // create fileObjArr object array of file info
+  const fileObjArr = await SoundLister._getFiles()
 
-  // create JSON object with title, artist, album, etc. of all songs
-  SoundLister.songs = await SoundLister._fillSongs(SoundLister.fileObjArr)
+  // create SoundLister.songs JSON object with title, artist, etc. of all songs
+  SoundLister.songs = await SoundLister._fillSongs(fileObjArr)
 
   // hide loader gif once songs are loaded
   document.querySelector('.loader').style.display = 'none'
 
+  // attach DOM listeners
   SoundLister.attachPresentationListeners()
 
-  // fill in durations after the fact
+  // fill in playlist durations after the fact
   SoundLister._getSongDurations()
 
   SoundLister.dom.currentTime = document.getElementById('time-current')
   SoundLister.dom.totalTime = document.getElementById('time-total')
   SoundLister.dom.outputVolume = document.getElementById('output-volume')
 
+  // TODO: add files to CacheStorage AND be able to use them
+  // SoundLister._addAudioToCache(fileObjArr)
+
+  // if <audio> is loaded and ready, then get its duration and such
   if (SoundLister.dom.audio.readyState == 4) {
     SoundLister._displayAudioDuration()
     SoundLister._setSliderMax()
@@ -671,18 +740,9 @@ SoundLister.__readFileAsync = (file) => {
     })
   }
 
+  // now attach <audio>, etc. listeners
   SoundLister.attachFunctionalListeners()
 
-  const params = new Proxy(new URLSearchParams(window.location.search), {
-    get: (searchParams, prop) => searchParams.get(prop),
-  })
-
-  const colToLoad = params.collection
-
-  if (colToLoad) {
-    if (Array.from(SoundLister.dom.collDropdown.options).map(op => op.value).includes(colToLoad)) {
-      SoundLister.dom.collDropdown.value = params.collection
-      SoundLister.dom.collDropdown.dispatchEvent(new Event('change'))
-    }
-  }
+  // check querystring for ?collection=
+  SoundLister._loadQSCollection()
 })()
