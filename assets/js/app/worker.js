@@ -33,6 +33,10 @@ self.addEventListener('install', e => {
   this.initData()
 })
 
+self.addEventListener('message', (event) => {
+  console.log('message received from main js thread', event)
+})
+
 self.addEventListener('fetch', e => {
   console.log(e.request.url);
   e.respondWith(

@@ -320,7 +320,9 @@ SoundLister._getSongDurations = () => {
       const minutes = Math.floor(audio.duration / 60)
       const seconds = Math.floor(audio.duration % 60)
 
-      document.querySelectorAll('.track-duration')[index].innerHTML = `${minutes}:${seconds >= 10 ? seconds : '0' + seconds}`
+      if (document.querySelectorAll('.track-duration')[index]) {
+        document.querySelectorAll('.track-duration')[index].innerHTML = `${minutes}:${seconds >= 10 ? seconds : '0' + seconds}`
+      }
     })
   })
 }
@@ -460,6 +462,8 @@ SoundLister._getFiles = async () => {
             console.log(`cacheWorker.data.command: ${cmd}, cacheWorker.data.value: ${val}`)
           }
         }
+
+        navigator.serviceWorker.controller.postMessage({ command: 'test', value: 'foo' })
       },
       (e) => {
         console.error('creation of Service Worker failed')
@@ -668,4 +672,17 @@ SoundLister.__readFileAsync = (file) => {
   }
 
   SoundLister.attachFunctionalListeners()
+
+  const params = new Proxy(new URLSearchParams(window.location.search), {
+    get: (searchParams, prop) => searchParams.get(prop),
+  })
+
+  const colToLoad = params.collection
+
+  if (colToLoad) {
+    if (Array.from(SoundLister.dom.collDropdown.options).map(op => op.value).includes(colToLoad)) {
+      SoundLister.dom.collDropdown.value = params.collection
+      SoundLister.dom.collDropdown.dispatchEvent(new Event('change'))
+    }
+  }
 })()
