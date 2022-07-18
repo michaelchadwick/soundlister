@@ -763,4 +763,12 @@ SoundLister.__removeFromCache = (filename) => {
 
   // now attach <audio>, etc. listeners
   SoundLister.attachFunctionalListeners()
+
+  // set env
+  SoundLister.env = SL_ENV_PROD_URL.includes(document.location.hostname) ? 'prod' : 'local'
+
+  // adjust <title> for env
+  if (SoundLister.env == 'local') {
+    document.title = '(LH) ' + document.title
+  }
 })()
