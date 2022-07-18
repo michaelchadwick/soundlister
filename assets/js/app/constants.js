@@ -2,7 +2,7 @@
 /* set any global constants */
 
 const SL_ENV_PROD_URL = [
-  'https://neb.host/soundlister',
+  'https://neb.host',
   'https://sl.neb.host'
 ]
 
