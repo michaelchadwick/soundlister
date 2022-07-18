@@ -2,8 +2,8 @@
 /* set any global constants */
 
 const SL_ENV_PROD_URL = [
-  'https://neb.host',
-  'https://sl.neb.host'
+  'neb.host',
+  'sl.neb.host'
 ]
 
 const SL_CACHE_TEXT_KEY = 'soundlister-cache-audio'
