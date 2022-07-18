@@ -428,8 +428,6 @@ SoundLister._fillSongs = async (files) => {
   for (const col in files) {
     const dirPath = `./assets/audio/${col}`
 
-    SoundLister._addCollectionOption(col)
-
     for (const index in files[col]) {
       const baseName = files[col][index]['basename']
       const filePath = `${dirPath}/${baseName}`
@@ -470,8 +468,20 @@ SoundLister._getFiles = async () => {
   let titlesArray = await fileList.text()
   let titlesJSON = JSON.parse(titlesArray)
 
+  // initiate the collection dropdown
+  Object.keys(titlesJSON).forEach(col => SoundLister._addCollectionOption(col))
+
   // TODO: use a Service Worker to intercept requests and return cached versions if possible
   // SoundLister._registerServiceWorker()
+
+  // check querystring for ?collection= to filter dropdown
+  SoundLister._loadQSCollection()
+
+  if (SoundLister.col !== '_') {
+    titlesJSON = Object.keys(titlesJSON)
+      .filter(key => key.includes(SoundLister.col))
+      .reduce((cur, key) => { return Object.assign(cur, { [key]: titlesJSON[key] }) }, {})
+  }
 
   return titlesJSON
 }
@@ -645,9 +655,20 @@ SoundLister._loadQSCollection = () => {
   const colToLoad = params.collection
 
   if (colToLoad) {
-    if (Array.from(SoundLister.dom.collDropdown.options).map(op => op.value).includes(colToLoad)) {
+    SoundLister.col = colToLoad
+
+    const validChoices = Array.from(SoundLister.dom.collDropdown.options).map(op => op.value)
+
+    // permananently change to one collection (save network)
+    // remove collection dropdown
+    if (validChoices.includes(colToLoad)) {
       SoundLister.dom.collDropdown.value = params.collection
       SoundLister.dom.collDropdown.dispatchEvent(new Event('change'))
+      SoundLister.dom.collDropdown.disabled = true
+      SoundLister.dom.collDropdown.style.display = 'none'
+    } else {
+      // if invalid collection speficied, default to all collections
+      SoundLister.col = SL_DEFAULT_COLLECTION
     }
   }
 }
@@ -742,7 +763,4 @@ SoundLister.__removeFromCache = (filename) => {
 
   // now attach <audio>, etc. listeners
   SoundLister.attachFunctionalListeners()
-
-  // check querystring for ?collection=
-  SoundLister._loadQSCollection()
 })()
