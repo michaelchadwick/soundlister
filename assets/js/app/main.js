@@ -421,15 +421,15 @@ SoundLister._filenameToTitle = (filename) => {
 }
 
 // fill songs object[] with JSON
-SoundLister._fillSongs = async (files) => {
-  const songArr = []
+SoundLister._fillSongs = async (fileColObj) => {
+  const songObjArr = []
 
   // put all file information into 'songs' object[]
-  for (const col in files) {
+  for (const col in fileColObj) {
     const dirPath = `./assets/audio/${col}`
 
-    for (const index in files[col]) {
-      const baseName = files[col][index]['basename']
+    for (const index in fileColObj[col]) {
+      const baseName = fileColObj[col][index]['basename']
       const filePath = `${dirPath}/${baseName}`
       const response = await fetch(filePath)
       const data = await response.blob()
@@ -451,13 +451,11 @@ SoundLister._fillSongs = async (files) => {
         "url": filePath
       }
 
-      songArr.push(newSong)
-
-      SoundLister._createPlaylistItem(newSong)
+      songObjArr.push(newSong)
     }
   }
 
-  return songArr
+  return songObjArr
 }
 
 // use PHP script to scan audio directory
@@ -731,6 +729,10 @@ SoundLister.__removeFromCache = (filename) => {
 
   // create SoundLister.songs JSON object with title, artist, etc. of all songs
   SoundLister.songs = await SoundLister._fillSongs(fileObjArr)
+
+  // create playlist from SoundLister.songs
+  SoundLister.dom.playlist.textContent = ''
+  Object.values(SoundLister.songs).forEach(song => SoundLister._createPlaylistItem(song))
 
   // hide loader gif once songs are loaded
   document.querySelector('.loader').style.display = 'none'
