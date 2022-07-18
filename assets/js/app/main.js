@@ -455,7 +455,7 @@ SoundLister._fillSongs = async (fileColObj) => {
     }
   }
 
-  return songObjArr
+  return SoundLister.__sortObjArr(songObjArr, ['url'])
 }
 
 // use PHP script to scan audio directory
@@ -719,6 +719,61 @@ SoundLister.__removeFromCache = (filename) => {
     .catch(e => console.error(`failed to remove '${filename}' from cache`, e))
 }
 
+// sort an array of objects by any number of properties
+SoundLister.__sortObjArr = (oldObjArr, props) => {
+  const newObjArr = []
+  const lookupObject = {}
+
+  // look through old object[] and put entries into unique object keys
+  for (const index in oldObjArr) {
+    let keyArr = []
+
+    for (const prop in props) {
+      keyArr.push(oldObjArr[index][props[prop]])
+    }
+
+    let key = keyArr.join(',')
+
+    // first time we look for a key, it won't exist, so make it
+    if (!lookupObject.hasOwnProperty(key)) {
+      if (typeof key === 'object') {
+        if (key[0] !== undefined) {
+          key = key[0];
+        } else {
+          key = index
+        }
+      }
+    } else { // if a key exists, we tack on an index
+      if (typeof key === 'object') {
+        if (oldObjArr[index][props[0]][0] !== undefined) {
+          key = oldObjArr[index][props[0]][0];
+        } else {
+          key = index
+        }
+      } else if (typeof key === 'string') {
+        key = `${key},${index}`;
+      } else { // is number
+        key = (key + 1).toString();
+      }
+    }
+
+    //  console.log('sortObjArr2 key', key);
+
+    lookupObject[key] = oldObjArr[index];
+  }
+
+  // console.log('sortObjArr2 lookupObject', lookupObject);        // object
+
+  // sort object's keys alphabetically, and then put into a new object[]
+  Object.keys(lookupObject).sort().forEach(key => {
+    newObjArr.push(lookupObject[key]);
+  });
+
+  // console.log('sortObjArr2 newObjArr', newObjArr);              // object[]
+
+  return newObjArr;
+}
+
 /* ********************************* */
 /* start the engine                  */
 /* ********************************* */
@@ -729,6 +784,8 @@ SoundLister.__removeFromCache = (filename) => {
 
   // create SoundLister.songs JSON object with title, artist, etc. of all songs
   SoundLister.songs = await SoundLister._fillSongs(fileObjArr)
+
+  console.log(SoundLister.songs)
 
   // create playlist from SoundLister.songs
   SoundLister.dom.playlist.textContent = ''
