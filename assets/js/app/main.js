@@ -785,8 +785,6 @@ SoundLister.__sortObjArr = (oldObjArr, props) => {
   // create SoundLister.songs JSON object with title, artist, etc. of all songs
   SoundLister.songs = await SoundLister._fillSongs(fileObjArr)
 
-  console.log(SoundLister.songs)
-
   // create playlist from SoundLister.songs
   SoundLister.dom.playlist.textContent = ''
   Object.values(SoundLister.songs).forEach(song => SoundLister._createPlaylistItem(song))
