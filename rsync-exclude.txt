@@ -1,5 +1,6 @@
 .git
 .gitignore
+assets/audio
 LICENSE.md
 README.md
 Rakefile
