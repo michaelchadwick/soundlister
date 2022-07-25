@@ -394,6 +394,7 @@ SoundLister._createPlaylistItem = (song) => {
 
     const trackDuration = document.createElement('div')
     trackDuration.classList.add('track-attribute', 'track-duration')
+    trackDuration.innerHTML = song.duration
 
     track.append(trackNum)
     track.append(trackTitles)
@@ -431,6 +432,8 @@ SoundLister._fillSongs = async (fileColObj) => {
     for (const index in fileColObj[col]) {
       const baseName = fileColObj[col][index]['basename']
       const filePath = `${dirPath}/${baseName}`
+      const ms = fileColObj[col][index]['ms']
+      const duration = fileColObj[col][index]['duration']
       const response = await fetch(filePath)
       const data = await response.blob()
 
@@ -447,6 +450,8 @@ SoundLister._fillSongs = async (fileColObj) => {
         "title": tags.title || defaultTitle,
         "artist": tags.artist || defaultArtist,
         "album": tags.album || defaultAlbum,
+        "ms": ms,
+        "duration": duration,
         "col": col,
         "url": filePath
       }
@@ -789,14 +794,13 @@ SoundLister.__sortObjArr = (oldObjArr, props) => {
   SoundLister.dom.playlist.textContent = ''
   Object.values(SoundLister.songs).forEach(song => SoundLister._createPlaylistItem(song))
 
+  SoundLister.dom.playlist.classList.remove('loading')
+
   // hide loader gif once songs are loaded
   document.querySelector('.loader').style.display = 'none'
 
   // attach DOM listeners
   SoundLister.attachPresentationListeners()
-
-  // fill in playlist durations after the fact
-  SoundLister._getSongDurations()
 
   SoundLister.dom.currentTime = document.getElementById('time-current')
   SoundLister.dom.totalTime = document.getElementById('time-total')

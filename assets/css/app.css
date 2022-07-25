@@ -270,7 +270,7 @@ section#main {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin: 5px;
+  margin: 5px auto;
   max-width: 500px;
 }
   #collections select {
@@ -285,7 +285,12 @@ section#main {
   margin: 5px auto 0;
   max-width: 500px;
   overflow-y: auto;
+  width: 100%;
 }
+  #playlist.loading {
+    padding: 10px;
+    text-align: center;
+  }
   #playlist a {
     align-items: center;
     background: #333;
@@ -326,7 +331,7 @@ section#main {
       #playlist a div.titles div.track-artist-album {
         color: #cdcdbd;
         display: block;
-        font-size: 0.8em;
+        font-size: 0.75rem;
       }
         #playlist a div.titles div.track-artist-album span.highlight {
           color: #dfdf86;
@@ -341,6 +346,16 @@ section#main {
       padding: 0.6rem 0.5rem 0 1.25rem;
     }
 
+@media (min-width: 425px) {
+  #playlist a div.titles div.track-artist-album {
+    font-size: 0.8rem;
+  }
+}
+@media (min-width: 500px) {
+  #playlist a div.titles div.track-artist-album {
+    font-size: 0.85rem;
+  }
+}
 
 footer {
   background-color: #555555;
