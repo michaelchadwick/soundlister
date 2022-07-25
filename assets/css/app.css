@@ -43,6 +43,9 @@ input[type="range"]::before {
   background-color: #007db5;
   cursor: pointer;
 }
+input[type="range"]#volume-slider::before {
+  background-color: transparent;
+}
 input[type="range"]::-webkit-slider-thumb {
   position: relative;
   -webkit-appearance: none;
