@@ -251,7 +251,7 @@ SoundLister.changeTrack = (current) => {
 
 // play currently-loaded track
 SoundLister.playTrack = async (track) => {
-  console.log('playTrack()', track.href)
+  // console.log('playTrack()', track.href)
 
   // change <audio> source
   SoundLister.dom.audio.src = track.href
@@ -630,7 +630,7 @@ SoundLister._addAudioToCache = async (collections) => {
   await caches.open(SL_CACHE_TEXT_KEY).then(async cache => {
     await cache.keys().then(async function(keys) {
       if (!keys.length) {
-        console.log(`${SL_CACHE_TEXT_KEY} is non-existing or empty, so adding files to it...`)
+        // console.log(`${SL_CACHE_TEXT_KEY} is non-existing or empty, so adding files to it...`)
 
         let filesToAdd = []
 
@@ -642,9 +642,9 @@ SoundLister._addAudioToCache = async (collections) => {
 
         await cache.addAll(filesToAdd)
 
-        console.log(`added files to ${SL_CACHE_TEXT_KEY} cache`)
+        // console.log(`added files to ${SL_CACHE_TEXT_KEY} cache`)
       } else {
-        console.log(`${SL_CACHE_TEXT_KEY} is full, so no need to initialize`)
+        // console.log(`${SL_CACHE_TEXT_KEY} is full, so no need to initialize`)
       }
     })
   })
