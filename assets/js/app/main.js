@@ -22,6 +22,7 @@ SoundLister.dom.muteButton = document.getElementById('mute-icon')
 SoundLister.dom.muteButtonIcon = document.querySelector('#mute-icon i')
 SoundLister.dom.prevButton = document.getElementById('backward')
 SoundLister.dom.nextButton = document.getElementById('forward')
+SoundLister.dom.collDisplay = document.getElementById('coll-display')
 SoundLister.dom.collDropdown = document.querySelector('#collections select')
 // STUB:
 // SoundLister.dom.collNative = document.querySelector('#collections select.selectNative')
@@ -66,6 +67,9 @@ SoundLister.attachPresentationListeners = () => {
 
     // remake playlist
     SoundLister._remakePlaylist()
+
+    // update browser UI
+    SoundLister._updateCollDisplay()
   })
 
   // click/tap audio track on playlist
@@ -670,11 +674,27 @@ SoundLister._loadQSCollection = () => {
       SoundLister.dom.collDropdown.disabled = true
       SoundLister.dom.collDropdown.style.display = 'none'
 
-      document.title = colToLoad.toUpperCase() + ' | ' + document.title
+      SoundLister._updateCollDisplay()
     } else {
       // if invalid collection speficied, default to all collections
       SoundLister.col = SL_DEFAULT_COLLECTION
     }
+  }
+}
+
+SoundLister._updateCollDisplay = () => {
+  if (SoundLister.col != '_') {
+    document.title = SoundLister.col.toUpperCase() + ' | Soundlister'
+
+    SoundLister.dom.collDisplay.innerHTML = `<strong>${SoundLister.col.toUpperCase()}</strong>.`
+  } else {
+    document.title = 'Soundlister'
+
+    SoundLister.dom.collDisplay.innerHTML = 'something.'
+  }
+
+  if (SoundLister.env == 'local') {
+    document.title = '(LH) ' + document.title
   }
 }
 
