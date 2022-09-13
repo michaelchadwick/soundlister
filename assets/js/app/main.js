@@ -669,6 +669,8 @@ SoundLister._loadQSCollection = () => {
       SoundLister.dom.collDropdown.dispatchEvent(new Event('change'))
       SoundLister.dom.collDropdown.disabled = true
       SoundLister.dom.collDropdown.style.display = 'none'
+
+      document.title = colToLoad.toUpperCase() + ' | ' + document.title
     } else {
       // if invalid collection speficied, default to all collections
       SoundLister.col = SL_DEFAULT_COLLECTION
