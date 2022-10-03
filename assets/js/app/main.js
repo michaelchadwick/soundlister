@@ -8,6 +8,7 @@ SoundLister.col = '_'
 SoundLister.playIconState = 'play'
 SoundLister.muteIconState = 'unmute'
 SoundLister.raf = null
+SoundLister.repeatMode = true // for now, only 2 modes
 
 SoundLister.config = {}
 
@@ -21,6 +22,7 @@ SoundLister.dom.volumeSlider = document.getElementById('volume-slider')
 SoundLister.dom.muteButton = document.getElementById('mute-icon')
 SoundLister.dom.muteButtonIcon = document.querySelector('#mute-icon i')
 SoundLister.dom.prevButton = document.getElementById('backward')
+SoundLister.dom.repeatButton = document.getElementById('repeat-mode')
 SoundLister.dom.nextButton = document.getElementById('forward')
 SoundLister.dom.collDisplay = document.getElementById('coll-display')
 SoundLister.dom.collDropdown = document.querySelector('#collections select')
@@ -57,6 +59,8 @@ SoundLister.attachPresentationListeners = () => {
 
   // click/tap Prev button
   SoundLister.dom.prevButton.addEventListener('click', (e) => SoundLister.goBack(e))
+  // click/tap Repeat Mode button
+  SoundLister.dom.repeatButton.addEventListener('click', (e) => SoundLister.toggleRepeatMode(e))
   // click/tap Next button
   SoundLister.dom.nextButton.addEventListener('click', (e) => SoundLister.goForward(e))
 
@@ -222,6 +226,19 @@ SoundLister.goBack = (e = null) => {
   SoundLister.changeTrack(SoundLister.currentIndex)
 }
 
+// toggle repeat mode
+SoundLister.toggleRepeatMode = (e = null) => {
+  if (SoundLister.repeatMode) {
+    SoundLister.dom.repeatButton.classList.remove('repeat-all')
+    SoundLister.dom.repeatButton.classList.add('repeat-none')
+  } else {
+    SoundLister.dom.repeatButton.classList.remove('repeat-none')
+    SoundLister.dom.repeatButton.classList.add('repeat-all')
+  }
+
+  SoundLister.repeatMode = !SoundLister.repeatMode
+}
+
 // go forward one track in the playlist
 SoundLister.goForward = (e = null) => {
   // console.log('goForward()')
@@ -236,9 +253,19 @@ SoundLister.goForward = (e = null) => {
 
   const len = SoundLister.tracks().length - 1
 
-  SoundLister.currentIndex = SoundLister.currentIndex === len ? 0 : SoundLister.currentIndex + 1
+  if (SoundLister.currentIndex === len) {
+    SoundLister.currentIndex = 0
 
-  SoundLister.changeTrack(SoundLister.currentIndex)
+    if (SoundLister.repeatMode) {
+      SoundLister.changeTrack(SoundLister.currentIndex)
+    } else {
+      SoundLister._updatePlayButton()
+    }
+  } else {
+    SoundLister.currentIndex = SoundLister.currentIndex + 1
+
+    SoundLister.changeTrack(SoundLister.currentIndex)
+  }
 }
 
 // change the currently-playing track

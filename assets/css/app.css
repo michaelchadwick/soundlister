@@ -236,7 +236,7 @@ section#main {
 #audio-controls {
   display: flex;
   justify-content: center;
-  padding: 0;
+  padding: 0 0 0.5rem;
 }
   #audio-controls button {
     align-items: center;
@@ -258,6 +258,15 @@ section#main {
         #audio-controls button#backward i {
           margin: 2px 7px 0 0;
         }
+      #audio-controls button#repeat-mode {
+        opacity: 1;
+      }
+        #audio-controls button#repeat-mode.repeat-all i {
+          opacity: 1;
+        }
+          #audio-controls button#repeat-mode.repeat-none i {
+            opacity: 0.1;
+          }
       #audio-controls button#forward {
         /*
         border-bottom-left-radius: 0;
