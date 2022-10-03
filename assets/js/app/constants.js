@@ -1,9 +1,11 @@
 /* constants */
 /* set any global constants */
+/* eslint-disable no-unused-vars */
 
 const SL_ENV_PROD_URL = [
   'neb.host',
-  'sl.neb.host'
+  'sl.neb.host',
+  'soundlister.neb.host'
 ]
 
 const SL_CACHE_TEXT_KEY = 'soundlister-cache-audio'
