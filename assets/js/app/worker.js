@@ -19,7 +19,7 @@ self.addEventListener('fetch', event => {
 
   event.respondWith(
     caches.match(event.request).then(response => {
-      console.log(Boolean(response) ? 'Serving file from cache' : 'Fetching file from network')
+      console.log(response ? 'Serving file from cache' : 'Fetching file from network')
 
       return response || fetch(event.request)
     })
