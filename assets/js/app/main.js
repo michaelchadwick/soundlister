@@ -29,6 +29,9 @@ SoundLister.dom.collDropdown = document.querySelector('#collections select')
 // STUB:
 // SoundLister.dom.collNative = document.querySelector('#collections select.selectNative')
 // SoundLister.dom.collCustom = document.querySelector('#collections .selectCustom')
+SoundLister.dom.loadMessage = document.getElementById('load-message')
+SoundLister.dom.loadAnimation = document.getElementById('load-animation')
+SoundLister.dom.progressBar = document.querySelector('#progress-bar .progress__bar')
 SoundLister.dom.playlist = document.getElementById('playlist')
 
 /* ********************************* */
@@ -455,6 +458,9 @@ SoundLister._filenameToTitle = (filename) => {
 // fill songs object[] with JSON
 SoundLister._fillSongs = async (fileColObj) => {
   const songObjArr = []
+  let fileIndex = 1
+
+  let fileCount = SoundLister.__getFileCount(fileColObj)
 
   // put all file information into 'songs' object[]
   for (const col in fileColObj) {
@@ -477,10 +483,14 @@ SoundLister._fillSongs = async (fileColObj) => {
       const defaultArtist = 'Unknown Artist'
       const defaultAlbum = 'Unknown Album'
 
+      const songTitle = tags.title || defaultTitle
+      const songArtist = tags.artist || defaultArtist
+      const songAlbum = tags.album || defaultAlbum
+
       const newSong = {
-        "title": tags.title || defaultTitle,
-        "artist": tags.artist || defaultArtist,
-        "album": tags.album || defaultAlbum,
+        "title": songTitle,
+        "artist": songArtist,
+        "album": songAlbum,
         "ms": ms,
         "duration": duration,
         "col": col,
@@ -488,10 +498,23 @@ SoundLister._fillSongs = async (fileColObj) => {
       }
 
       songObjArr.push(newSong)
+
+      const percentDone = (fileIndex / fileCount) * 100
+
+      SoundLister._updateProgressBar(percentDone, songTitle, fileIndex, fileCount)
+
+      fileIndex += 1
     }
   }
 
   return SoundLister.__sortObjArr(songObjArr, ['url'])
+}
+
+SoundLister._updateProgressBar = (percent, title, cur, total) => {
+  if (percent >=0 && percent <= 100) {
+    SoundLister.dom.progressBar.innerHTML = `<span>loading </span><span><strong>${title}</strong></span><span> (${cur}/${total})</span>`
+    SoundLister.dom.progressBar.style.width = percent + '%'
+  }
 }
 
 // use PHP script to scan audio directory
@@ -729,6 +752,16 @@ SoundLister._updateCollDisplay = () => {
 /* _private __helper functions       */
 /* ********************************* */
 
+SoundLister.__getFileCount = (obj) => {
+  let sum = 0
+
+  Object.keys(obj).forEach(dir => {
+    Object.keys(obj[dir]).forEach(() => sum += 1)
+  })
+
+  return sum
+}
+
 // get a mm:ss styled time display
 SoundLister.__calculateTime = (secs) => {
   const minutes = Math.floor(secs / 60)
@@ -843,10 +876,16 @@ SoundLister.__sortObjArr = (oldObjArr, props) => {
   SoundLister.dom.playlist.textContent = ''
   Object.values(SoundLister.songs).forEach(song => SoundLister._createPlaylistItem(song))
 
-  SoundLister.dom.playlist.classList.remove('loading')
+  // SoundLister.dom.loadMessage.classList.remove('loading')
 
-  // hide loader gif once songs are loaded
-  document.querySelector('.loader').style.display = 'none'
+  // hide loading info once songs are loaded
+  SoundLister.dom.progressBar.innerHTML = '<span>loading done!</span>'
+  setTimeout(() => {
+    SoundLister.dom.progressBar.parentElement.style.height = '0'
+    setTimeout(() => {
+      SoundLister.dom.progressBar.parentElement.style.display = 'none'
+    }, 100)
+  }, 2000)
 
   // attach DOM listeners
   SoundLister.attachPresentationListeners()

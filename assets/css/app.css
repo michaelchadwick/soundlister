@@ -287,6 +287,7 @@ section#main {
 }
   #collections select {
     font-size: 1.25rem;
+    margin-bottom: 5px;
     text-transform: uppercase;
   }
 
@@ -294,15 +295,11 @@ section#main {
   background: #666;
   display: flex;
   flex-direction: column;
-  margin: 5px auto 0;
+  margin: 0 auto;
   max-width: 500px;
   overflow-y: auto;
   width: 100%;
 }
-  #playlist.loading {
-    padding: 10px;
-    text-align: center;
-  }
   #playlist a {
     align-items: center;
     background: #333;
@@ -392,23 +389,37 @@ footer {
       color: #f0be5b;
     }
 
-.loader {
-  margin: 0 auto;
-  width: 40px;
-  padding: 10px;
-  background: #2eadbb;
+.progress {
+  background-color: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 4px;
+  height: 30px;
+  margin: 0 10px;
+  max-width: 500px;
+  overflow: hidden;
+  padding: 0;
+  transition: 0.5s;
+  width: 100%;
+}
+  .progress .progress__bar {
+    align-items: center;
+    background-color: #dfdf86;
+    border-radius: 4px;
+    display: flex;
+    height: 100%;
+    justify-content: left;
+    padding: 0 10px 5px;
+    transition: 0.3s;
+    width: 0%;
+  }
+    .progress .progress__bar span {
+      display: inline-block;
+      padding-right: 5px;
+    }
 
-  aspect-ratio: 1;
-  border-radius: 50%;
-  --_m:
-    conic-gradient(#0000,#000),
-    linear-gradient(#000 0 0) content-box;
-  -webkit-mask: var(--_m);
-          mask: var(--_m);
-  -webkit-mask-composite: source-out;
-          mask-composite: subtract;
-  box-sizing: border-box;
-  animation: load 1s linear infinite;
+@keyframes fill-bar {
+  from {width: 0%;}
+  to {width: 100%;}
 }
 
 @keyframes load {
