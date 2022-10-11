@@ -327,7 +327,7 @@ SoundLister._registerServiceWorker = async () => {
 
 // change max-height of playlist to match viewport
 SoundLister._resizePlaylist = () => {
-  SoundLister.dom.playlist.style.maxHeight = `${window.innerHeight - 285}px`
+  SoundLister.dom.playlist.style.maxHeight = `${window.innerHeight - 295}px`
 }
 
 // remake playlist with collection filter
