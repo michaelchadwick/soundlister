@@ -1,16 +1,16 @@
 # SoundLister
 
-Create a quick one-page website playlist for just about any[^1] HTML5 audio[^2]. Custom colors for body background, link color, playlist border, and active song background color can be specified in `custom.css`.
+Create a one-page website playlist for just about any[^1] HTML5 audio[^2]. Custom colors for body background, link color, playlist border, and active song background color can be specified in `custom.css`.
 
 ## How to Use
 
 SoundLister will load all audio files it supports in the `/assets/audio` directory, including subdirectories.
 
-Click on the play button or click a track in the playlist to begin playback. When a track is done, it will immediately go to the next track and begin playing. When the playlist is complete, it will loop back to the first track.
+Click on the play button or click a track in the playlist to begin playback. When a track is done, it will immediately go to the next track and begin playing[^3]. When the playlist is complete, it will loop back to the first track[^3], unless you turn off playlist looping.
 
 If the audio source contains multiple directories (a "collection"), then the dropdown below the audio player can be changed to filter the playlist to only use a specific collection.
 
-Keyboard shortcuts:
+## Keyboard Shortcuts
 
 * Space - toggles playback and pause
 * Cmd/Win+Right - go to next track in playlist
@@ -26,12 +26,14 @@ Keyboard shortcuts:
 
 1. `git clone https://github.com/michaelchadwick/soundlister.git`
 2. `cd soundlister`
-3. `mkdir /path/to/soundlister/audio`
-4. `cp audio-file-of-awesome.mp3 /path/to/soundlister/audio`
-5. `open index.html`
+3. `mkdir /path/to/soundlister/assets/audio`
+4. `cp audio-file-of-awesome.mp3 /path/to/soundlister/assets/audio`
+5. `php -S 127.0.0.0.1:3000`
+6. `open http://localhost:3000`
 
 [^1]: Supports `aac,flac,m4a,mp3,mp4,ogg,wav,webm` files
 [^2]: [HTML5 audio formats](https://en.wikipedia.org/wiki/HTML5_audio#Supported_audio_coding_formats)
+[^3]: This feature will not work on iOS if the screen is locked, but may work on Android
 
 ## Acknowledgements
 
