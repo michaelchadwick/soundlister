@@ -306,6 +306,7 @@ section#main {
   #playlist a {
     align-items: center;
     background: #333;
+    border-bottom: 1px solid #666;
     color: #eeeedd;
     display: block;
     padding: 0.5rem 0.5rem 0.75rem;
@@ -329,12 +330,13 @@ section#main {
       font-size: 1.5em;
       float: left;
       margin: 0 auto;
-      min-width: 32px;
+      min-width: 25px;
       padding: 0.3rem 1.25rem 0 0.5rem;
       text-decoration: none;
     }
     #playlist a div.titles {
       float: left;
+      max-width: 65%;
       z-index: 1;
     }
       #playlist a div.titles div.track-name {
@@ -364,9 +366,12 @@ section#main {
   }
 }
 @media (min-width: 500px) {
-  #playlist a div.titles div.track-artist-album {
-    font-size: 0.85rem;
+  #playlist a div.titles {
+    max-width: 75%;
   }
+    #playlist a div.titles div.track-artist-album {
+      font-size: 0.85rem;
+    }
 }
 
 footer {
