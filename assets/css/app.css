@@ -270,6 +270,10 @@ section#main {
       #audio-controls button#shuffle-mode {
         opacity: 1;
       }
+      #audio-controls button#shuffle-mode:hover {
+        background-color: transparent;
+        cursor: default;
+      }
         #audio-controls button#shuffle-mode.shuffle-all i {
           opacity: 1;
         }

@@ -64,7 +64,7 @@
         </audio>
 
         <div class="row">
-          <button id="play-icon">
+          <button id="play-icon" title="play/pause track">
             <i class="fa-solid fa-play"></i>
           </button>
 
@@ -83,7 +83,7 @@
             value="100"
           >
 
-          <button id="mute-icon">
+          <button id="mute-icon" title="mute toggle">
             <i class="fa-solid fa-volume-high"></i>
           </button>
         </div>
@@ -96,10 +96,18 @@
 
         <div class="row">
           <div id="audio-controls">
-            <button id="backward"><i class="fa-solid fa-backward-step"></i> Prev</button>
-            <button id="repeat-mode" class="repeat-all"><i class="fa-solid fa-repeat"></i></button>
-            <button id="shuffle-mode" class="shuffle-none"><i class="fa-solid fa-shuffle"></i></button>
-            <button id="forward">Next <i class="fa-solid fa-forward-step"></i></button>
+            <button id="backward">
+              <i class="fa-solid fa-backward-step" title="previous track"></i> Prev
+            </button>
+            <button id="repeat-mode" class="repeat-all" title="repeat toggle">
+              <i class="fa-solid fa-repeat"></i>
+            </button>
+            <button id="shuffle-mode" class="shuffle-none" title="shuffle mode disabled for now...">
+              <i class="fa-solid fa-shuffle"></i>
+            </button>
+            <button id="forward">
+              Next <i class="fa-solid fa-forward-step" title="next track"></i>
+            </button>
           </div>
         </div>
 
