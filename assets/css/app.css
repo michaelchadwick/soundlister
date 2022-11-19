@@ -265,7 +265,16 @@ section#main {
           opacity: 1;
         }
           #audio-controls button#repeat-mode.repeat-none i {
-            opacity: 0.1;
+            opacity: 0.2;
+          }
+      #audio-controls button#shuffle-mode {
+        opacity: 1;
+      }
+        #audio-controls button#shuffle-mode.shuffle-all i {
+          opacity: 1;
+        }
+          #audio-controls button#shuffle-mode.shuffle-none i {
+            opacity: 0.2;
           }
       #audio-controls button#forward {
         /*

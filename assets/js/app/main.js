@@ -9,6 +9,7 @@ SoundLister.playIconState = 'play'
 SoundLister.muteIconState = 'unmute'
 SoundLister.raf = null
 SoundLister.repeatMode = true // for now, only 2 modes
+SoundLister.shuffleMode = false // for now, only 2 modes
 
 SoundLister.config = {}
 
@@ -23,6 +24,7 @@ SoundLister.dom.muteButton = document.getElementById('mute-icon')
 SoundLister.dom.muteButtonIcon = document.querySelector('#mute-icon i')
 SoundLister.dom.prevButton = document.getElementById('backward')
 SoundLister.dom.repeatButton = document.getElementById('repeat-mode')
+SoundLister.dom.shuffleButton = document.getElementById('shuffle-mode')
 SoundLister.dom.nextButton = document.getElementById('forward')
 SoundLister.dom.collDisplay = document.getElementById('coll-display')
 SoundLister.dom.collDropdown = document.querySelector('#collections select')
@@ -64,6 +66,8 @@ SoundLister.attachPresentationListeners = () => {
   SoundLister.dom.prevButton.addEventListener('click', (e) => SoundLister.goBack(e))
   // click/tap Repeat Mode button
   SoundLister.dom.repeatButton.addEventListener('click', (e) => SoundLister.toggleRepeatMode(e))
+  // click/tap Shuffle Mode button
+  SoundLister.dom.shuffleButton.addEventListener('click', (e) => SoundLister.toggleShuffleMode(e))
   // click/tap Next button
   SoundLister.dom.nextButton.addEventListener('click', (e) => SoundLister.goForward(e))
 
@@ -224,9 +228,15 @@ SoundLister.goBack = (e = null) => {
 
   const len = SoundLister.tracks().length - 1
 
-  SoundLister.currentIndex = SoundLister.currentIndex === 0 ? len : SoundLister.currentIndex - 1
+  if (!SoundLister.shuffleMode) {
+    SoundLister.currentIndex = SoundLister.currentIndex === 0 ? len : SoundLister.currentIndex - 1
 
-  SoundLister.changeTrack(SoundLister.currentIndex)
+    SoundLister.changeTrack(SoundLister.currentIndex)
+  }
+  /* TODO: SHUFFLE */
+  else {
+
+  }
 }
 
 // toggle repeat mode
@@ -240,6 +250,25 @@ SoundLister.toggleRepeatMode = (e = null) => {
   }
 
   SoundLister.repeatMode = !SoundLister.repeatMode
+}
+
+// toggle shuffle mode
+SoundLister.toggleShuffleMode = (e = null) => {
+  // default is off, so first check is turning it on
+  if (!SoundLister.shuffleMode) {
+    // dom updates
+    // SoundLister.dom.shuffleButton.classList.remove('shuffle-none')
+    // SoundLister.dom.shuffleButton.classList.add('shuffle-all')
+
+    // // shuffle keys and add to queue
+    // SoundLister.shuffleQueue = SoundLister._shuffleArray(Object.keys(SoundLister.tracks()))
+  } else {
+    // dom updates
+    SoundLister.dom.shuffleButton.classList.remove('shuffle-all')
+    SoundLister.dom.shuffleButton.classList.add('shuffle-none')
+  }
+
+  SoundLister.shuffleMode = !SoundLister.shuffleMode
 }
 
 // go forward one track in the playlist
@@ -256,18 +285,24 @@ SoundLister.goForward = (e = null) => {
 
   const len = SoundLister.tracks().length - 1
 
-  if (SoundLister.currentIndex === len) {
-    SoundLister.currentIndex = 0
+  if (!SoundLister.shuffleMode) {
+    if (SoundLister.currentIndex === len) {
+      SoundLister.currentIndex = 0
 
-    if (SoundLister.repeatMode) {
-      SoundLister.changeTrack(SoundLister.currentIndex)
+      if (SoundLister.repeatMode) {
+        SoundLister.changeTrack(SoundLister.currentIndex)
+      } else {
+        SoundLister._updatePlayButton()
+      }
     } else {
-      SoundLister._updatePlayButton()
-    }
-  } else {
-    SoundLister.currentIndex = SoundLister.currentIndex + 1
+      SoundLister.currentIndex = SoundLister.currentIndex + 1
 
-    SoundLister.changeTrack(SoundLister.currentIndex)
+      SoundLister.changeTrack(SoundLister.currentIndex)
+    }
+  }
+  /* TODO: SHUFFLE */
+  else {
+
   }
 }
 
@@ -277,10 +312,9 @@ SoundLister.changeTrack = (current) => {
 
   SoundLister.playTrack(SoundLister.tracks()[current])
 
-  document.querySelector('#playlist a.active').scrollIntoView({
-    'behavior': 'smooth',
-    'block': 'end'
-  })
+  const activeTrack = document.querySelector('#playlist a.active')
+
+  activeTrack.scrollIntoView({ 'behavior': 'smooth', 'block': 'end' })
 }
 
 // play currently-loaded track
@@ -303,6 +337,25 @@ SoundLister.playTrack = async (track) => {
 /* ********************************* */
 /* _private functions                */
 /* ********************************* */
+
+// Fisher-Yates Shuffle
+// https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+SoundLister._shuffleArray = (arr) => {
+  let curIdx = arr.length, randIdx;
+
+  // While there remain elements to shuffle.
+  while (curIdx != 0) {
+
+    // Pick a remaining element.
+    randIdx = Math.floor(Math.random() * curIdx);
+    curIdx--;
+
+    // And swap it with the current element.
+    [arr[curIdx], arr[randIdx]] = [arr[randIdx], arr[curIdx]];
+  }
+
+  return arr;
+}
 
 SoundLister._registerServiceWorker = async () => {
   if ('serviceWorker' in navigator) {
@@ -890,6 +943,7 @@ SoundLister.__sortObjArr = (oldObjArr, props) => {
   // attach DOM listeners
   SoundLister.attachPresentationListeners()
 
+  // init DOM status labels
   SoundLister.dom.currentTime = document.getElementById('time-current')
   SoundLister.dom.totalTime = document.getElementById('time-total')
   SoundLister.dom.outputVolume = document.getElementById('output-volume')
