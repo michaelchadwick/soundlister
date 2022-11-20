@@ -34,6 +34,7 @@ SoundLister.dom.collDropdown = document.querySelector('#collections select')
 // SoundLister.dom.collCustom = document.querySelector('#collections .selectCustom')
 SoundLister.dom.loadMessage = document.getElementById('load-message')
 SoundLister.dom.loadAnimation = document.getElementById('load-animation')
+SoundLister.dom.progressText = document.querySelector('#progress-bar .progress__text')
 SoundLister.dom.progressBar = document.querySelector('#progress-bar .progress__bar')
 SoundLister.dom.playlist = document.getElementById('playlist')
 
@@ -567,8 +568,11 @@ SoundLister._fillSongs = async (fileColObj) => {
 
 SoundLister._updateProgressBar = (percent, title, cur, total) => {
   if (percent >=0 && percent <= 100) {
-    SoundLister.dom.progressBar.innerHTML = `<span>loading </span><span><strong>${title}</strong></span><span> (${cur}/${total})</span>`
+    SoundLister.dom.progressText.innerHTML = `<span>loading </span><span><strong>${title}</strong></span><span> (${cur}/${total})</span>`
     SoundLister.dom.progressBar.style.width = percent + '%'
+
+    // SoundLister.dom.progressBar.innerHTML = `<span>loading </span><span><strong>${title}</strong></span><span> (${cur}/${total})</span>`
+    // SoundLister.dom.progressBar.style.width = percent + '%'
   }
 }
 
@@ -952,7 +956,7 @@ SoundLister.__sortObjArr = (oldObjArr, props) => {
   // SoundLister.dom.loadMessage.classList.remove('loading')
 
   // hide loading info once songs are loaded
-  SoundLister.dom.progressBar.innerHTML = '<span>loading done!</span>'
+  SoundLister.dom.progressText.innerHTML = '<span>loading done!</span>'
   setTimeout(() => {
     SoundLister.dom.progressBar.parentElement.style.height = '0'
     setTimeout(() => {

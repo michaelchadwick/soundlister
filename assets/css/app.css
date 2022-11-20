@@ -453,6 +453,19 @@ footer {
   transition: 0.5s;
   width: 100%;
 }
+  .progress .progress__text {
+    overflow: hidden;
+    padding: 0.4em;
+    position: absolute;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 300px;
+  }
+    @media (min-width: 500px) {
+      .progress .progress__text {
+        width: 450px;
+      }
+    }
   .progress .progress__bar {
     align-items: center;
     background-color: #dfdf86;
