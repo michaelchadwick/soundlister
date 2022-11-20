@@ -16,6 +16,7 @@ SoundLister.config = {}
 SoundLister.dom = {}
 SoundLister.dom.audioPlayerContainer = document.getElementById('audio-player-container')
 SoundLister.dom.audio = document.querySelector('audio')
+SoundLister.dom.currentTrackName = document.querySelector('#track-current-name span')
 SoundLister.dom.playButton = document.getElementById('play-icon')
 SoundLister.dom.playButtonIcon = document.querySelector('#play-icon i')
 SoundLister.dom.seekSlider = document.getElementById('seek-slider')
@@ -114,6 +115,7 @@ SoundLister.attachFunctionalListeners = () => {
   SoundLister.dom.audio.addEventListener('canplay', (e) => {
     // console.log('audio can play', e)
     SoundLister._displayAudioDuration()
+    SoundLister._displayCurrentTrackName()
     SoundLister._setSliderMax()
     SoundLister._displayBufferedAmount()
   })
@@ -308,7 +310,7 @@ SoundLister.goForward = (e = null) => {
 
 // change the currently-playing track
 SoundLister.changeTrack = (current) => {
-  // console.log('changeTrack()', current)
+  console.log('changeTrack()', current)
 
   SoundLister.playTrack(SoundLister.tracks()[current])
 
@@ -701,6 +703,24 @@ SoundLister._displayAudioDuration = () => {
   SoundLister.dom.totalTime.textContent = duration
 }
 
+SoundLister._displayCurrentTrackName = () => {
+  const curTrackTitle = SoundLister.songs[SoundLister.currentIndex].title
+
+  SoundLister.dom.currentTrackName.textContent = curTrackTitle
+  SoundLister.dom.currentTrackName.setAttribute('title', curTrackTitle)
+
+  const titleTextHeight = SoundLister.dom.currentTrackName.getBoundingClientRect().height
+  const titleTextContainerHeight = document.querySelector('#track-current-name').parentElement.getBoundingClientRect().height
+
+  if (titleTextHeight > titleTextContainerHeight) {
+    document.querySelector('#track-current-name').classList.remove('short')
+    document.querySelector('#track-current-name').parentElement.style.display = '-webkit-box'
+  } else {
+    document.querySelector('#track-current-name').classList.add('short')
+    document.querySelector('#track-current-name').parentElement.style.display = 'flex'
+  }
+}
+
 SoundLister._setSliderMax = () => {
   const duration = Math.floor(SoundLister.dom.audio.duration)
 
@@ -954,11 +974,17 @@ SoundLister.__sortObjArr = (oldObjArr, props) => {
   // if <audio> is loaded and ready, then get its duration and such
   if (SoundLister.dom.audio.readyState == 4) {
     SoundLister._displayAudioDuration()
+    SoundLister._displayCurrentTrackName()
     SoundLister._setSliderMax()
     SoundLister._displayBufferedAmount()
-  } else {
-    SoundLister.dom.audio.addEventListener('loadedmetadata', () => {
+  }
+  // otherwise, set an event listener for metadata loading completion
+  else {
+    SoundLister.dom.audio.addEventListener('loadedmetadata', (e) => {
+      // console.log('loadedmetadata', e)
+
       SoundLister._displayAudioDuration()
+      SoundLister._displayCurrentTrackName()
       SoundLister._setSliderMax()
       SoundLister._displayBufferedAmount()
     })

@@ -63,7 +63,15 @@
           Your browser doesn't support HTML5 :'(
         </audio>
 
-        <div class="row">
+        <!-- currently loaded track -->
+        <div class="row" id="row-title">
+          <div id="track-current-name">
+            <span></span>
+          </div>
+        </div>
+
+        <!-- play, progress, volume -->
+        <div class="row" id="row-play-prog-vol">
           <button id="play-icon" title="play/pause track">
             <i class="fa-solid fa-play"></i>
           </button>
@@ -94,9 +102,10 @@
         </div>
         -->
 
-        <div class="row">
+        <!-- prev, repeat, shuffle, next -->
+        <div class="row" id="row-list-nav">
           <div id="audio-controls">
-            <button id="backward">
+            <button id="backward" class="large">
               <i class="fa-solid fa-backward-step" title="previous track"></i> Prev
             </button>
             <button id="repeat-mode" class="repeat-all" title="repeat toggle">
@@ -105,7 +114,7 @@
             <button id="shuffle-mode" class="shuffle-none" title="shuffle mode disabled for now...">
               <i class="fa-solid fa-shuffle"></i>
             </button>
-            <button id="forward">
+            <button id="forward" class="large">
               Next <i class="fa-solid fa-forward-step" title="next track"></i>
             </button>
           </div>
