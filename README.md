@@ -19,7 +19,8 @@ If the audio source contains multiple directories (a "collection"), then the dro
 ## Dependencies
 
 * [PHP](https://php.net) to read files from a local directory
-* [<audio>](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio) to play stuff
+* [&lt;audio&gt;](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio) to host an audio file
+* [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API) to manipulate that <audio> element
 * [mp3tag.js](https://github.com/eidoriantan/mp3tag.js) to read ID3 tags
 
 ## Local Development / Deploy
