@@ -811,11 +811,11 @@ SoundLister._loadQSCollection = () => {
 
 SoundLister._updateCollDisplay = () => {
   if (SoundLister.col != '_') {
-    document.title = SoundLister.col.toUpperCase() + ' | Soundlister'
+    document.title = SoundLister.col.toUpperCase() + ' | SoundLister'
 
     SoundLister.dom.collDisplay.innerHTML = `<strong>${SoundLister.col.toUpperCase()}</strong>.`
   } else {
-    document.title = 'Soundlister'
+    document.title = 'SoundLister'
 
     SoundLister.dom.collDisplay.innerHTML = 'something.'
   }
