@@ -5,7 +5,8 @@
 const SL_ENV_PROD_URL = [
   'neb.host',
   'sl.neb.host',
-  'soundlister.neb.host'
+  'soundlister.neb.host',
+  'bits.neb.host'
 ]
 
 const SL_CACHE_TEXT_KEY = 'soundlister-cache-audio'
