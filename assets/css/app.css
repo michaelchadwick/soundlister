@@ -350,7 +350,7 @@ section#main {
   background: #666;
   display: flex;
   flex-direction: column;
-  margin: 0 auto;
+  margin: 0 auto 10px;
   max-width: 500px;
   overflow-y: auto;
   width: 100%;
