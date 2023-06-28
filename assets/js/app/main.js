@@ -1,6 +1,7 @@
 /* main */
 /* global SoundLister, MP3Tag */
 
+SoundLister.activeTrack = ''
 SoundLister.currentIndex = 0
 SoundLister.tags = {}
 SoundLister.index = 0
@@ -10,6 +11,7 @@ SoundLister.muteIconState = 'unmute'
 SoundLister.raf = null
 SoundLister.repeatMode = true // for now, only 2 modes
 SoundLister.shuffleMode = false // for now, only 2 modes
+SoundLister.title = 'SoundLister'
 
 SoundLister.config = {}
 
@@ -286,13 +288,18 @@ SoundLister.goForward = (e = null) => {
 
 // change the currently-playing track
 SoundLister.changeTrack = (current) => {
-  console.log('changeTrack()', current)
+  // console.log('changeTrack()', current, SoundLister.tracks()[current].title)
 
-  SoundLister.playTrack(SoundLister.tracks()[current])
-
+  // scroll new track into view
   const activeTrack = document.querySelector('#playlist a.active')
-
   activeTrack.scrollIntoView({ 'behavior': 'smooth', 'block': 'end' })
+
+  // set <title>
+  SoundLister.activeTrack = SoundLister.tracks()[current].title
+  SoundLister._setTitle()
+
+  // play track
+  SoundLister.playTrack(SoundLister.tracks()[current])
 }
 
 // play currently-loaded track
@@ -306,7 +313,11 @@ SoundLister.playTrack = async (track) => {
   SoundLister.tracks().forEach(t => t.classList.remove('active'))
   track.classList.add('active')
 
-  // play song
+  // set <title>
+  SoundLister.activeTrack = track.title
+  SoundLister._setTitle()
+
+  // play track
   SoundLister.dom.audio.play()
 
   SoundLister._updatePlayButton('playlist')
@@ -315,6 +326,14 @@ SoundLister.playTrack = async (track) => {
 /* ********************************* */
 /* _private functions                */
 /* ********************************* */
+
+SoundLister._setTitle = () => {
+  let title = SoundLister.env == 'local' ? '(LH) ' : ''
+  title += SoundLister.activeTrack != '' ? SoundLister.activeTrack + ' | ' : ''
+  title += SoundLister.title
+
+  document.title = title
+}
 
 // Fisher-Yates Shuffle
 // https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
@@ -977,6 +996,6 @@ SoundLister.__sortObjArr = (oldObjArr, props) => {
 
   // adjust <title> for env
   if (SoundLister.env == 'local') {
-    document.title = '(LH) ' + document.title
+    SoundLister._setTitle()
   }
 })()
