@@ -799,7 +799,7 @@ SoundLister._loadQSCollection = () => {
     get: (searchParams, prop) => searchParams.get(prop),
   })
 
-  const colToLoad = params.collection
+  const colToLoad = params.col || params.coll || params.collection
 
   if (colToLoad) {
     SoundLister.col = colToLoad
