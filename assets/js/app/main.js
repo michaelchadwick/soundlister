@@ -390,22 +390,37 @@ SoundLister._remakePlaylist = () => {
   // empty playlist
   SoundLister.dom.playlist.innerHTML = ''
   SoundLister.index = 0
+  SoundLister.songsCol = []
 
   // remake playlist
-  SoundLister.songs.forEach(song => {
-    if (SoundLister.col !== '_') {
+  if (SoundLister.col !== '_') {
+    SoundLister.songsBase.forEach(song => {
       if (song.col == SoundLister.col) {
+        SoundLister.songsCol.push(song)
         SoundLister._createPlaylistItem(song)
       }
-    } else {
-      SoundLister._createPlaylistItem(song)
-    }
+    })
 
-    // SoundLister.index = SoundLister.index + 1
-  })
+    if (SoundLister.songsCol.length) {
+      SoundLister.songs = SoundLister.songsCol
+    }
+  } else {
+    SoundLister.songsBase.forEach(song => {
+      SoundLister._createPlaylistItem(song)
+    })
+
+    SoundLister.songs = SoundLister.songsBase
+  }
 
   // update new playlist song durations
   SoundLister._getSongDurations()
+
+  SoundLister.dom.currentTime.textContent = '0:00'
+  SoundLister.dom.seekSlider.value = 0
+  SoundLister.dom.audioPlayerContainer.style.setProperty(
+    '--seek-before-width',
+    0
+  )
 
   SoundLister._updatePlayButton('collection')
 }
@@ -637,6 +652,7 @@ SoundLister._updatePlayButton = (source = null) => {
 
     case 'collection':
       cancelAnimationFrame(SoundLister.raf)
+      SoundLister.playIconState = 'play'
 
       const track = SoundLister.tracks()[0]
 
@@ -943,8 +959,11 @@ SoundLister.__sortObjArr = (oldObjArr, props) => {
   // create fileObjArr object array of file info
   const fileObjArr = await SoundLister._getFiles()
 
-  // create SoundLister.songs JSON object with title, artist, etc. of all songs
-  SoundLister.songs = await SoundLister._fillSongs(fileObjArr)
+  // create SoundLister.songsBase JSON object with title, artist, etc. of all songs
+  SoundLister.songsBase = await SoundLister._fillSongs(fileObjArr)
+
+  // set array of objects for reference during usage
+  SoundLister.songs = SoundLister.songsBase
 
   // create playlist from SoundLister.songs
   SoundLister.dom.playlist.textContent = ''
