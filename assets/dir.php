@@ -1,9 +1,10 @@
 <?php
 
   $files = array();
+  $audio_root = 'audio2/';
   $dir = '';
 
-  foreach (glob('audio/*/*.{aac,flac,m4a,mp3,mp4,ogg,wav,webm}', GLOB_BRACE) as $filename) {
+  foreach (glob($audio_root . '*/*.{aac,flac,m4a,mp3,mp4,ogg,wav,webm}', GLOB_BRACE) as $filename) {
     $path = pathinfo($filename);
 
     if ($dir != $path['dirname']) {
@@ -26,7 +27,7 @@
   if (sizeof($files)) {
     echo json_encode($files);
   } else {
-    throw new Exception("Could not get song information");
+    echo json_encode([]);
   }
 
   function getFileLengthInMs($path) {

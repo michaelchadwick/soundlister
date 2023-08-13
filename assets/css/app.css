@@ -43,6 +43,13 @@ a {
   border: none;
 }
 
+code {
+  background-color: #656565;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0.1em 0.3em;
+}
+
 input[type="range"] {
   -webkit-appearance: none;
   float: left;
@@ -378,6 +385,13 @@ section#main {
   overflow-y: auto;
   width: 100%;
 }
+  #playlist.no-audio-found {
+    background-color: #b52700;
+    color: #ffffff;
+  }
+    #playlist.no-audio-found p {
+      padding: 1em;
+    }
   #playlist a {
     align-items: center;
     background: #333;

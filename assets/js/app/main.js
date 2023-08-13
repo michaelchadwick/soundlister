@@ -592,23 +592,30 @@ SoundLister._updateProgressBar = (percent, title, cur, total) => {
 // add to CacheStorage
 // return titles of files
 SoundLister._getFiles = async () => {
-  let fileList = await fetch('./assets/dir.php')
+  let fileList = await fetch(SL_PHP_DIR_SCRIPT)
   let titlesArray = await fileList.text()
-  let titlesJSON = JSON.parse(titlesArray)
+  let titlesJSON = null
 
-  // initiate the collection dropdown
-  Object.keys(titlesJSON).forEach(col => SoundLister._addCollectionOption(col))
+  if (titlesArray.length) {
 
-  // TODO: use a Service Worker to intercept requests and return cached versions if possible
-  // SoundLister._registerServiceWorker()
+    titlesJSON = JSON.parse(titlesArray)
 
-  // check querystring for ?collection= to filter dropdown
-  SoundLister._loadQSCollection()
+    // initiate the collection dropdown
+    Object.keys(titlesJSON).forEach(col => SoundLister._addCollectionOption(col))
 
-  if (SoundLister.col !== '_') {
-    titlesJSON = Object.keys(titlesJSON)
-      .filter(key => key.includes(SoundLister.col))
-      .reduce((cur, key) => { return Object.assign(cur, { [key]: titlesJSON[key] }) }, {})
+    // TODO: use a Service Worker to intercept requests and return cached versions if possible
+    // SoundLister._registerServiceWorker()
+
+    // check querystring for ?collection= to filter dropdown
+    SoundLister._loadQSCollection()
+
+    if (SoundLister.col !== '_') {
+      titlesJSON = Object.keys(titlesJSON)
+        .filter(key => key.includes(SoundLister.col))
+        .reduce((cur, key) => { return Object.assign(cur, { [key]: titlesJSON[key] }) }, {})
+    }
+  } else {
+    titlesJSON = {}
   }
 
   return titlesJSON
@@ -826,11 +833,11 @@ SoundLister._updateCollDisplay = () => {
   if (SoundLister.col != '_') {
     document.title = SoundLister.col.toUpperCase() + ' | SoundLister'
 
-    SoundLister.dom.collDisplay.innerHTML = `<strong>${SoundLister.col.toUpperCase()}</strong>.`
+    SoundLister.dom.collHeader.innerHTML = `<strong>${SoundLister.col.toUpperCase()}</strong>.`
   } else {
     document.title = 'SoundLister'
 
-    SoundLister.dom.collDisplay.innerHTML = 'something.'
+    SoundLister.dom.collHeader.innerHTML = 'something.'
   }
 
   if (SoundLister.env == 'local') {
@@ -956,68 +963,89 @@ SoundLister.__sortObjArr = (oldObjArr, props) => {
 /* ********************************* */
 
 ;(async() => {
-  // create fileObjArr object array of file info
-  const fileObjArr = await SoundLister._getFiles()
-
-  // create SoundLister.songsBase JSON object with title, artist, etc. of all songs
-  SoundLister.songsBase = await SoundLister._fillSongs(fileObjArr)
-
-  // set array of objects for reference during usage
-  SoundLister.songs = SoundLister.songsBase
-
-  // create playlist from SoundLister.songs
-  SoundLister.dom.playlist.textContent = ''
-  Object.values(SoundLister.songs).forEach(song => SoundLister._createPlaylistItem(song))
-
-  // SoundLister.dom.loadMessage.classList.remove('loading')
-
-  // hide loading info once songs are loaded
-  SoundLister.dom.progressText.innerHTML = '<span>loading done!</span>'
-  setTimeout(() => {
-    SoundLister.dom.progressBar.parentElement.style.height = '0'
-    setTimeout(() => {
-      SoundLister.dom.progressBar.parentElement.style.display = 'none'
-    }, 100)
-  }, 2000)
-
-  // attach DOM listeners
-  SoundLister.attachPresentationListeners()
-
-  // init DOM status labels
-  SoundLister.dom.currentTime = document.getElementById('time-current')
-  SoundLister.dom.totalTime = document.getElementById('time-total')
-  SoundLister.dom.outputVolume = document.getElementById('output-volume')
-
-  // TODO: add files to CacheStorage AND be able to use them
-  // SoundLister._addAudioToCache(fileObjArr)
-
-  // if <audio> is loaded and ready, then get its duration and such
-  if (SoundLister.dom.audio.readyState == 4) {
-    SoundLister._displayAudioDuration()
-    SoundLister._displayCurrentTrackName()
-    SoundLister._setSliderMax()
-    SoundLister._displayBufferedAmount()
-  }
-  // otherwise, set an event listener for metadata loading completion
-  else {
-    SoundLister.dom.audio.addEventListener('loadedmetadata', (e) => {
-      // console.log('loadedmetadata', e)
-
-      SoundLister._displayAudioDuration()
-      SoundLister._displayCurrentTrackName()
-      SoundLister._setSliderMax()
-      SoundLister._displayBufferedAmount()
-    })
-  }
-
-  // now attach <audio>, etc. listeners
-  SoundLister.attachFunctionalListeners()
-
   // set env
   SoundLister.env = SL_ENV_PROD_URL.includes(document.location.hostname) ? 'prod' : 'local'
 
   // adjust <title> for env
   if (SoundLister.env == 'local') {
     SoundLister._setTitle()
+  }
+
+  // create fileObjArr object array of file info
+  const fileObjArr = await SoundLister._getFiles()
+
+  console.log('fileObjArr', fileObjArr)
+
+  if (Object.keys(fileObjArr).length) {
+    // create SoundLister.songsBase JSON object with title, artist, etc. of all songs
+    SoundLister.songsBase = await SoundLister._fillSongs(fileObjArr)
+
+    // set array of objects for reference during usage
+    SoundLister.songs = SoundLister.songsBase
+
+    // create playlist from SoundLister.songs
+    SoundLister.dom.playlist.textContent = ''
+    Object.values(SoundLister.songs).forEach(song => SoundLister._createPlaylistItem(song))
+
+    // SoundLister.dom.loadMessage.classList.remove('loading')
+
+    // hide loading info once songs are loaded
+    SoundLister.dom.progressText.innerHTML = '<span>loading done!</span>'
+    setTimeout(() => {
+      SoundLister.dom.progressBar.parentElement.style.height = '0'
+      setTimeout(() => {
+        SoundLister.dom.progressBar.parentElement.style.display = 'none'
+      }, 100)
+    }, 2000)
+
+    // attach DOM listeners
+    SoundLister.attachPresentationListeners()
+
+    // init DOM status labels
+    SoundLister.dom.currentTime = document.getElementById('time-current')
+    SoundLister.dom.totalTime = document.getElementById('time-total')
+    SoundLister.dom.outputVolume = document.getElementById('output-volume')
+
+    // TODO: add files to CacheStorage AND be able to use them
+    // SoundLister._addAudioToCache(fileObjArr)
+
+    // if <audio> is loaded and ready, then get its duration and such
+    if (SoundLister.dom.audio.readyState == 4) {
+      SoundLister._displayAudioDuration()
+      SoundLister._displayCurrentTrackName()
+      SoundLister._setSliderMax()
+      SoundLister._displayBufferedAmount()
+    }
+    // otherwise, set an event listener for metadata loading completion
+    else {
+      SoundLister.dom.audio.addEventListener('loadedmetadata', (e) => {
+        // console.log('loadedmetadata', e)
+
+        SoundLister._displayAudioDuration()
+        SoundLister._displayCurrentTrackName()
+        SoundLister._setSliderMax()
+        SoundLister._displayBufferedAmount()
+      })
+    }
+
+    // now attach <audio>, etc. listeners
+    SoundLister.attachFunctionalListeners()
+  } else {
+    SoundLister.dom.progressContainer.style.display = 'none'
+
+    SoundLister.dom.playButton.disabled = 'true'
+    SoundLister.dom.seekSlider.disabled = 'true'
+    SoundLister.dom.volumeSlider.disabled = 'true'
+    SoundLister.dom.muteButton.disabled = 'true'
+    SoundLister.dom.prevButton.disabled = 'true'
+    SoundLister.dom.repeatButton.disabled = 'true'
+    SoundLister.dom.nextButton.disabled = 'true'
+
+    SoundLister.dom.playlist.classList.add('no-audio-found')
+    SoundLister.dom.playlist.innerHTML = '<p>No audio files found. Try adding some to <code>/assets/audio</code>!</p>'
+
+    SoundLister.dom.collDropdown.disabled = 'true'
+
+    console.error('No audio files found.')
   }
 })()
