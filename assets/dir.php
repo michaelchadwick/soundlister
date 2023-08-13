@@ -1,7 +1,7 @@
 <?php
 
   $files = array();
-  $audio_root = 'audio2/';
+  $audio_root = 'audio/';
   $dir = '';
 
   foreach (glob($audio_root . '*/*.{aac,flac,m4a,mp3,mp4,ogg,wav,webm}', GLOB_BRACE) as $filename) {
