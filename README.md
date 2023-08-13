@@ -34,7 +34,7 @@ If the audio source contains multiple directories (a "collection"), then the dro
 
 [^1]: Supports `aac,flac,m4a,mp3,mp4,ogg,wav,webm` files
 [^2]: [HTML5 audio formats](https://en.wikipedia.org/wiki/HTML5_audio#Supported_audio_coding_formats)
-[^3]: This feature _may_ not work on iOS if the screen is locked, but will most likely work on Android
+[^3]: This feature _may_ not work on iOS 16 or earlier if the screen is locked, but will most likely work on Android
 
 ## Acknowledgements
 
