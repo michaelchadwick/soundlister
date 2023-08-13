@@ -450,8 +450,8 @@ SoundLister._getSongDurations = () => {
   })
 }
 
-// use mp3tag to read ID3 tags from songs
-SoundLister._getID3Tags = (buffer) => {
+// use mp3tag to read ID3 tags from files
+SoundLister._getID3Tags = (buffer, filePath, ext) => {
   const mp3tag = new MP3Tag(buffer)
 
   mp3tag.read()
@@ -532,10 +532,11 @@ SoundLister._fillSongs = async (fileColObj) => {
 
   // put all file information into 'songs' object[]
   for (const col in fileColObj) {
-    const dirPath = `./assets/audio/${col}`
+    const dirPath = `${SL_AUDIO_ASSETS_DIR}/${col}`
 
     for (const index in fileColObj[col]) {
       const baseName = fileColObj[col][index]['basename']
+      const ext = fileColObj[col][index]['extension']
       const filePath = `${dirPath}/${baseName}`
       const ms = fileColObj[col][index]['ms']
       const duration = fileColObj[col][index]['duration']
@@ -592,12 +593,11 @@ SoundLister._updateProgressBar = (percent, title, cur, total) => {
 // add to CacheStorage
 // return titles of files
 SoundLister._getFiles = async () => {
-  let fileList = await fetch(SL_PHP_DIR_SCRIPT)
-  let titlesArray = await fileList.text()
+  const fileList = await fetch(SL_PHP_DIR_SCRIPT)
+  const titlesArray = await fileList.text()
   let titlesJSON = null
 
   if (titlesArray.length) {
-
     titlesJSON = JSON.parse(titlesArray)
 
     // initiate the collection dropdown
@@ -973,8 +973,6 @@ SoundLister.__sortObjArr = (oldObjArr, props) => {
 
   // create fileObjArr object array of file info
   const fileObjArr = await SoundLister._getFiles()
-
-  console.log('fileObjArr', fileObjArr)
 
   if (Object.keys(fileObjArr).length) {
     // create SoundLister.songsBase JSON object with title, artist, etc. of all songs
