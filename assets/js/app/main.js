@@ -983,12 +983,16 @@ SoundLister.__sortObjArr = (oldObjArr, props) => {
 
     // create playlist from SoundLister.songs
     SoundLister.dom.playlist.textContent = ''
-    Object.values(SoundLister.songs).forEach(song => SoundLister._createPlaylistItem(song))
+
+    Object.values(SoundLister.songs).forEach(song => {
+      SoundLister._createPlaylistItem(song)
+    })
 
     // SoundLister.dom.loadMessage.classList.remove('loading')
 
     // hide loading info once songs are loaded
     SoundLister.dom.progressText.innerHTML = '<span>loading done!</span>'
+
     setTimeout(() => {
       SoundLister.dom.progressBar.parentElement.style.height = '0'
       setTimeout(() => {
