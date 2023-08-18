@@ -14,9 +14,9 @@
   --debug-color-light5: #e1ddf7;
   --debug-color-medium: #8c85ae;
 
-  --white: #ffffff;
-  --black: #111111;
-  --black-trans: #000000dd;
+  --neutral-white: #ffffff;
+  --neutral-black: #111111;
+  --neutral-black-trans: #000000dd;
   --shadow: #11111105;
   --shadow-dark: #11111125;
   --off-white: #f1f1f1;
@@ -35,7 +35,7 @@ html {
 }
 
 body {
-  color: var(--black);
+  color: var(--neutral-black);
   font-family: 'Raleway';
 }
 
@@ -108,7 +108,7 @@ input[type="range"] {
     border: 0;
   }
   input[type="range"]::-moz-range-thumb {
-    background-color: var(--white);
+    background-color: var(--neutral-white);
     border: 1px solid var(--base-color);
     border-radius: 50%;
     box-sizing: content-box;
@@ -135,7 +135,7 @@ input[type="range"] {
     background: linear-gradient(to right, var(--base-color-grad1) var(--buffered-width), var(--base-color-grad2) var(--buffered-width));
   }
   input[type="range"]::-ms-thumb {
-    background-color: var(--white);
+    background-color: var(--neutral-white);
     border: 1px solid var(--base-color);
     border-radius: 50%;
     box-sizing: content-box;
@@ -156,7 +156,7 @@ header {
   }
 
 section#main {
-  background: var(--black-trans);
+  background: var(--neutral-black-trans);
   padding: 5px 0 0;
 }
   section#main #wrapper {
@@ -186,7 +186,7 @@ section#main {
   --buffered-width: 0%;
   --seek-before-width: 0%;
   --volume-before-width: 100%;
-  background: var(--white);
+  background: var(--neutral-white);
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -324,7 +324,7 @@ section#main {
       #audio-controls button#backward {
         /*
         border-bottom-right-radius: 0;
-        border-right: 1px solid var(--black);
+        border-right: 1px solid var(--neutral-black);
         */
       }
         #audio-controls button#backward i {
@@ -355,7 +355,7 @@ section#main {
       #audio-controls button#forward {
         /*
         border-bottom-left-radius: 0;
-        border-left: 1px solid var(--black);
+        border-left: 1px solid var(--neutral-black);
         */
       }
         #audio-controls button#forward i {
@@ -397,12 +397,17 @@ section#main {
     background: #333;
     border-bottom: 1px solid var(--gray-dark);
     color: var(--gray);
-    display: block;
+    display: flex;
+    justify-content: space-between;
     padding: 0.5rem 0.5rem 0.75rem;
     position: relative;
     text-decoration: none;
     z-index: 2;
   }
+    #playlist a > * {
+      display: flex;
+      flex-direction: column;
+    }
     #playlist a:hover {
       background-color: #555;
     }
@@ -417,14 +422,11 @@ section#main {
     #playlist a label.track-num {
       cursor: pointer;
       font-size: 1.5em;
-      float: left;
-      margin: 0 auto;
-      min-width: 25px;
-      padding: 0.3rem 1.25rem 0 0.5rem;
+      padding: 0 1.25rem 0 0.5rem;
       text-decoration: none;
     }
     #playlist a div.titles {
-      float: left;
+      flex-grow: 1;
       max-width: 65%;
       z-index: 1;
     }
@@ -463,9 +465,18 @@ section#main {
     }
 }
 
+#playlist hr.album-separator {
+  background-color: var(--base-color);
+  border: none;
+  height: 2px;
+}
+  #playlist hr.album-separator:first-child {
+    display: none;
+  }
+
 .progress {
-  background-color: var(--white);
-  border: 2px solid var(--black);
+  background-color: var(--neutral-white);
+  border: 2px solid var(--neutral-black);
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
   border-top: none;
@@ -510,7 +521,7 @@ section#main {
 
 footer {
   background-color: var(--gray-dark);
-  border-top: 2px solid var(--black);
+  border-top: 2px solid var(--neutral-black);
   bottom: 0;
   color: var(--gray);
   font-size: 0.75rem;
