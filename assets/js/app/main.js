@@ -984,7 +984,20 @@ SoundLister.__sortObjArr = (oldObjArr, props) => {
     // create playlist from SoundLister.songs
     SoundLister.dom.playlist.textContent = ''
 
+    let album = null
+
     Object.values(SoundLister.songs).forEach(song => {
+      let songAlbum = song.album
+
+      if (songAlbum != album) {
+        const hr = document.createElement('hr')
+        hr.classList.add('album-separator')
+
+        SoundLister.dom.playlist.appendChild(hr)
+
+        album = songAlbum
+      }
+
       SoundLister._createPlaylistItem(song)
     })
 
