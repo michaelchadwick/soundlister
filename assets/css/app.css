@@ -251,6 +251,9 @@ section#main {
     outline: none;
     padding: 0;
     width: 40px;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
   }
 
   #audio-player-container #play-icon,
