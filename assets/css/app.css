@@ -254,6 +254,7 @@ section#main {
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
   #audio-player-container #play-icon,
