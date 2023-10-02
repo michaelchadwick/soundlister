@@ -80,7 +80,7 @@ SoundLister.attachPresentationListeners = () => {
     SoundLister._updatePlayButton('playlist')
   })
 
-  window.onresize = SoundLister._resizePlaylist
+  // window.onresize = SoundLister._resizePlaylist
 }
 
 // attach DOM functional event listeners
@@ -378,7 +378,10 @@ SoundLister._registerServiceWorker = async () => {
 // change max-height of playlist to match viewport
 SoundLister._resizePlaylist = () => {
   const winHeight = window.innerHeight
-  const buffer = 347
+  const plHeight = winHeight / 1.8
+  const buffer = Math.floor(plHeight)
+
+  // console.log('winHeight', winHeight, buffer)
 
   SoundLister.dom.playlist.style.maxHeight = `${winHeight - buffer}px`
 }

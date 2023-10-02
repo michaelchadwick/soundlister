@@ -414,7 +414,7 @@ section#main {
   background: var(--gray-dark);
   display: flex;
   flex-direction: column;
-  margin: 0 auto 27px;
+  margin: 0 auto 26px;
   max-width: 500px;
   overflow-y: auto;
   width: 100%;
