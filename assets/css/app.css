@@ -23,6 +23,7 @@
   --gray: #dedede;
   --gray-medium: #a7a7a7;
   --gray-dark: #787878;
+  --gray-darker: #454545;
 }
 
 * {
@@ -553,7 +554,7 @@ section#main {
     }
 
 footer {
-  background-color: var(--gray-dark);
+  background-color: var(--gray-darker);
   border-top: 2px solid var(--neutral-black);
   bottom: 0;
   color: var(--gray);
