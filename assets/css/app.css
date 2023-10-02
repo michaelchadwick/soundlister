@@ -149,8 +149,33 @@ input[type="range"] {
   }
 
 header {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  justify-content: center;
   padding: 1em;
 }
+  header img {
+    height: 24px;
+    width: 24px;
+  }
+  @media (min-width: 768px) {
+    header img {
+      height: 36px;
+      width: 36px;
+    }
+  }
+  @media (min-width: 992px) {
+    header {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+      header img {
+        height: auto;
+        width: auto;
+      }
+  }
   header #coll-display {
     font-style: italic;
   }
