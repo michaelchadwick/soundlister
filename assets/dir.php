@@ -37,52 +37,24 @@
   }
 
   function getDisplayDuration($ms) {
-    $seconds = intdiv($ms, 1000);
-    $secs = $seconds;
+    $ts = intdiv($ms, 1000);
+    $s = $ts % 60;
+    $m = intdiv($ts, 60) % 60;
+    $h = intdiv($ts, 3600);
 
-    // length at least > 0
-    if ($seconds > 0) {
-      // echo "song is not empty";
+    $time_format = "$m:$s";
 
-      // length at least > 1:00
-      if ($seconds > 60) {
-        // echo "song is at least a minute long";
+    if ($h > 0) {
+      if ($m < 10) $m = '0' . $m;
+      if ($s < 10) $s = '0' . $s;
 
-        // length at least > 1:00:00
-        if (intdiv($seconds, 60) > 60) {
-          echo "song is at least an hour long!";
-
-          $hours = intdiv(intdiv($seconds, 60), 60);
-
-          if ($hours < 10) {
-            $hours = '0' . $hours;
-          }
-        } else {
-          $hours = '00';
-        }
-
-        if ($seconds % 60 > 0) {
-          $mins = floor($seconds / 60);
-          $secs = $seconds % 60;
-        }
-
-        if ($mins < 10) {
-          $mins = '0' . $mins;
-        }
-      } else {
-        $mins = '0';
-      }
-
-      if ($secs < 10) {
-        $secs = '0' . $secs;
-      }
+      $time_format = "$h:$m:$s";
     } else {
-      $secs = '00';
-    }
+      if ($s < 10) $s = '0' . $s;
 
-    $time_format = "$mins:$secs";
+      $time_format = "$m:$s";
+    }
 
     return $time_format;
   }
-
 ?>
