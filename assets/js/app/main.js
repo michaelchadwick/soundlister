@@ -961,13 +961,26 @@ SoundLister.__sortObjArr = (oldObjArr, props) => {
   return newObjArr;
 }
 
+// helper to get the domain without any subdomains
+function _getDomain() {
+  const hostnameArray = window.location.hostname.split('.')
+  const numberOfSubdomains = hostnameArray.length - 2
+  return hostnameArray.length === 2 ? window.location.hostname : hostnameArray.slice(numberOfSubdomains).join('.')
+}
+
 /* ********************************* */
 /* start the engine                  */
 /* ********************************* */
 
 ;(async() => {
   // set env
-  SoundLister.env = SL_ENV_PROD_URL.includes(document.location.hostname) ? 'prod' : 'local'
+  function getDomain() {
+    const hostnameArray = window.location.hostname.split('.')
+    const numberOfSubdomains = hostnameArray.length - 2
+    return hostnameArray.length === 2 ? window.location.hostname : hostnameArray.slice(numberOfSubdomains).join('.')
+}
+console.log(getDomain());
+  SoundLister.env = SL_ENV_PROD_URL.includes(_getDomain()) ? 'prod' : 'local'
 
   // adjust <title> for env
   if (SoundLister.env == 'local') {
