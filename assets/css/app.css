@@ -1,29 +1,31 @@
 :root {
-  --base-color: #007db5;
-  --base-color-grad1: #007db599;
-  --base-color-grad2: #007db533;
-  --light-color:  #a6c4ee;
-  --dark-color: #244471;
+  --base-color:             #007db5;
+--base-color-grad1:         #007db599;
+  --base-color-grad2:       #007db533;
+  --light-color:            #a6c4ee;
+  --dark-color:             #244471;
 
-  --debug-color: #715ec7;
-  --debug-color-secondary: #dbbce2;
-  --debug-color-light1: #e5e0ff;
-  --debug-color-light2: #e8e3ff;
-  --debug-color-light3: #ded8ff;
-  --debug-color-light4: #e3e0f3;
-  --debug-color-light5: #e1ddf7;
-  --debug-color-medium: #8c85ae;
+  --debug-color:            #715ec7;
+  --debug-color-secondary:  #dbbce2;
+  --debug-color-light1:     #e5e0ff;
+  --debug-color-light2:     #e8e3ff;
+  --debug-color-light3:     #ded8ff;
+  --debug-color-light4:     #e3e0f3;
+  --debug-color-light5:     #e1ddf7;
+  --debug-color-medium:     #8c85ae;
 
-  --neutral-white: #ffffff;
-  --neutral-black: #111111;
-  --neutral-black-trans: #000000dd;
-  --shadow: #11111105;
-  --shadow-dark: #11111125;
-  --off-white: #f1f1f1;
-  --gray: #dedede;
-  --gray-medium: #a7a7a7;
-  --gray-dark: #787878;
-  --gray-darker: #454545;
+  --button-highlight:       #00aabd;
+
+  --neutral-white:          #ffffff;
+  --neutral-black:          #111111;
+  --neutral-black-trans:    #000000dd;
+  --shadow:                 #11111105;
+  --shadow-dark:            #11111125;
+  --off-white:              #f1f1f1;
+  --gray:                   #dedede;
+  --gray-medium:            #a7a7a7;
+  --gray-dark:              #787878;
+  --gray-darker:            #454545;
 }
 
 * {
@@ -288,9 +290,11 @@ section#main {
   #audio-player-container #mute-icon {
     font-size: 1.75rem;
   }
-    #audio-player-container #play-icon:hover,
-    #audio-player-container #mute-icon:hover {
-      color: #02cbe3;
+    @media (hover: hover) {
+      #audio-player-container #play-icon:hover,
+      #audio-player-container #mute-icon:hover {
+        color: var(--button-highlight);
+      }
     }
   #audio-player-container #play-icon {
     padding-right: 10px;
@@ -353,8 +357,11 @@ section#main {
       max-width: 160px;
       min-width: 90px;
     }
-    #audio-controls button:hover {
-      background-color: var(--gray);
+    @media (hover: hover) {
+      #audio-controls button:hover {
+        /* background-color: var(--gray); */
+        color: var(--button-highlight);
+      }
     }
       #audio-controls button#backward {
         /*
