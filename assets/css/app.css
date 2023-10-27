@@ -158,17 +158,20 @@ header {
   flex-direction: row;
   gap: 1em;
   justify-content: center;
-  padding: 1em;
+  padding: 0.5em;
 }
   header img {
     height: 24px;
     width: 24px;
   }
   @media (min-width: 768px) {
-    header img {
-      height: 36px;
-      width: 36px;
+    header {
+      padding: 1em;
     }
+      header img {
+        height: 36px;
+        width: 36px;
+      }
   }
   @media (min-width: 992px) {
     header {
@@ -243,13 +246,13 @@ section#main {
   }
     #audio-player-container .row#row-title {
       display: -webkit-box;
-      font-size: 130%;
+      font-size: 90%;
       font-weight: 600;
-      height: 35px;
+      height: 20px;
       line-height: 1;
       margin: 0.5rem 0;
       overflow: hidden;
-      padding: 0 0 0.5rem;
+      padding: 0;
       text-align: center;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
@@ -271,12 +274,18 @@ section#main {
         display: block;
       }
     }
+    @media (min-width: 768px) {
+      #audio-player-container .row#row-title {
+        height: 35px;
+        font-size: 130%;
+      }
+    }
 
   #audio-player-container button {
     background: inherit;
     border: 0;
     cursor: pointer;
-    height: 40px;
+    height: 30px;
     outline: none;
     padding: 0;
     width: 40px;
@@ -285,11 +294,22 @@ section#main {
     -moz-user-select: none;
     -webkit-tap-highlight-color: transparent;
   }
+    @media (min-width: 768px) {
+      #audio-player-container button {
+        height: 40px;
+      }
+    }
 
   #audio-player-container #play-icon,
   #audio-player-container #mute-icon {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
   }
+    @media (min-width: 768px) {
+      #audio-player-container #play-icon,
+      #audio-player-container #mute-icon {
+        font-size: 1.75rem;
+      }
+    }
     @media (hover: hover) {
       #audio-player-container #play-icon:hover,
       #audio-player-container #mute-icon:hover {
@@ -343,7 +363,7 @@ section#main {
     align-items: center;
     cursor: pointer;
     display: flex;
-    font-size: 1.3em;
+    font-size: 1.1em;
     justify-content: center;
     max-width: 100px;
     min-width: 60px;
@@ -353,6 +373,11 @@ section#main {
     -moz-user-select: none;
     -webkit-tap-highlight-color: transparent;
   }
+    @media (min-width: 768px) {
+      #audio-controls button {
+        font-size: 1.3em;
+      }
+    }
     #audio-controls button.large {
       max-width: 160px;
       min-width: 90px;

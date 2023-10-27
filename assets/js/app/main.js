@@ -378,7 +378,14 @@ SoundLister._registerServiceWorker = async () => {
 // change max-height of playlist to match viewport
 SoundLister._resizePlaylist = () => {
   const winHeight = window.innerHeight
-  const plHeight = Math.floor(winHeight - 300)
+
+  let plHeight = 0
+
+  if (window.innerWidth >= 768) {
+    plHeight = Math.floor(winHeight - 310)
+  } else {
+    plHeight = Math.floor(winHeight - 250)
+  }
 
   // console.log(`_resizePlaylist: winHeight(${winHeight}), plHeight(${plHeight})`)
 
