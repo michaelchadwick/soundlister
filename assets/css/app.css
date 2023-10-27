@@ -38,6 +38,7 @@ html {
 body {
   color: var(--neutral-black);
   font-family: 'Raleway';
+  overflow-y: hidden;
 }
 
 a {

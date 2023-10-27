@@ -80,7 +80,7 @@ SoundLister.attachPresentationListeners = () => {
     SoundLister._updatePlayButton('playlist')
   })
 
-  // window.onresize = SoundLister._resizePlaylist
+  window.onresize = SoundLister._resizePlaylist
 }
 
 // attach DOM functional event listeners
@@ -378,12 +378,11 @@ SoundLister._registerServiceWorker = async () => {
 // change max-height of playlist to match viewport
 SoundLister._resizePlaylist = () => {
   const winHeight = window.innerHeight
-  const plHeight = winHeight / 1.8
-  const buffer = Math.floor(plHeight)
+  const plHeight = Math.floor(winHeight - 300)
 
-  // console.log('winHeight', winHeight, buffer)
+  // console.log(`_resizePlaylist: winHeight(${winHeight}), plHeight(${plHeight})`)
 
-  SoundLister.dom.playlist.style.maxHeight = `${winHeight - buffer}px`
+  SoundLister.dom.playlist.style.height = `${plHeight}px`
 }
 
 // remake playlist with collection filter
@@ -978,8 +977,8 @@ function _getDomain() {
     const hostnameArray = window.location.hostname.split('.')
     const numberOfSubdomains = hostnameArray.length - 2
     return hostnameArray.length === 2 ? window.location.hostname : hostnameArray.slice(numberOfSubdomains).join('.')
-}
-console.log(getDomain());
+  }
+
   SoundLister.env = SL_ENV_PROD_URL.includes(_getDomain()) ? 'prod' : 'local'
 
   // adjust <title> for env
