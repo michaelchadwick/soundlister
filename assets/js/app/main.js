@@ -23,7 +23,7 @@ SoundLister.config = {}
 SoundLister.attachPresentationListeners = () => {
   // play/pause button
   SoundLister.dom.playButton.addEventListener('click', () => {
-    SoundLister._updatePlayButton()
+    SoundLister._updatePlayButton('click')
   })
 
   // mute/unmute button
@@ -173,14 +173,19 @@ SoundLister.attachFunctionalListeners = () => {
 
   // gotta use keydown, not keypress, or else Delete/Backspace aren't recognized
   document.addEventListener('keydown', (event) => {
+    if (event.metaKey && event.code == 'ArrowRight') {
+      SoundLister.goForward()
+    } else if (event.metaKey && event.code == 'ArrowLeft') {
+      SoundLister.goBack()
+    }
+  })
+
+  document.addEventListener('keyup', (event) => {
     if (event.code == 'Space') {
-      SoundLister._updatePlayButton()
-    } else {
-      if (event.metaKey && event.code == 'ArrowRight') {
-        SoundLister.goForward()
-      } else if (event.metaKey && event.code == 'ArrowLeft') {
-        SoundLister.goBack()
-      }
+      // fix issue with double-triggering
+      // if space bar is activeElement
+      document.activeElement.blur()
+      SoundLister._updatePlayButton('key')
     }
   })
 }
