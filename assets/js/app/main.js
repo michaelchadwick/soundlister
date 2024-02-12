@@ -171,22 +171,24 @@ SoundLister.attachFunctionalListeners = () => {
     SoundLister.dom.audio.volume = volume / 100
   })
 
-  // gotta use keydown, not keypress, or else Delete/Backspace aren't recognized
+  // gotta use keydown
   document.addEventListener('keydown', (event) => {
-    if (event.metaKey && event.code == 'ArrowRight') {
-      SoundLister.goForward()
-    } else if (event.metaKey && event.code == 'ArrowLeft') {
-      SoundLister.goBack()
-    }
-  })
-
-  document.addEventListener('keyup', (event) => {
     if (event.code == 'Space') {
       // fix issue with double-triggering
       // if space bar is activeElement
       document.activeElement.blur()
       SoundLister._updatePlayButton('key')
+    } else {
+      if (event.metaKey && event.shiftKey && event.code == 'ArrowRight') {
+        SoundLister.goForward()
+      } else if (event.metaKey && event.shiftKey && event.code == 'ArrowLeft') {
+        SoundLister.goBack()
+      }
     }
+  })
+
+  document.addEventListener('keyup', (event) => {
+
   })
 }
 
@@ -293,11 +295,11 @@ SoundLister.goForward = (e = null) => {
 
 // change the currently-playing track
 SoundLister.changeTrack = (current) => {
-  // console.log('changeTrack()', current, SoundLister.tracks()[current].title)
+  console.log('changeTrack()', current, SoundLister.tracks()[current].title)
 
   // scroll new track into view
   const activeTrack = document.querySelector('#playlist a.active')
-  activeTrack.scrollIntoView({ 'behavior': 'smooth', 'block': 'end' })
+  activeTrack.scrollIntoView({ 'behavior': 'smooth', 'block': 'nearest' })
 
   // set <title>
   SoundLister.activeTrack = SoundLister.tracks()[current].title

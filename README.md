@@ -13,8 +13,8 @@ If the audio source contains multiple directories (a "collection"), then the dro
 ## Keyboard Shortcuts
 
 * Space - toggles playback and pause
-* Cmd/Win+Right - go to next track in playlist
-* Cmd/Win+Left - go to previous track in playlist
+* Cmd/Win+Shift+Right - go to next track in playlist
+* Cmd/Win+Shift+Left - go to previous track in playlist
 
 ## Dependencies
 
