@@ -5,3 +5,23 @@ audio/
 !assets/images/vendor
 !assets/js/vendor
 assets/js/vendor/*.min.js
+
+# Ignore cypress stuff
+cypress/build/release
+cypress/coverage
+cypress/fixtures/private/*
+cypress/lib-cov
+cypress/logs
+cypress/screenshots
+cypress/videos
+cypress/.grunt
+cypress/.lock-wscript
+cypress/*.logs
+cypress/*.pid
+cypress/*.seed
+
+# Ignore npm module dependencies
+node_modules
+
+# Ignore npm package stuff in root
+package-lock.json
