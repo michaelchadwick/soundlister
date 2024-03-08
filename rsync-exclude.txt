@@ -2,6 +2,7 @@
 .git
 .gitignore
 assets/audio
+node_modules
 LICENSE.md
 README.md
 Rakefile
