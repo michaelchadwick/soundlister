@@ -1,0 +1,15 @@
+{
+  "name": "soundlister.neb.host",
+  "version": "1.0.0",
+  "description": "Node modules for testing SoundLister site.",
+  "main": "index.html",
+  "scripts": {
+    "test-open": "npx cypress open --e2e -b electron --env host=local",
+    "test-open-prod": "npx cypress open --e2e -b electron --config baseUrl='https://soundlister.neb.host' --env host=prod",
+    "test-run": "npx cypress run --env host=local",
+    "test-run-prod": "npx cypress run --config baseUrl='https://soundlister.neb.host' --env host=prod"
+  },
+  "devDependencies": {
+    "cypress": "^13.6.6"
+  }
+}

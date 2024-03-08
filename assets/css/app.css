@@ -164,6 +164,9 @@ header {
     height: 24px;
     width: 24px;
   }
+  header h1 {
+    font-size: 18px;
+  }
   @media (min-width: 768px) {
     header {
       padding: 1em;
@@ -171,6 +174,9 @@ header {
       header img {
         height: 36px;
         width: 36px;
+      }
+      header h1 {
+        font-size: 22px;
       }
   }
   @media (min-width: 992px) {
@@ -181,6 +187,9 @@ header {
       header img {
         height: auto;
         width: auto;
+      }
+      header h1 {
+        font-size: 26px;
       }
   }
   header #coll-display {
