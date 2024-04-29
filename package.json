@@ -4,6 +4,7 @@
   "description": "Node modules for testing SoundLister site.",
   "main": "index.html",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "test-open": "npx cypress open --e2e -b electron --env host=local",
     "test-open-prod": "npx cypress open --e2e -b electron --config baseUrl='https://soundlister.neb.host' --env host=prod",
     "test-run": "npx cypress run --env host=local",
@@ -11,5 +12,6 @@
   },
   "devDependencies": {
     "cypress": "^13.6.6"
-  }
+  },
+  "packageManager": "pnpm@9.0.6+sha512.f6d863130973207cb7a336d6b439a242a26ac8068077df530d6a86069419853dc1ffe64029ec594a9c505a3a410d19643c870aba6776330f5cfddcf10a9c1617"
 }
