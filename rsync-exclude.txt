@@ -3,6 +3,7 @@
 .gitignore
 assets/audio
 node_modules
+LICENSE
 LICENSE.md
 README.md
 Rakefile
