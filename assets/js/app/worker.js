@@ -1,6 +1,8 @@
 /* worker */
 /* js service worker for audio cache */
 
+// TODO: add to CacheStorage?
+
 self.addEventListener('install', e => {
   console.log('Service Worker install', e)
 })

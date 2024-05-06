@@ -9,6 +9,8 @@
 
 */
 
+// TODO: create custom <select> dropdown
+
 const elSelectNative = document.getElementsByClassName('js-selectNative')[0];
 const elSelectCustom = document.getElementsByClassName('js-selectCustom')[0];
 const elSelectCustomBox = elSelectCustom.children[0];
@@ -167,5 +169,5 @@ customOptsList.forEach(function (elOption, index) {
     updateCustomSelectHovered(index);
   });
 
-  // TODO: Toggle these event listeners based on selectCustom visibility
+  // TODO: Toggle custom-select event listeners based on selectCustom visibility
 });

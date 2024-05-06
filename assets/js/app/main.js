@@ -1,6 +1,8 @@
 /* main */
 /* global SoundLister, MP3Tag */
 
+// TODO: playlist scroll not working correctly sometimes
+
 SoundLister.activeTrack = ''
 SoundLister.currentIndex = 0
 SoundLister.tags = {}
@@ -220,7 +222,7 @@ SoundLister.goBack = (e = null) => {
 
     SoundLister.changeTrack(SoundLister.currentIndex)
   }
-  /* TODO: SHUFFLE */
+  // TODO: add shuffle button
   else {
 
   }
@@ -383,6 +385,7 @@ SoundLister._registerServiceWorker = async () => {
 }
 
 // change max-height of playlist to match viewport
+// TODO: playlist sometimes doesn't extend to bottom of viewport on iPhone
 SoundLister._resizePlaylist = () => {
   const winHeight = window.innerHeight
   const winWidth = window.innerWidth
