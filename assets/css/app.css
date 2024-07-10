@@ -61,6 +61,7 @@ code {
 
 input[type='range'] {
   -webkit-appearance: none;
+  appearance: none;
   float: left;
   height: 19px;
   margin: 10px 2.5%;
@@ -275,6 +276,7 @@ section#main #wrapper {
   font-size: 90%;
   font-weight: 600;
   height: 20px;
+  line-clamp: 2;
   line-height: 1;
   margin: 0.5rem 0;
   overflow: hidden;
@@ -291,9 +293,11 @@ section#main #wrapper {
   display: flex;
   justify-content: center;
 }
+/*
 #audio-player-container .row#row-title #track-current-name span {
-  /* background-color: var(--gray-dark); */
+  background-color: var(--gray-dark);
 }
+*/
 
 @media (min-width: 376px) {
   #audio-player-container .row#row-list-nav {
@@ -360,11 +364,11 @@ section#main #wrapper {
 }
 
 #audio-player-container #volume-slider {
-  -webkit-appearance: none;
+  -webkit-appearance: slider-vertical;
+  appearance: slider-vertical;
   height: 42px;
   width: 18px;
   writing-mode: bt-lr;
-  -webkit-appearance: slider-vertical;
 }
 #audio-player-container #volume-slider::-webkit-slider-runnable-track {
   /* background: rgba(0, 125, 181, 0.6); */
@@ -376,9 +380,11 @@ section#main #wrapper {
 #audio-player-container #volume-slider::-ms-fill-upper {
   background: rgba(0, 125, 181, 0.6);
 }
+/*
 #audio-player-container #volume-slider::before {
-  /* width: var(--volume-before-width); */
+  width: var(--volume-before-width);
 }
+*/
 
 #audio-controls {
   display: flex;
@@ -414,12 +420,12 @@ section#main #wrapper {
     color: var(--button-highlight);
   }
 }
+/*
 #audio-controls button#backward {
-  /*
-        border-bottom-right-radius: 0;
-        border-right: 1px solid var(--neutral-black);
-        */
+  border-bottom-right-radius: 0;
+  border-right: 1px solid var(--neutral-black);
 }
+*/
 #audio-controls button#backward i {
   margin: 2px 7px 0 0;
 }
@@ -445,12 +451,12 @@ section#main #wrapper {
 #audio-controls button#shuffle-mode.shuffle-none i {
   opacity: 0.2;
 }
+/*
 #audio-controls button#forward {
-  /*
-        border-bottom-left-radius: 0;
-        border-left: 1px solid var(--neutral-black);
-        */
+  border-bottom-left-radius: 0;
+  border-left: 1px solid var(--neutral-black);
 }
+*/
 #audio-controls button#forward i {
   margin: 2px 0 0 7px;
 }
