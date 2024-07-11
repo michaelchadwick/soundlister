@@ -1,5 +1,7 @@
 /* main */
+/* global Promise, Proxy */
 /* global SoundLister, MP3Tag */
+/* global SL_AUDIO_ASSETS_DIR, SL_CACHE_TEXT_KEY, SL_DEFAULT_COLLECTION, SL_ENV_PROD_URL, SL_PHP_DIR_SCRIPT, SL_SERVICE_WORKER_PATH */
 
 // TODO: playlist scroll not working correctly sometimes
 
@@ -88,11 +90,11 @@ SoundLister.attachPresentationListeners = () => {
 // attach DOM functional event listeners
 SoundLister.attachFunctionalListeners = () => {
   // <audio> element has started loading
-  SoundLister.dom.audio.addEventListener('loadstart', (e) => {
+  SoundLister.dom.audio.addEventListener('loadstart', () => {
     // console.log('audio loading begun', e)
   })
   // <audio> element is loaded enough to start playing
-  SoundLister.dom.audio.addEventListener('canplay', (e) => {
+  SoundLister.dom.audio.addEventListener('canplay', () => {
     // console.log('audio can play', e)
     SoundLister._displayAudioDuration()
     SoundLister._displayCurrentTrackName()
@@ -100,23 +102,23 @@ SoundLister.attachFunctionalListeners = () => {
     SoundLister._displayBufferedAmount()
   })
   // <audio> element is loaded enough to play to end
-  SoundLister.dom.audio.addEventListener('canplaythrough', (e) => {
+  SoundLister.dom.audio.addEventListener('canplaythrough', () => {
     // console.log('audio can play through', e)
   })
   // <audio> element has started playing
-  SoundLister.dom.audio.addEventListener('play', (e) => {
+  SoundLister.dom.audio.addEventListener('play', () => {
     // console.log('audio has started playing', e)
   })
   // <audio> element is playing
-  SoundLister.dom.audio.addEventListener('playing', (e) => {
+  SoundLister.dom.audio.addEventListener('playing', () => {
     // console.log('audio is playing', e)
   })
   // <audio> element has been paused
-  SoundLister.dom.audio.addEventListener('paused', (e) => {
+  SoundLister.dom.audio.addEventListener('paused', () => {
     // console.log('audio has been paused', e)
   })
   // <audio> element ended
-  SoundLister.dom.audio.addEventListener('ended', (e) => {
+  SoundLister.dom.audio.addEventListener('ended', () => {
     // console.log('audio ended', e)
     SoundLister.goForward()
   })
@@ -132,7 +134,9 @@ SoundLister.attachFunctionalListeners = () => {
 
   // <audio> element progress seek slider
   SoundLister.dom.seekSlider.addEventListener('input', () => {
-    SoundLister.dom.currentTime.textContent = SoundLister.__calculateTime(SoundLister.dom.seekSlider.value);
+    SoundLister.dom.currentTime.textContent = SoundLister.__calculateTime(
+      SoundLister.dom.seekSlider.value
+    )
 
     if (!SoundLister.dom.audio.paused) {
       cancelAnimationFrame(SoundLister.raf)
@@ -189,9 +193,7 @@ SoundLister.attachFunctionalListeners = () => {
     }
   })
 
-  document.addEventListener('keyup', (event) => {
-
-  })
+  document.addEventListener('keyup', () => {})
 }
 
 // gets tracklist with potential collection filter
@@ -223,13 +225,12 @@ SoundLister.goBack = (e = null) => {
     SoundLister.changeTrack(SoundLister.currentIndex)
   }
   // TODO: add shuffle button
-  else {
-
-  }
+  // else {
+  // }
 }
 
 // toggle repeat mode
-SoundLister.toggleRepeatMode = (e = null) => {
+SoundLister.toggleRepeatMode = () => {
   if (SoundLister.repeatMode) {
     SoundLister.dom.repeatButton.classList.remove('repeat-all')
     SoundLister.dom.repeatButton.classList.add('repeat-none')
@@ -242,13 +243,12 @@ SoundLister.toggleRepeatMode = (e = null) => {
 }
 
 // toggle shuffle mode
-SoundLister.toggleShuffleMode = (e = null) => {
+SoundLister.toggleShuffleMode = () => {
   // default is off, so first check is turning it on
   if (!SoundLister.shuffleMode) {
     // dom updates
     // SoundLister.dom.shuffleButton.classList.remove('shuffle-none')
     // SoundLister.dom.shuffleButton.classList.add('shuffle-all')
-
     // // shuffle keys and add to queue
     // SoundLister.shuffleQueue = SoundLister._shuffleArray(Object.keys(SoundLister.tracks()))
   } else {
@@ -288,10 +288,8 @@ SoundLister.goForward = (e = null) => {
 
       SoundLister.changeTrack(SoundLister.currentIndex)
     }
-  }
-  /* TODO: SHUFFLE */
-  else {
-
+  } else {
+    /* TODO: SHUFFLE */
   }
 }
 
@@ -301,7 +299,7 @@ SoundLister.changeTrack = (current) => {
 
   // scroll new track into view
   const activeTrack = document.querySelector('#playlist a.active')
-  activeTrack.scrollIntoView({ 'behavior': 'smooth', 'block': 'nearest' })
+  activeTrack.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
 
   // set <title>
   SoundLister.activeTrack = SoundLister.tracks()[current].title
@@ -319,7 +317,7 @@ SoundLister.playTrack = async (track) => {
   SoundLister.dom.audio.src = track.href
 
   // switch DOM's active track
-  SoundLister.tracks().forEach(t => t.classList.remove('active'))
+  SoundLister.tracks().forEach((t) => t.classList.remove('active'))
   track.classList.add('active')
 
   // set <title>
@@ -347,20 +345,20 @@ SoundLister._setTitle = () => {
 // Fisher-Yates Shuffle
 // https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
 SoundLister._shuffleArray = (arr) => {
-  let curIdx = arr.length, randIdx;
+  let curIdx = arr.length,
+    randIdx
 
   // While there remain elements to shuffle.
   while (curIdx != 0) {
-
     // Pick a remaining element.
-    randIdx = Math.floor(Math.random() * curIdx);
-    curIdx--;
+    randIdx = Math.floor(Math.random() * curIdx)
+    curIdx--
 
     // And swap it with the current element.
-    [arr[curIdx], arr[randIdx]] = [arr[randIdx], arr[curIdx]];
+    ;[arr[curIdx], arr[randIdx]] = [arr[randIdx], arr[curIdx]]
   }
 
-  return arr;
+  return arr
 }
 
 SoundLister._registerServiceWorker = async () => {
@@ -371,11 +369,11 @@ SoundLister._registerServiceWorker = async () => {
         console.log('Service Worker registered', registration)
 
         if (registration.installing) {
-          console.log('Service worker installing');
+          console.log('Service worker installing')
         } else if (registration.waiting) {
-          console.log('Service worker installed');
+          console.log('Service worker installed')
         } else if (registration.active) {
-          console.log('Service worker active');
+          console.log('Service worker active')
         }
       })
       .catch((err) => {
@@ -416,7 +414,7 @@ SoundLister._remakePlaylist = () => {
 
   // remake playlist
   if (SoundLister.col !== '_') {
-    SoundLister.songsBase.forEach(song => {
+    SoundLister.songsBase.forEach((song) => {
       if (song.col == SoundLister.col) {
         SoundLister.songsCol.push(song)
         SoundLister._createPlaylistItem(song)
@@ -427,7 +425,7 @@ SoundLister._remakePlaylist = () => {
       SoundLister.songs = SoundLister.songsCol
     }
   } else {
-    SoundLister.songsBase.forEach(song => {
+    SoundLister.songsBase.forEach((song) => {
       SoundLister._createPlaylistItem(song)
     })
 
@@ -439,10 +437,7 @@ SoundLister._remakePlaylist = () => {
 
   SoundLister.dom.currentTime.textContent = '0:00'
   SoundLister.dom.seekSlider.value = 0
-  SoundLister.dom.audioPlayerContainer.style.setProperty(
-    '--seek-before-width',
-    0
-  )
+  SoundLister.dom.audioPlayerContainer.style.setProperty('--seek-before-width', 0)
 
   SoundLister._updatePlayButton('collection')
 }
@@ -450,7 +445,7 @@ SoundLister._remakePlaylist = () => {
 // add song durations to playlist
 SoundLister._getSongDurations = () => {
   // create audio elements - to read songs duration
-  let audio_arr = [];
+  let audio_arr = []
 
   SoundLister.tracks().forEach((track) => {
     const audio = document.createElement('audio')
@@ -466,14 +461,15 @@ SoundLister._getSongDurations = () => {
       const seconds = Math.floor(audio.duration % 60)
 
       if (document.querySelectorAll('.track-duration')[index]) {
-        document.querySelectorAll('.track-duration')[index].innerHTML = `${minutes}:${seconds >= 10 ? seconds : '0' + seconds}`
+        document.querySelectorAll('.track-duration')[index].innerHTML =
+          `${minutes}:${seconds >= 10 ? seconds : '0' + seconds}`
       }
     })
   })
 }
 
 // use mp3tag to read ID3 tags from files
-SoundLister._getID3Tags = (buffer, filePath, ext) => {
+SoundLister._getID3Tags = (buffer) => {
   const mp3tag = new MP3Tag(buffer)
 
   mp3tag.read()
@@ -496,33 +492,33 @@ SoundLister._createPlaylistItem = (song) => {
   track.dataset.col = song.col
   track.href = song.url
 
-    const trackNum = document.createElement('label')
-    trackNum.classList.add('track-attribute', 'track-num')
-    trackNum.innerHTML = (SoundLister.index + 1).toString().padStart(2, '0')
+  const trackNum = document.createElement('label')
+  trackNum.classList.add('track-attribute', 'track-num')
+  trackNum.innerHTML = (SoundLister.index + 1).toString().padStart(2, '0')
 
-    const trackTitles = document.createElement('div')
-    trackTitles.classList.add('track-attribute', 'titles')
+  const trackTitles = document.createElement('div')
+  trackTitles.classList.add('track-attribute', 'titles')
 
-      const trackName = document.createElement('div')
-      trackName.classList.add('track-attribute', 'track-name')
-      trackName.innerHTML = song.title
+  const trackName = document.createElement('div')
+  trackName.classList.add('track-attribute', 'track-name')
+  trackName.innerHTML = song.title
 
-      const trackArtistAlbum = document.createElement('div')
-      trackArtistAlbum.classList.add('track-attribute', 'track-artist-album')
-      trackArtistAlbum.innerHTML = `
+  const trackArtistAlbum = document.createElement('div')
+  trackArtistAlbum.classList.add('track-attribute', 'track-artist-album')
+  trackArtistAlbum.innerHTML = `
         by <span class='track-attribute highlight'>${song.artist}</span> on <span class='track-attribute highlight'>${song.album}</span>
       `
 
-      trackTitles.append(trackName)
-      trackTitles.append(trackArtistAlbum)
+  trackTitles.append(trackName)
+  trackTitles.append(trackArtistAlbum)
 
-    const trackDuration = document.createElement('div')
-    trackDuration.classList.add('track-attribute', 'track-duration')
-    trackDuration.innerHTML = song.duration
+  const trackDuration = document.createElement('div')
+  trackDuration.classList.add('track-attribute', 'track-duration')
+  trackDuration.innerHTML = song.duration
 
-    track.append(trackNum)
-    track.append(trackTitles)
-    track.append(trackDuration)
+  track.append(trackNum)
+  track.append(trackTitles)
+  track.append(trackDuration)
 
   SoundLister.dom.playlist.appendChild(track)
 
@@ -539,7 +535,7 @@ SoundLister._filenameToTitle = (filename) => {
   let t_split = t.split(' ')
 
   for (var i = 0; i < t_split.length; i++) {
-    t_split[i] = t_split[i].charAt(0).toUpperCase() + t_split[i].slice(1);
+    t_split[i] = t_split[i].charAt(0).toUpperCase() + t_split[i].slice(1)
   }
 
   return t_split.join(' ')
@@ -579,13 +575,14 @@ SoundLister._fillSongs = async (fileColObj) => {
       const songAlbum = tags.album || defaultAlbum
 
       const newSong = {
-        "title": songTitle,
-        "artist": songArtist,
-        "album": songAlbum,
-        "ms": ms,
-        "duration": duration,
-        "col": col,
-        "url": filePath
+        title: songTitle,
+        artist: songArtist,
+        album: songAlbum,
+        ms: ms,
+        duration: duration,
+        col: col,
+        url: filePath,
+        ext: ext,
       }
 
       songObjArr.push(newSong)
@@ -602,7 +599,7 @@ SoundLister._fillSongs = async (fileColObj) => {
 }
 
 SoundLister._updateProgressBar = (percent, title, cur, total) => {
-  if (percent >=0 && percent <= 100) {
+  if (percent >= 0 && percent <= 100) {
     SoundLister.dom.progressText.innerHTML = `<span>loading </span><span><strong>${title}</strong></span><span> (${cur}/${total})</span>`
     SoundLister.dom.progressBar.style.width = percent + '%'
 
@@ -623,7 +620,7 @@ SoundLister._getFiles = async () => {
     titlesJSON = JSON.parse(titlesArray)
 
     // initiate the collection dropdown
-    Object.keys(titlesJSON).forEach(col => SoundLister._addCollectionOption(col))
+    Object.keys(titlesJSON).forEach((col) => SoundLister._addCollectionOption(col))
 
     // TODO: use a Service Worker to intercept requests and return cached versions if possible
     // SoundLister._registerServiceWorker()
@@ -633,8 +630,10 @@ SoundLister._getFiles = async () => {
 
     if (SoundLister.col !== '_') {
       titlesJSON = Object.keys(titlesJSON)
-        .filter(key => key.includes(SoundLister.col))
-        .reduce((cur, key) => { return Object.assign(cur, { [key]: titlesJSON[key] }) }, {})
+        .filter((key) => key.includes(SoundLister.col))
+        .reduce((cur, key) => {
+          return Object.assign(cur, { [key]: titlesJSON[key] })
+        }, {})
     }
   } else {
     titlesJSON = {}
@@ -683,9 +682,7 @@ SoundLister._updatePlayButton = (source = null) => {
       cancelAnimationFrame(SoundLister.raf)
       SoundLister.playIconState = 'play'
 
-      const track = SoundLister.tracks()[0]
-
-      SoundLister.dom.audio.src = track.href
+      SoundLister.dom.audio.src = SoundLister.tracks()[0].href
 
       if (SoundLister.dom.playButtonIcon.classList.contains('fa-pause')) {
         SoundLister.dom.playButtonIcon.classList.remove('fa-pause')
@@ -731,12 +728,9 @@ SoundLister._updateMuteButton = () => {
 
 SoundLister._displayBufferedAmount = () => {
   // const bufferedLength = SoundLister.dom.audio.buffered.length - 1
-
   // console.log('audio.buffered', SoundLister.dom.audio.buffered)
   // console.log('bufferedLength', bufferedLength)
-
   // const bufferedAmount = Math.floor(SoundLister.dom.audio.buffered.end(bufferedLength))
-
   // SoundLister.dom.audioPlayerContainer.style.setProperty(
   //   '--buffered-width',
   //   `${(bufferedAmount / SoundLister.dom.seekSlider.max) * 100}%`
@@ -756,7 +750,9 @@ SoundLister._displayCurrentTrackName = () => {
   SoundLister.dom.currentTrackName.setAttribute('title', curTrackTitle)
 
   const titleTextHeight = SoundLister.dom.currentTrackName.getBoundingClientRect().height
-  const titleTextContainerHeight = document.querySelector('#track-current-name').parentElement.getBoundingClientRect().height
+  const titleTextContainerHeight = document
+    .querySelector('#track-current-name')
+    .parentElement.getBoundingClientRect().height
 
   if (titleTextHeight > titleTextContainerHeight) {
     document.querySelector('#track-current-name').classList.remove('short')
@@ -777,38 +773,40 @@ SoundLister._showRangeProgress = (rangeInput) => {
   if (rangeInput === SoundLister.dom.seekSlider) {
     SoundLister.dom.audioPlayerContainer.style.setProperty(
       '--seek-before-width',
-      rangeInput.value / rangeInput.max * 100 + '%'
+      (rangeInput.value / rangeInput.max) * 100 + '%'
     )
   } else {
     SoundLister.dom.audioPlayerContainer.style.setProperty(
       '--volume-before-width',
-      rangeInput.value / rangeInput.max * 100 + '%'
+      (rangeInput.value / rangeInput.max) * 100 + '%'
     )
   }
 }
 
 SoundLister._whilePlaying = () => {
   SoundLister.dom.seekSlider.value = Math.floor(SoundLister.dom.audio.currentTime)
-  SoundLister.dom.currentTime.textContent = SoundLister.__calculateTime(SoundLister.dom.seekSlider.value)
+  SoundLister.dom.currentTime.textContent = SoundLister.__calculateTime(
+    SoundLister.dom.seekSlider.value
+  )
 
   SoundLister.dom.audioPlayerContainer.style.setProperty(
     '--seek-before-width',
-    `${SoundLister.dom.seekSlider.value / SoundLister.dom.seekSlider.max * 100}%`
+    `${(SoundLister.dom.seekSlider.value / SoundLister.dom.seekSlider.max) * 100}%`
   )
 
   SoundLister.raf = requestAnimationFrame(SoundLister._whilePlaying)
 }
 
 SoundLister._addAudioToCache = async (collections) => {
-  await caches.open(SL_CACHE_TEXT_KEY).then(async cache => {
-    await cache.keys().then(async function(keys) {
+  await caches.open(SL_CACHE_TEXT_KEY).then(async (cache) => {
+    await cache.keys().then(async function (keys) {
       if (!keys.length) {
         // console.log(`${SL_CACHE_TEXT_KEY} is non-existing or empty, so adding files to it...`)
 
         let filesToAdd = []
 
-        Object.keys(collections).forEach(col => {
-          collections[col].forEach(song => {
+        Object.keys(collections).forEach((col) => {
+          collections[col].forEach((song) => {
             filesToAdd.push(`/assets/${song.dirname}/${song.basename}`)
           })
         })
@@ -833,7 +831,7 @@ SoundLister._loadQSCollection = () => {
   if (colToLoad) {
     SoundLister.col = colToLoad
 
-    const validChoices = Array.from(SoundLister.dom.collDropdown.options).map(op => op.value)
+    const validChoices = Array.from(SoundLister.dom.collDropdown.options).map((op) => op.value)
 
     // permananently change to one collection (save network)
     // remove collection dropdown
@@ -874,8 +872,8 @@ SoundLister._updateCollDisplay = () => {
 SoundLister.__getFileCount = (obj) => {
   let sum = 0
 
-  Object.keys(obj).forEach(dir => {
-    Object.keys(obj[dir]).forEach(() => sum += 1)
+  Object.keys(obj).forEach((dir) => {
+    Object.keys(obj[dir]).forEach(() => (sum += 1))
   })
 
   return sum
@@ -892,37 +890,40 @@ SoundLister.__calculateTime = (secs) => {
 
 // asynchronously read a file from disk
 SoundLister.__readFileAsync = (file) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     let reader = new FileReader()
 
-    reader.onload = function() {
+    reader.onload = function () {
       resolve(reader.result)
     }
 
-    reader.onloadend = function() {}
+    reader.onloadend = function () {}
 
     reader.readAsArrayBuffer(file)
   })
 }
 
 SoundLister.__isCached = (filename) => {
-  return window.caches.open(SL_CACHE_TEXT_KEY)
-    .then(cache => cache.match(filename))
-    .then(Boolean);
+  return window.caches
+    .open(SL_CACHE_TEXT_KEY)
+    .then((cache) => cache.match(filename))
+    .then(Boolean)
 }
 
 SoundLister.__addToCache = (filename) => {
-  window.caches.open(SL_CACHE_TEXT_KEY)
-    .then(cache => cache.add(filename))
+  window.caches
+    .open(SL_CACHE_TEXT_KEY)
+    .then((cache) => cache.add(filename))
     .then(() => console.log(`added '${filename}' to cache`))
-    .catch(e => console.error(`failed to cache '${filename}'`, e))
+    .catch((e) => console.error(`failed to cache '${filename}'`, e))
 }
 
 SoundLister.__removeFromCache = (filename) => {
-  window.caches.open(SL_CACHE_TEXT_KEY)
-    .then(cache => cache.delete(filename))
+  window.caches
+    .open(SL_CACHE_TEXT_KEY)
+    .then((cache) => cache.delete(filename))
     .then(() => console.log(`removed '${filename}' from cache`))
-    .catch(e => console.error(`failed to remove '${filename}' from cache`, e))
+    .catch((e) => console.error(`failed to remove '${filename}' from cache`, e))
 }
 
 // sort an array of objects by any number of properties
@@ -941,64 +942,65 @@ SoundLister.__sortObjArr = (oldObjArr, props) => {
     let key = keyArr.join(',')
 
     // first time we look for a key, it won't exist, so make it
-    if (!lookupObject.hasOwnProperty(key)) {
+    if (!Object.prototype.hasOwnProperty.call(lookupObject, key)) {
       if (typeof key === 'object') {
         if (key[0] !== undefined) {
-          key = key[0];
+          key = key[0]
         } else {
           key = index
         }
       }
-    } else { // if a key exists, we tack on an index
+    } else {
+      // if a key exists, we tack on an index
       if (typeof key === 'object') {
         if (oldObjArr[index][props[0]][0] !== undefined) {
-          key = oldObjArr[index][props[0]][0];
+          key = oldObjArr[index][props[0]][0]
         } else {
           key = index
         }
       } else if (typeof key === 'string') {
-        key = `${key},${index}`;
-      } else { // is number
-        key = (key + 1).toString();
+        key = `${key},${index}`
+      } else {
+        // is number
+        key = (key + 1).toString()
       }
     }
 
     //  console.log('sortObjArr2 key', key);
 
-    lookupObject[key] = oldObjArr[index];
+    lookupObject[key] = oldObjArr[index]
   }
 
   // console.log('sortObjArr2 lookupObject', lookupObject);        // object
 
   // sort object's keys alphabetically, and then put into a new object[]
-  Object.keys(lookupObject).sort().forEach(key => {
-    newObjArr.push(lookupObject[key]);
-  });
+  Object.keys(lookupObject)
+    .sort()
+    .forEach((key) => {
+      newObjArr.push(lookupObject[key])
+    })
 
   // console.log('sortObjArr2 newObjArr', newObjArr);              // object[]
 
-  return newObjArr;
+  return newObjArr
 }
 
 // helper to get the domain without any subdomains
 function _getDomain() {
   const hostnameArray = window.location.hostname.split('.')
   const numberOfSubdomains = hostnameArray.length - 2
-  return hostnameArray.length === 2 ? window.location.hostname : hostnameArray.slice(numberOfSubdomains).join('.')
+  return hostnameArray.length === 2
+    ? window.location.hostname
+    : hostnameArray.slice(numberOfSubdomains).join('.')
 }
 
 /* ********************************* */
 /* start the engine                  */
 /* ********************************* */
 
-;(async() => {
+/* eslint-disable no-extra-semi */
+;(async () => {
   // set env
-  function getDomain() {
-    const hostnameArray = window.location.hostname.split('.')
-    const numberOfSubdomains = hostnameArray.length - 2
-    return hostnameArray.length === 2 ? window.location.hostname : hostnameArray.slice(numberOfSubdomains).join('.')
-  }
-
   SoundLister.env = SL_ENV_PROD_URL.includes(_getDomain()) ? 'prod' : 'local'
 
   // adjust <title> for env
@@ -1021,7 +1023,7 @@ function _getDomain() {
 
     let album = null
 
-    Object.values(SoundLister.songs).forEach(song => {
+    Object.values(SoundLister.songs).forEach((song) => {
       let songAlbum = song.album
 
       if (songAlbum != album) {
@@ -1068,7 +1070,7 @@ function _getDomain() {
     }
     // otherwise, set an event listener for metadata loading completion
     else {
-      SoundLister.dom.audio.addEventListener('loadedmetadata', (e) => {
+      SoundLister.dom.audio.addEventListener('loadedmetadata', () => {
         // console.log('loadedmetadata', e)
 
         SoundLister._displayAudioDuration()
@@ -1092,7 +1094,8 @@ function _getDomain() {
     SoundLister.dom.nextButton.disabled = 'true'
 
     SoundLister.dom.playlist.classList.add('no-audio-found')
-    SoundLister.dom.playlist.innerHTML = '<p>No audio files found. Try adding some to <code>/assets/audio</code>!</p>'
+    SoundLister.dom.playlist.innerHTML =
+      '<p>No audio files found. Try adding some to <code>/assets/audio</code>!</p>'
 
     SoundLister.dom.collDropdown.disabled = 'true'
 
