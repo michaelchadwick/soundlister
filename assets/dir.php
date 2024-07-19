@@ -15,10 +15,11 @@
 
     $fullpath = $path['dirname'] . '/' . $path['basename'];
 
+    $path['updated'] = getFileUpdatedDate($fullpath);
+
     $total_ms = getFileLengthInMs($fullpath);
 
     $path['ms'] = $total_ms;
-
     $path['duration'] = getDisplayDuration($total_ms);
 
     $files[$dirIndex][] = $path;
@@ -34,6 +35,12 @@
     $cmd = "mediainfo --Output='General;%Duration%' " . escapeshellarg($path);
 
     return intval(exec($cmd));
+  }
+
+  function getFileUpdatedDate($path) {
+    $cmd = "date -r " . escapeshellarg($path);
+
+    return exec($cmd);
   }
 
   function getDisplayDuration($ms) {
