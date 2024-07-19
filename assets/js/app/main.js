@@ -487,7 +487,7 @@ SoundLister._createPlaylistItem = (song) => {
   }
 
   const timestamp = new Date(song.updated);
-  let trackUpdated = `${timestamp.getFullYear()}/${timestamp.getMonth()}/${timestamp.getDate()} ${timestamp.getHours().toString().padStart(2, '0')}:${timestamp.getMinutes().toString().padStart(2, '0')}:${timestamp.getSeconds().toString().padStart(2, '0')}`;
+  let trackUpdated = `${timestamp.getFullYear()}/${timestamp.getMonth().toString().padStart(2, '0')}/${timestamp.getDate()} ${timestamp.getHours().toString().padStart(2, '0')}:${timestamp.getMinutes().toString().padStart(2, '0')}:${timestamp.getSeconds().toString().padStart(2, '0')}`;
 
   track.setAttribute('title', song.title);
   track.setAttribute('alt', song.title);
@@ -510,8 +510,14 @@ SoundLister._createPlaylistItem = (song) => {
   const trackArtistAlbum = document.createElement('div');
   trackArtistAlbum.classList.add('track-attribute', 'track-artist-album');
   trackArtistAlbum.innerHTML = `
-        by <span class='track-attribute highlight'>${song.artist}</span> on <span class='track-attribute highlight'>${song.album}</span>
-      `;
+    by <span class='track-attribute highlight'>${song.artist}</span> on <span class='track-attribute highlight'>${song.album}</span>
+  `;
+
+  const trackMetaInfo = document.createElement('div');
+  trackMetaInfo.classList.add('track-attribute', 'track-meta-info');
+  trackMetaInfo.innerHTML = `
+    updated: ${trackUpdated}
+  `;
 
   trackTitles.append(trackName);
   trackTitles.append(trackArtistAlbum);
@@ -525,6 +531,7 @@ SoundLister._createPlaylistItem = (song) => {
   track.append(trackDuration);
 
   SoundLister.dom.playlist.appendChild(track);
+  SoundLister.dom.playlist.appendChild(trackMetaInfo);
 
   SoundLister.index++;
 };

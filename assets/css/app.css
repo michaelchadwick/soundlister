@@ -29,7 +29,7 @@
 }
 
 @font-face {
-  font-family: 'Raleway';
+  font-family: "Raleway";
   src: url(https://fonts.neb.host/Raleway/static/Raleway-Regular.ttf);
 }
 
@@ -44,7 +44,7 @@ html {
 
 body {
   color: var(--neutral-black);
-  font-family: 'Raleway';
+  font-family: "Raleway";
   overflow-y: hidden;
 }
 
@@ -59,7 +59,7 @@ code {
   padding: 0.1em 0.3em;
 }
 
-input[type='range'] {
+input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
   float: left;
@@ -70,7 +70,7 @@ input[type='range'] {
   position: relative;
   width: 48%;
 }
-input[type='range']::-webkit-slider-runnable-track {
+input[type="range"]::-webkit-slider-runnable-track {
   background: linear-gradient(
     to right,
     var(--base-color-grad1) var(--buffered-width),
@@ -80,9 +80,9 @@ input[type='range']::-webkit-slider-runnable-track {
   height: 3px;
   width: 100%;
 }
-input[type='range']::before {
+input[type="range"]::before {
   background-color: var(--base-color);
-  content: '';
+  content: "";
   cursor: pointer;
   height: 3px;
   left: 0;
@@ -90,10 +90,10 @@ input[type='range']::before {
   top: 8px;
   width: var(--seek-before-width);
 }
-input[type='range']#volume-slider::before {
+input[type="range"]#volume-slider::before {
   background-color: transparent;
 }
-input[type='range']::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   background-color: #fff;
   box-sizing: content-box;
@@ -105,11 +105,11 @@ input[type='range']::-webkit-slider-thumb {
   position: relative;
   width: 15px;
 }
-input[type='range']:active::-webkit-slider-thumb {
+input[type="range"]:active::-webkit-slider-thumb {
   transform: scale(1.2);
   background: var(--base-color);
 }
-input[type='range']::-moz-range-track {
+input[type="range"]::-moz-range-track {
   background: linear-gradient(
     to right,
     var(--base-color-grad1) var(--buffered-width),
@@ -119,13 +119,13 @@ input[type='range']::-moz-range-track {
   height: 3px;
   width: 100%;
 }
-input[type='range']::-moz-range-progress {
+input[type="range"]::-moz-range-progress {
   background-color: var(--base-color);
 }
-input[type='range']::-moz-focus-outer {
+input[type="range"]::-moz-focus-outer {
   border: 0;
 }
-input[type='range']::-moz-range-thumb {
+input[type="range"]::-moz-range-thumb {
   background-color: var(--neutral-white);
   border: 1px solid var(--base-color);
   border-radius: 50%;
@@ -134,11 +134,11 @@ input[type='range']::-moz-range-thumb {
   height: 15px;
   width: 15px;
 }
-input[type='range']:active::-moz-range-thumb {
+input[type="range"]:active::-moz-range-thumb {
   background: var(--base-color);
   transform: scale(1.2);
 }
-input[type='range']::-ms-track {
+input[type="range"]::-ms-track {
   background: transparent;
   border: solid transparent;
   color: transparent;
@@ -146,17 +146,17 @@ input[type='range']::-ms-track {
   height: 3px;
   width: 100%;
 }
-input[type='range']::-ms-fill-lower {
+input[type="range"]::-ms-fill-lower {
   background-color: var(--base-color);
 }
-input[type='range']::-ms-fill-upper {
+input[type="range"]::-ms-fill-upper {
   background: linear-gradient(
     to right,
     var(--base-color-grad1) var(--buffered-width),
     var(--base-color-grad2) var(--buffered-width)
   );
 }
-input[type='range']::-ms-thumb {
+input[type="range"]::-ms-thumb {
   background-color: var(--neutral-white);
   border: 1px solid var(--base-color);
   border-radius: 50%;
@@ -165,7 +165,7 @@ input[type='range']::-ms-thumb {
   height: 15px;
   width: 15px;
 }
-input[type='range']:active::-ms-thumb {
+input[type="range"]:active::-ms-thumb {
   background: var(--base-color);
   transform: scale(1.2);
 }
@@ -257,7 +257,7 @@ section#main #wrapper {
 }
 #audio-player-container::before {
   background: linear-gradient(to left, var(--base-color), #ff8a00);
-  content: '';
+  content: "";
   height: calc(100% + 4px);
   left: -2px;
   position: absolute;
@@ -562,6 +562,13 @@ section#main #wrapper {
   #playlist a div.titles div.track-artist-album {
     font-size: 0.85rem;
   }
+}
+
+#playlist div.track-meta-info {
+  font-family: monospace;
+  font-size: 0.7rem;
+  padding: 0 2px;
+  text-align: right;
 }
 
 #playlist hr.album-separator {
