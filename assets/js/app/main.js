@@ -391,7 +391,7 @@ SoundLister._resizePlaylist = () => {
   let plHeight = 0;
 
   if (winWidth >= 992) {
-    plHeight = Math.floor(winHeight - 360);
+    plHeight = Math.floor(winHeight - 370);
   } else if (winWidth >= 768) {
     plHeight = Math.floor(winHeight - 310);
   } else {
