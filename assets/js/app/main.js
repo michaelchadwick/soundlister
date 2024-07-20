@@ -487,7 +487,17 @@ SoundLister._createPlaylistItem = (song) => {
   }
 
   const timestamp = new Date(song.updated);
-  let trackUpdated = `${timestamp.getFullYear()}/${timestamp.getMonth().toString().padStart(2, '0')}/${timestamp.getDate()} ${timestamp.getHours().toString().padStart(2, '0')}:${timestamp.getMinutes().toString().padStart(2, '0')}:${timestamp.getSeconds().toString().padStart(2, '0')}`;
+  const year = timestamp.getFullYear();
+  const month = (timestamp.getMonth() + 1).toString().padStart(2, '0');
+  const day = timestamp.getDate().toString().padStart(2, '0');
+  const hours =
+    timestamp.getHours() > 12
+      ? (timestamp.getHours() - 12).toString().padStart(2, '0')
+      : timestamp.getHours().toString().padStart(2, '0');
+  const mins = timestamp.getMinutes().toString().padStart(2, '0');
+  const ampm = timestamp.getHours() >= 12 ? 'PM' : 'AM';
+
+  let trackUpdated = `${year}/${month}/${day} ${hours}:${mins}${ampm}`;
 
   track.setAttribute('title', song.title);
   track.setAttribute('alt', song.title);
