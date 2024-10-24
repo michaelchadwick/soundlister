@@ -9,7 +9,7 @@ SoundLister.activeTrack = '';
 SoundLister.currentIndex = 0;
 SoundLister.tags = {};
 SoundLister.index = 0;
-SoundLister.col = '_';
+SoundLister.coll = '_';
 SoundLister.playIconState = 'play';
 SoundLister.muteIconState = 'unmute';
 SoundLister.raf = null;
@@ -57,7 +57,7 @@ SoundLister.attachPresentationListeners = () => {
   // collection filter changes
   SoundLister.dom.collDropdown.addEventListener('change', (e) => {
     // update SoundLister current collection
-    SoundLister.col = e.target.value;
+    SoundLister.coll = e.target.value;
 
     // remake playlist
     SoundLister._remakePlaylist();
@@ -200,8 +200,8 @@ SoundLister.attachFunctionalListeners = () => {
 SoundLister.tracks = () => {
   let tracks = null;
 
-  if (SoundLister.col !== '_') {
-    tracks = document.querySelectorAll(`#playlist a[data-col=${SoundLister.col}]`);
+  if (SoundLister.coll !== '_') {
+    tracks = document.querySelectorAll(`#playlist a[data-col=${SoundLister.coll}]`);
   } else {
     tracks = document.querySelectorAll('#playlist a');
   }
@@ -413,9 +413,9 @@ SoundLister._remakePlaylist = () => {
   SoundLister.songsCol = [];
 
   // remake playlist
-  if (SoundLister.col !== '_') {
+  if (SoundLister.coll !== '_') {
     SoundLister.songsBase.forEach((song) => {
-      if (song.col == SoundLister.col) {
+      if (song.col == SoundLister.coll) {
         SoundLister.songsCol.push(song);
         SoundLister._createPlaylistItem(song);
       }
@@ -656,9 +656,9 @@ SoundLister._getFiles = async () => {
     // check querystring for ?collection= to filter dropdown
     SoundLister._loadQSCollection();
 
-    if (SoundLister.col !== '_') {
+    if (SoundLister.coll !== '_') {
       titlesJSON = Object.keys(titlesJSON)
-        .filter((key) => key.includes(SoundLister.col))
+        .filter((key) => key.includes(SoundLister.coll))
         .reduce((cur, key) => {
           return Object.assign(cur, { [key]: titlesJSON[key] });
         }, {});
@@ -849,7 +849,7 @@ SoundLister._loadQSCollection = () => {
   const colToLoad = params.col || params.coll || params.collection;
 
   if (colToLoad) {
-    SoundLister.col = colToLoad;
+    SoundLister.coll = colToLoad;
 
     const validChoices = Array.from(SoundLister.dom.collDropdown.options).map((op) => op.value);
 
@@ -864,25 +864,33 @@ SoundLister._loadQSCollection = () => {
       SoundLister._updateCollDisplay();
     } else {
       // if invalid collection speficied, default to all collections
-      SoundLister.col = SL_DEFAULT_COLLECTION;
+      SoundLister.coll = SL_DEFAULT_COLLECTION;
     }
   }
 };
 
 SoundLister._updateCollDisplay = () => {
-  if (SoundLister.col != '_') {
-    document.title = SoundLister.col.toUpperCase() + ' | SoundLister';
+  if (SoundLister.coll != '_') {
+    document.title = SoundLister.coll.toUpperCase() + ' | SoundLister';
 
-    SoundLister.dom.collHeader.innerHTML = `<strong>${SoundLister.col.toUpperCase()}</strong>.`;
+    SoundLister.dom.collHeader.innerHTML = `<strong>${SoundLister.coll.toUpperCase()}</strong>.`;
   } else {
     document.title = 'SoundLister';
 
     SoundLister.dom.collHeader.innerHTML = 'something.';
   }
 
+  SoundLister._updateQueryString(SoundLister.coll);
+
   if (SoundLister.env == 'local') {
     document.title = '(LH) ' + document.title;
   }
+};
+
+SoundLister._updateQueryString = (coll) => {
+  const url = new URL(location);
+  url.searchParams.set('coll', coll);
+  window.history.pushState({}, '', url);
 };
 
 /* ********************************* */
