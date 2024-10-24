@@ -548,13 +548,18 @@ SoundLister._createPlaylistItem = (song) => {
 
 // convert filename to a title, if needed
 SoundLister._filenameToTitle = (filename) => {
-  // change '-' to ' ', remove track numbers, remove file extension
-  let t = filename
-    .replaceAll('-', ' ')
-    .replaceAll(/^[0-9]+/g, '')
-    .replaceAll(/\.{1}[a-zA-Z0-9]{3,4}$/g, '');
-  let t_split = t.split(' ');
+  let title;
+  // change '-' to ' '
+  title = filename.replaceAll('-', ' ');
+  // remove track numbers
+  // e.g. 0 Track, 11 Track, 115 Track, 4-Track, 05-Track, 043-Track
+  title = title.replaceAll(/^([0-9]{1,3}[\s-]+)/g, '');
+  // remove file extension
+  title = title.replaceAll(/\.{1}[a-zA-Z0-9]{3,4}$/g, '');
 
+  let t_split = title.split(' ');
+
+  // uppercase first letter in title
   for (var i = 0; i < t_split.length; i++) {
     t_split[i] = t_split[i].charAt(0).toUpperCase() + t_split[i].slice(1);
   }
@@ -685,8 +690,6 @@ SoundLister._addCollectionOption = (col) => {
 
 // change play/pause icon depending on context
 SoundLister._updatePlayButton = (source = null) => {
-  // console.log('_updatePlayButton', source)
-
   switch (source) {
     case 'playlist':
       requestAnimationFrame(SoundLister._whilePlaying);
@@ -751,8 +754,6 @@ SoundLister._updateMuteButton = () => {
 
 SoundLister._displayBufferedAmount = () => {
   // const bufferedLength = SoundLister.dom.audio.buffered.length - 1
-  // console.log('audio.buffered', SoundLister.dom.audio.buffered)
-  // console.log('bufferedLength', bufferedLength)
   // const bufferedAmount = Math.floor(SoundLister.dom.audio.buffered.end(bufferedLength))
   // SoundLister.dom.audioPlayerContainer.style.setProperty(
   //   '--buffered-width',
@@ -824,8 +825,6 @@ SoundLister._addAudioToCache = async (collections) => {
   await caches.open(SL_CACHE_TEXT_KEY).then(async (cache) => {
     await cache.keys().then(async function (keys) {
       if (!keys.length) {
-        // console.log(`${SL_CACHE_TEXT_KEY} is non-existing or empty, so adding files to it...`)
-
         let filesToAdd = [];
 
         Object.keys(collections).forEach((col) => {
@@ -835,8 +834,6 @@ SoundLister._addAudioToCache = async (collections) => {
         });
 
         await cache.addAll(filesToAdd);
-
-        // console.log(`added files to ${SL_CACHE_TEXT_KEY} cache`)
       } else {
         // console.log(`${SL_CACHE_TEXT_KEY} is full, so no need to initialize`)
       }
@@ -989,12 +986,8 @@ SoundLister.__sortObjArr = (oldObjArr, props) => {
       }
     }
 
-    //  console.log('sortObjArr2 key', key);
-
     lookupObject[key] = oldObjArr[index];
   }
-
-  // console.log('sortObjArr2 lookupObject', lookupObject);        // object
 
   // sort object's keys alphabetically, and then put into a new object[]
   Object.keys(lookupObject)
@@ -1002,8 +995,6 @@ SoundLister.__sortObjArr = (oldObjArr, props) => {
     .forEach((key) => {
       newObjArr.push(lookupObject[key]);
     });
-
-  // console.log('sortObjArr2 newObjArr', newObjArr);              // object[]
 
   return newObjArr;
 };
@@ -1035,7 +1026,8 @@ function _getDomain() {
   const fileObjArr = await SoundLister._getFiles();
 
   if (Object.keys(fileObjArr).length) {
-    // create SoundLister.songsBase JSON object with title, artist, etc. of all songs
+    // create SoundLister.songsBase JSON object
+    // use title, artist, etc. of all songs
     SoundLister.songsBase = await SoundLister._fillSongs(fileObjArr);
 
     // set array of objects for reference during usage
@@ -1094,8 +1086,6 @@ function _getDomain() {
     // otherwise, set an event listener for metadata loading completion
     else {
       SoundLister.dom.audio.addEventListener('loadedmetadata', () => {
-        // console.log('loadedmetadata', e)
-
         SoundLister._displayAudioDuration();
         SoundLister._displayCurrentTrackName();
         SoundLister._setSliderMax();
