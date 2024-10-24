@@ -14,15 +14,15 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "cypress": "^13.13.0",
-    "eslint": "^8.57.0",
+    "cypress": "^13.15.0",
+    "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-cypress": "^3.3.0",
-    "eslint-plugin-n": "^17.0.0",
-    "eslint-plugin-prettier": "^5.1.3",
-    "eslint-plugin-vue": "^9.3.0",
+    "eslint-plugin-cypress": "^3.6.0",
+    "eslint-plugin-n": "^17.11.1",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-vue": "^9.29.1",
     "eslint-plugin-yml": "^1.14.0",
-    "husky": "^9.0.11"
+    "husky": "^9.1.6"
   },
   "packageManager": "pnpm@9.0.6+sha512.f6d863130973207cb7a336d6b439a242a26ac8068077df530d6a86069419853dc1ffe64029ec594a9c505a3a410d19643c870aba6776330f5cfddcf10a9c1617"
 }
