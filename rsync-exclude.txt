@@ -4,6 +4,7 @@
 .git
 .gitignore
 .husky
+.markdownlint.json
 .prettierignore
 .prettierrc.js
 assets/audio
