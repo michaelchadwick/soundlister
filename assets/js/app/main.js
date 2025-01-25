@@ -107,7 +107,7 @@ SoundLister.attachFunctionalListeners = () => {
     // console.log('audio can play through', e)
   });
   // <audio> element has started playing
-  SoundLister.dom.audio.addEventListener('play', (e) => {
+  SoundLister.dom.audio.addEventListener('play', () => {
     // console.log('audio has started playing', e);
   });
   // <audio> element is playing
