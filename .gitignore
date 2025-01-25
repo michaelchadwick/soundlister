@@ -1,10 +1,13 @@
 # dont track actual audio files
 audio/
+assets/custom/*
 !assets/css/vendor
 !assets/icons
 !assets/images/vendor
 !assets/js/vendor
 assets/js/vendor/*.min.js
+
+custom.json
 
 # Ignore cypress stuff
 cypress/build/release
@@ -25,3 +28,6 @@ node_modules
 
 # Ignore npm package stuff in root
 package-lock.json
+
+# Custom config
+sl_config.json

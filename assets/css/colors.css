@@ -1,23 +1,42 @@
-/* custom */
-/* user-supplied theme colors */
+/* colors */
+/* default theme colors */
+
+:root {
+  --dark-color: #3d4d91;
+  --light-color: #02cbe3;
+  --link-color: #2a2ad7;
+  --highlight-color: #dbfbff;
+  --border-color: #00545d;
+}
 
 body {
-  background: #02cbe3;
-  background: -moz-linear-gradient(-45deg, #02cbe3 0%, #3d4d91 100%);
-  background: -webkit-linear-gradient(-45deg, #02cbe3 0%, #3d4d91 100%);
-  background: linear-gradient(135deg, #02cbe3 0%, #3d4d91 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#02cbe3', endColorstr='#3d4d91', GradientType=1);;
+  background: var(--light-color);
+  background: -moz-linear-gradient(
+    -45deg,
+    var(--light-color) 0%,
+    var(--dark-color) 100%
+  );
+  background: -webkit-linear-gradient(
+    -45deg,
+    var(--light-color) 0%,
+    var(--dark-color) 100%
+  );
+  background: linear-gradient(
+    135deg,
+    var(--light-color) 0%,
+    var(--dark-color) 100%
+  );
 }
 
 a {
-  color: #2a2ad7;
+  color: var(--link-color);
 }
 
 header,
 section#main {
-  border-bottom: 5px dashed #00545d;
+  border-bottom: 5px dashed var(--border-color);
 }
 
 div#amplitude-right div.song.amplitude-active-song-container {
-  background-color: #dbfbff;
+  background-color: var(--highlight-color);
 }

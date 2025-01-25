@@ -1,7 +1,7 @@
 /* main */
 /* global Promise, Proxy */
 /* global SoundLister, MP3Tag */
-/* global SL_AUDIO_ASSETS_DIR, SL_CACHE_TEXT_KEY, SL_DEFAULT_COLLECTION, SL_ENV_PROD_URL, SL_PHP_DIR_SCRIPT, SL_SERVICE_WORKER_PATH */
+/* global SL_AUDIO_ASSETS_DIR, SL_CACHE_TEXT_KEY, SL_DEFAULT_COLLECTION, SL_PHP_DIR_SCRIPT, SL_SERVICE_WORKER_PATH */
 
 // TODO: playlist scroll not working correctly sometimes
 
@@ -28,6 +28,7 @@ SoundLister.attachPresentationListeners = () => {
   // play/pause button
   SoundLister.dom.playButton.addEventListener('click', () => {
     SoundLister._updatePlayButton('click');
+    SoundLister._setTitle();
   });
 
   // mute/unmute button
@@ -106,8 +107,8 @@ SoundLister.attachFunctionalListeners = () => {
     // console.log('audio can play through', e)
   });
   // <audio> element has started playing
-  SoundLister.dom.audio.addEventListener('play', () => {
-    // console.log('audio has started playing', e)
+  SoundLister.dom.audio.addEventListener('play', (e) => {
+    // console.log('audio has started playing', e);
   });
   // <audio> element is playing
   SoundLister.dom.audio.addEventListener('playing', () => {
@@ -295,7 +296,7 @@ SoundLister.goForward = (e = null) => {
 
 // change the currently-playing track
 SoundLister.changeTrack = (current) => {
-  console.log('changeTrack()', current, SoundLister.tracks()[current].title);
+  SoundLister._logStatus(`changeTrack(${current})`, SoundLister.tracks()[current].title);
 
   // scroll new track into view
   const activeTrack = document.querySelector('#playlist a.active');
@@ -311,7 +312,7 @@ SoundLister.changeTrack = (current) => {
 
 // play currently-loaded track
 SoundLister.playTrack = async (track) => {
-  // console.log('playTrack()', track.href)
+  console.log('playTrack()', track.href);
 
   // change <audio> source
   SoundLister.dom.audio.src = track.href;
@@ -334,8 +335,23 @@ SoundLister.playTrack = async (track) => {
 /* _private functions                */
 /* ********************************* */
 
+SoundLister._setCustomImages = (iconPath, logoPath) => {
+  var links = document.querySelectorAll("link[rel~='icon']");
+  links.forEach((link) => {
+    link.href = iconPath;
+  });
+
+  SoundLister.dom.logo.src = logoPath;
+};
+SoundLister._setCustomText = (headerText, titleText) => {
+  SoundLister.dom.headerText.innerHTML = headerText;
+  SoundLister.title = titleText;
+  SoundLister._setTitle();
+};
+
 SoundLister._setTitle = () => {
   let title = SoundLister.env == 'local' ? '(LH) ' : '';
+
   title += SoundLister.activeTrack != '' ? SoundLister.activeTrack + ' | ' : '';
   title += SoundLister.title;
 
@@ -1008,13 +1024,13 @@ SoundLister.__sortObjArr = (oldObjArr, props) => {
 };
 
 // helper to get the domain without any subdomains
-function _getDomain() {
-  const hostnameArray = window.location.hostname.split('.');
-  const numberOfSubdomains = hostnameArray.length - 2;
-  return hostnameArray.length === 2
-    ? window.location.hostname
-    : hostnameArray.slice(numberOfSubdomains).join('.');
-}
+// function _getDomain() {
+//   const hostnameArray = window.location.hostname.split('.');
+//   const numberOfSubdomains = hostnameArray.length - 2;
+//   return hostnameArray.length === 2
+//     ? window.location.hostname
+//     : hostnameArray.slice(numberOfSubdomains).join('.');
+// }
 
 /* ********************************* */
 /* start the engine                  */
@@ -1022,12 +1038,33 @@ function _getDomain() {
 
 /* eslint-disable no-extra-semi */
 (async () => {
-  // set env
-  SoundLister.env = SL_ENV_PROD_URL.includes(_getDomain()) ? 'prod' : 'local';
-
   // adjust <title> for env
   if (SoundLister.env == 'local') {
     SoundLister._setTitle();
+  }
+
+  try {
+    const resp = await fetch('./custom.json');
+
+    if (resp) {
+      const conf = await resp.json();
+
+      if (conf) {
+        const icon = conf.faviconFilePath;
+        const header = conf.headerText;
+        const logo = conf.logoFilePath;
+        const title = conf.titleText;
+
+        SoundLister._setCustomImages(icon, logo);
+        SoundLister._setCustomText(header, title);
+      } else {
+        console.error('custom.json could not be loaded');
+      }
+    } else {
+      // console.warn('custom.json not found');
+    }
+  } catch (e) {
+    // console.warn('no custom.json file found', e);
   }
 
   // create fileObjArr object array of file info
@@ -1098,6 +1135,8 @@ function _getDomain() {
         SoundLister._displayCurrentTrackName();
         SoundLister._setSliderMax();
         SoundLister._displayBufferedAmount();
+
+        SoundLister.activeTrack = SoundLister.tracks()[0].title;
       });
     }
 

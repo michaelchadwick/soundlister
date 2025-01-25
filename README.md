@@ -1,6 +1,6 @@
 # SoundLister
 
-Create a one-page website playlist for just about any[^1] HTML5 audio[^2]. Custom colors for body background, link color, playlist border, and active song background color can be specified in `custom.css`.
+Create a one-page website playlist for just about any[^1] HTML5 audio[^2]. Custom text and images can be loaded by copying `custom.json.dist` to `custom.json` and updating the values. Custom colors for body background, link color, playlist border, and active song background color can be specified in `/assets/custom/colors.css`.
 
 ## How to Use
 
