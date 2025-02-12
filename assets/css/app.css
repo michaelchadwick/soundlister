@@ -565,6 +565,7 @@ section#main #wrapper {
 }
 
 #playlist div.track-meta-info {
+  background-color: var(--gray-medium);
   font-family: monospace;
   font-size: 0.7rem;
   padding: 0 2px;
