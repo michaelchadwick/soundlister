@@ -203,6 +203,8 @@ SoundLister.tracks = () => {
 
   if (SoundLister.coll !== SL_DEFAULT_COLLECTION) {
     tracks = document.querySelectorAll(`#playlist a[data-col=${SoundLister.coll}]`);
+
+    SoundLister._updateCollDisplay();
   } else {
     tracks = document.querySelectorAll('#playlist a');
   }
@@ -673,10 +675,11 @@ SoundLister._getFiles = async () => {
       SoundLister._removeCollDropdown(titlesJSON[0]);
     }
 
-    // TODO: use a Service Worker to intercept requests and return cached versions if possible
+    // TODO: use a Service Worker to intercept requests
+    // return cached versions if possible
     // SoundLister._registerServiceWorker()
 
-    // check querystring for ?collection= to filter dropdown
+    // check querystring for ?col|coll|collection= to filter dropdown
     SoundLister._loadQSCollection();
 
     if (SoundLister.coll !== SL_DEFAULT_COLLECTION) {
@@ -688,6 +691,10 @@ SoundLister._getFiles = async () => {
     }
   } else {
     titlesJSON = {};
+  }
+
+  if (Object.keys(titlesJSON).length == 1) {
+    SoundLister._updateCollDisplay(Object.keys(titlesJSON)[0]);
   }
 
   return titlesJSON;
@@ -887,18 +894,22 @@ SoundLister._loadQSCollection = () => {
   }
 };
 
-SoundLister._updateCollDisplay = () => {
-  if (SoundLister.coll != SL_DEFAULT_COLLECTION) {
+SoundLister._updateCollDisplay = (overridedTitle = null) => {
+  if (overridedTitle) {
+    SoundLister.coll = overridedTitle;
+  }
+
+  if (SoundLister.coll !== SL_DEFAULT_COLLECTION) {
     document.title = SoundLister.coll.toUpperCase() + ' | SoundLister';
 
     SoundLister.dom.collHeader.innerHTML = `<strong>${SoundLister.coll.toUpperCase()}</strong>.`;
+
+    SoundLister._updateQueryString(SoundLister.coll);
   } else {
     document.title = 'SoundLister';
 
     SoundLister.dom.collHeader.innerHTML = 'something.';
   }
-
-  SoundLister._updateQueryString(SoundLister.coll);
 
   if (SoundLister.env == 'local') {
     document.title = '(LH) ' + document.title;
