@@ -9,7 +9,7 @@ SoundLister.activeTrack = '';
 SoundLister.currentIndex = 0;
 SoundLister.tags = {};
 SoundLister.index = 0;
-SoundLister.coll = '_';
+SoundLister.coll = SL_DEFAULT_COLLECTION;
 SoundLister.playIconState = 'play';
 SoundLister.muteIconState = 'unmute';
 SoundLister.raf = null;
@@ -201,7 +201,7 @@ SoundLister.attachFunctionalListeners = () => {
 SoundLister.tracks = () => {
   let tracks = null;
 
-  if (SoundLister.coll !== '_') {
+  if (SoundLister.coll !== SL_DEFAULT_COLLECTION) {
     tracks = document.querySelectorAll(`#playlist a[data-col=${SoundLister.coll}]`);
   } else {
     tracks = document.querySelectorAll('#playlist a');
@@ -432,7 +432,7 @@ SoundLister._remakePlaylist = () => {
   SoundLister.songsCol = [];
 
   // remake playlist
-  if (SoundLister.coll !== '_') {
+  if (SoundLister.coll !== SL_DEFAULT_COLLECTION) {
     SoundLister.songsBase.forEach((song) => {
       if (song.col == SoundLister.coll) {
         SoundLister.songsCol.push(song);
@@ -666,8 +666,12 @@ SoundLister._getFiles = async () => {
   if (titlesArray.length) {
     titlesJSON = JSON.parse(titlesArray);
 
-    // initiate the collection dropdown
-    Object.keys(titlesJSON).forEach((col) => SoundLister._addCollectionOption(col));
+    // initiate the collection dropdown if more than one collection
+    if (Object.keys(titlesJSON).length > 1) {
+      Object.keys(titlesJSON).forEach((col) => SoundLister._addCollectionOption(col));
+    } else {
+      SoundLister._removeCollDropdown(titlesJSON[0]);
+    }
 
     // TODO: use a Service Worker to intercept requests and return cached versions if possible
     // SoundLister._registerServiceWorker()
@@ -675,7 +679,7 @@ SoundLister._getFiles = async () => {
     // check querystring for ?collection= to filter dropdown
     SoundLister._loadQSCollection();
 
-    if (SoundLister.coll !== '_') {
+    if (SoundLister.coll !== SL_DEFAULT_COLLECTION) {
       titlesJSON = Object.keys(titlesJSON)
         .filter((key) => key.includes(SoundLister.coll))
         .reduce((cur, key) => {
@@ -875,12 +879,7 @@ SoundLister._loadQSCollection = () => {
     // permananently change to one collection (save network)
     // remove collection dropdown
     if (validChoices.includes(colToLoad)) {
-      SoundLister.dom.collDropdown.value = params.collection;
-      SoundLister.dom.collDropdown.dispatchEvent(new Event('change'));
-      SoundLister.dom.collDropdown.disabled = true;
-      SoundLister.dom.collDropdown.style.display = 'none';
-
-      SoundLister._updateCollDisplay();
+      SoundLister._removeCollDropdown(colToLoad);
     } else {
       // if invalid collection speficied, default to all collections
       SoundLister.coll = SL_DEFAULT_COLLECTION;
@@ -889,7 +888,7 @@ SoundLister._loadQSCollection = () => {
 };
 
 SoundLister._updateCollDisplay = () => {
-  if (SoundLister.coll != '_') {
+  if (SoundLister.coll != SL_DEFAULT_COLLECTION) {
     document.title = SoundLister.coll.toUpperCase() + ' | SoundLister';
 
     SoundLister.dom.collHeader.innerHTML = `<strong>${SoundLister.coll.toUpperCase()}</strong>.`;
@@ -903,6 +902,17 @@ SoundLister._updateCollDisplay = () => {
 
   if (SoundLister.env == 'local') {
     document.title = '(LH) ' + document.title;
+  }
+};
+
+SoundLister._removeCollDropdown = (collection) => {
+  SoundLister.dom.collDropdown.value = collection;
+  SoundLister.dom.collDropdown.dispatchEvent(new Event('change'));
+  SoundLister.dom.collDropdown.disabled = true;
+  SoundLister.dom.collDropdown.style.display = 'none';
+
+  if (collection && collection !== SL_DEFAULT_COLLECTION) {
+    SoundLister._updateCollDisplay();
   }
 };
 
