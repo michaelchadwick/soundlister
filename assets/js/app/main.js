@@ -335,16 +335,19 @@ SoundLister.playTrack = async (track) => {
 /* _private functions                */
 /* ********************************* */
 
-SoundLister._setCustomImages = (iconPath, logoPath) => {
+SoundLister._setCustomIcon = (iconPath) => {
   var links = document.querySelectorAll("link[rel~='icon']");
   links.forEach((link) => {
     link.href = iconPath;
   });
-
+};
+SoundLister._setCustomLogo = (logoPath) => {
   SoundLister.dom.logo.src = logoPath;
 };
-SoundLister._setCustomText = (headerText, titleText) => {
+SoundLister._setCustomHeader = (headerText) => {
   SoundLister.dom.headerText.innerHTML = headerText;
+};
+SoundLister._setCustomTitle = (titleText) => {
   SoundLister.title = titleText;
   SoundLister._setTitle();
 };
@@ -1055,8 +1058,18 @@ SoundLister.__sortObjArr = (oldObjArr, props) => {
         const logo = conf.logoFilePath;
         const title = conf.titleText;
 
-        SoundLister._setCustomImages(icon, logo);
-        SoundLister._setCustomText(header, title);
+        if (icon !== '') {
+          SoundLister._setCustomIcon(icon);
+        }
+        if (logo !== '') {
+          SoundLister._setCustomLogo(logo);
+        }
+        if (header !== '') {
+          SoundLister._setCustomHeader(header);
+        }
+        if (title !== '') {
+          SoundLister._setCustomTitle(title);
+        }
       } else {
         console.error('custom.json could not be loaded');
       }
