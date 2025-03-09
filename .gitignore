@@ -6,8 +6,6 @@ audio/
 !assets/js/vendor
 assets/js/vendor/*.min.js
 
-custom.json
-
 # Ignore cypress stuff
 cypress/build/release
 cypress/coverage
