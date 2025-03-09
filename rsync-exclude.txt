@@ -8,7 +8,6 @@
 .prettierignore
 .prettierrc.js
 assets/audio
-assets/custom
 custom.json
 custom.json.dist
 cypress
