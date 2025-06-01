@@ -92,35 +92,40 @@ SoundLister.attachPresentationListeners = () => {
 SoundLister.attachFunctionalListeners = () => {
   // <audio> element has started loading
   SoundLister.dom.audio.addEventListener('loadstart', () => {
-    // console.log('audio loading begun', e)
+    // SoundLister._logStatus('audio loading begun', e)
+    SoundLister._displayBufferedAmount('loadstart');
   });
   // <audio> element is loaded enough to start playing
   SoundLister.dom.audio.addEventListener('canplay', () => {
-    // console.log('audio can play', e)
+    // SoundLister._logStatus('audio can play', e)
     SoundLister._displayAudioDuration();
     SoundLister._displayCurrentTrackName();
     SoundLister._setSliderMax();
-    SoundLister._displayBufferedAmount();
+    SoundLister._displayBufferedAmount('canplay');
   });
   // <audio> element is loaded enough to play to end
   SoundLister.dom.audio.addEventListener('canplaythrough', () => {
-    // console.log('audio can play through', e)
+    // SoundLister._logStatus('audio can play through', e)
+    SoundLister._displayBufferedAmount('canplaythrough');
   });
   // <audio> element has started playing
   SoundLister.dom.audio.addEventListener('play', () => {
-    // console.log('audio has started playing', e);
+    // SoundLister._logStatus('audio has started playing', e);
+    SoundLister._displayBufferedAmount('play');
   });
   // <audio> element is playing
   SoundLister.dom.audio.addEventListener('playing', () => {
-    // console.log('audio is playing', e)
+    // SoundLister._logStatus('audio is playing', e)
+    SoundLister._displayBufferedAmount('playing');
   });
   // <audio> element has been paused
-  SoundLister.dom.audio.addEventListener('paused', () => {
-    // console.log('audio has been paused', e)
+  SoundLister.dom.audio.addEventListener('pause', () => {
+    // SoundLister._logStatus('audio has been paused', e)
+    SoundLister._displayBufferedAmount('pause');
   });
   // <audio> element ended
   SoundLister.dom.audio.addEventListener('ended', () => {
-    // console.log('audio ended', e)
+    // SoundLister._logStatus('audio ended', e)
     SoundLister.goForward();
   });
   // <audio> element had an error occur
@@ -130,7 +135,7 @@ SoundLister.attachFunctionalListeners = () => {
 
   // <audio> element progress
   SoundLister.dom.audio.addEventListener('progress', () => {
-    SoundLister._displayBufferedAmount();
+    SoundLister._displayBufferedAmount('progress');
   });
 
   // <audio> element progress seek slider
@@ -144,7 +149,7 @@ SoundLister.attachFunctionalListeners = () => {
     }
   });
   SoundLister.dom.seekSlider.addEventListener('change', () => {
-    // console.log('manually seeked through song')
+    // SoundLister._logStatus('manually seeked through song')
 
     SoundLister.dom.audio.currentTime = SoundLister.dom.seekSlider.value;
 
@@ -214,7 +219,7 @@ SoundLister.tracks = () => {
 
 // go back one track in the playlist
 SoundLister.goBack = (e = null) => {
-  // console.log('goBack()')
+  // SoundLister._logStatus('goBack()')
 
   if (e) {
     e.preventDefault();
@@ -265,14 +270,14 @@ SoundLister.toggleShuffleMode = () => {
 
 // go forward one track in the playlist
 SoundLister.goForward = (e = null) => {
-  // console.log('goForward()')
+  // SoundLister._logStatus('goForward()')
 
   if (e) {
     e.preventDefault();
 
-    // console.log('manual change to next song')
+    // SoundLister._logStatus('manual change to next song')
   } else {
-    // console.log('song ended and changing to next one')
+    // SoundLister._logStatus('song ended and changing to next one')
   }
 
   const len = SoundLister.tracks().length - 1;
@@ -314,7 +319,7 @@ SoundLister.changeTrack = (current) => {
 
 // play currently-loaded track
 SoundLister.playTrack = async (track) => {
-  console.log('playTrack()', track.href);
+  SoundLister._logStatus('playTrack()', track.href);
 
   // change <audio> source
   SoundLister.dom.audio.src = track.href;
@@ -387,14 +392,14 @@ SoundLister._registerServiceWorker = async () => {
     navigator.serviceWorker
       .register(SL_SERVICE_WORKER_PATH, { scope: 'assets/js/app/' })
       .then((registration) => {
-        console.log('Service Worker registered', registration);
+        SoundLister._logStatus('Service Worker registered', registration);
 
         if (registration.installing) {
-          console.log('Service worker installing');
+          SoundLister._logStatus('Service worker installing');
         } else if (registration.waiting) {
-          console.log('Service worker installed');
+          SoundLister._logStatus('Service worker installed');
         } else if (registration.active) {
-          console.log('Service worker active');
+          SoundLister._logStatus('Service worker active');
         }
       })
       .catch((err) => {
@@ -426,7 +431,7 @@ SoundLister._resizePlaylist = () => {
 
 // remake playlist with collection filter
 SoundLister._remakePlaylist = () => {
-  // console.log('_remakePlaylist()')
+  // SoundLister._logStatus('_remakePlaylist()')
 
   // empty playlist
   SoundLister.dom.playlist.innerHTML = '';
@@ -782,13 +787,22 @@ SoundLister._updateMuteButton = () => {
   SoundLister.dom.muteButtonIcon.classList.toggle('fa-volume-mute');
 };
 
-SoundLister._displayBufferedAmount = () => {
-  // const bufferedLength = SoundLister.dom.audio.buffered.length - 1
-  // const bufferedAmount = Math.floor(SoundLister.dom.audio.buffered.end(bufferedLength))
-  // SoundLister.dom.audioPlayerContainer.style.setProperty(
-  //   '--buffered-width',
-  //   `${(bufferedAmount / SoundLister.dom.seekSlider.max) * 100}%`
-  // )
+SoundLister._displayBufferedAmount = (msg = null) => {
+  const bufferedLength = SoundLister.dom.audio.buffered.length - 1;
+
+  if (bufferedLength >= 0) {
+    const bufferedAmount = Math.floor(SoundLister.dom.audio.buffered.end(bufferedLength));
+
+    SoundLister._logStatus(
+      'bufferedAmount',
+      `${bufferedAmount} / ${SoundLister.dom.seekSlider.max}: ${msg}`,
+    );
+
+    SoundLister.dom.audioPlayerContainer.style.setProperty(
+      '--buffered-width',
+      `${(bufferedAmount / SoundLister.dom.seekSlider.max) * 100}%`,
+    );
+  }
 };
 
 SoundLister._displayAudioDuration = () => {
@@ -865,7 +879,7 @@ SoundLister._addAudioToCache = async (collections) => {
 
         await cache.addAll(filesToAdd);
       } else {
-        // console.log(`${SL_CACHE_TEXT_KEY} is full, so no need to initialize`)
+        // SoundLister._logStatus(`${SL_CACHE_TEXT_KEY} is full, so no need to initialize`)
       }
     });
   });
@@ -1037,15 +1051,18 @@ SoundLister._updateQueryString = (coll) => {
       SoundLister._displayAudioDuration();
       SoundLister._displayCurrentTrackName();
       SoundLister._setSliderMax();
-      SoundLister._displayBufferedAmount();
+      SoundLister._displayBufferedAmount('ready');
     }
     // otherwise, set an event listener for metadata loading completion
     else {
+      SoundLister.dom.audio.addEventListener('loadeddata', () => {
+        SoundLister._displayBufferedAmount('loadeddata');
+      });
       SoundLister.dom.audio.addEventListener('loadedmetadata', () => {
         SoundLister._displayAudioDuration();
         SoundLister._displayCurrentTrackName();
         SoundLister._setSliderMax();
-        SoundLister._displayBufferedAmount();
+        SoundLister._displayBufferedAmount('loadedmetadata');
 
         SoundLister.activeTrack = SoundLister.tracks()[0].title;
       });
