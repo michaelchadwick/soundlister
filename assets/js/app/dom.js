@@ -7,6 +7,7 @@ SoundLister.dom.headerText = document.querySelector('header h1');
 SoundLister.dom.logo = document.querySelector('#logo');
 
 SoundLister.dom.audioPlayerContainer = document.getElementById('audio-player-container');
+SoundLister.dom.audioPlaylistInfo = document.getElementById('audio-playlist-info');
 SoundLister.dom.audio = document.querySelector('audio');
 SoundLister.dom.currentTrackName = document.querySelector('#track-current-name span');
 SoundLister.dom.playButton = document.getElementById('play-icon');

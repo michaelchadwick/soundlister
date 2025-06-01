@@ -461,6 +461,13 @@ section#main #wrapper {
   margin: 2px 0 0 7px;
 }
 
+#audio-playlist-info {
+  background: var(--neutral-black);
+  color: var(--off-white);
+  padding: 0.25rem 0.5rem 0;
+  text-align: center;
+}
+
 #collections {
   align-items: center;
   display: flex;

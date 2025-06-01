@@ -1007,6 +1007,8 @@ SoundLister._updateQueryString = (coll) => {
     SoundLister.dom.playlist.textContent = '';
 
     let album = null;
+    let albumTrackCount = 0;
+    let albumDuration = 0;
 
     Object.values(SoundLister.songs).forEach((song) => {
       let songAlbum = song.album;
@@ -1020,6 +1022,8 @@ SoundLister._updateQueryString = (coll) => {
         album = songAlbum;
       }
 
+      albumTrackCount++;
+      albumDuration += song.ms / 1000;
       SoundLister._createPlaylistItem(song);
     });
 
@@ -1042,6 +1046,7 @@ SoundLister._updateQueryString = (coll) => {
     SoundLister.dom.currentTime = document.getElementById('time-current');
     SoundLister.dom.totalTime = document.getElementById('time-total');
     SoundLister.dom.outputVolume = document.getElementById('output-volume');
+    SoundLister.dom.audioPlaylistInfo.innerHTML = `<strong>${albumTrackCount}</strong> tracks, <strong>${SoundLister.__calculateTime(albumDuration)}</strong>`;
 
     // TODO: add files to CacheStorage AND be able to use them
     // SoundLister._addAudioToCache(fileObjArr)
