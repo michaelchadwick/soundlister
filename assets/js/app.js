@@ -1,6 +1,4 @@
-/* app */
-/* set up main object */
-
+// SoundLister object init
 if (typeof SoundLister === 'undefined') var SoundLister = {};
 
 const SOUNDLISTER_ENV_PROD_URL = [
