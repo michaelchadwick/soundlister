@@ -68,7 +68,7 @@ input[type="range"] {
   outline: none;
   padding: 0;
   position: relative;
-  width: 48%;
+  width: 43%;
 }
 input[type="range"]::-webkit-slider-runnable-track {
   background: linear-gradient(

@@ -12,13 +12,19 @@ SoundLister.__getFileCount = (dirList) => {
   return sum;
 };
 
-// get a mm:ss styled time display
-SoundLister.__calculateTime = (secs) => {
-  const minutes = Math.floor(secs / 60);
-  const seconds = Math.floor(secs % 60);
-  const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+// get a (hh:)mm:ss styled time display
+SoundLister.__calculateTime = (seconds) => {
+  const hrs = Math.floor(Number(seconds) / 3600)
+    .toString()
+    .padStart(2, '0');
+  const mins = Math.floor((Number(seconds) % 3600) / 60)
+    .toString()
+    .padStart(2, '0');
+  const secs = Math.floor(Number(seconds) % 60)
+    .toString()
+    .padStart(2, '0');
 
-  return `${minutes}:${returnedSeconds}`;
+  return hrs > 0 ? `${hrs}:${mins}:${secs}` : `${mins}:${secs}`;
 };
 
 // asynchronously read a file from disk

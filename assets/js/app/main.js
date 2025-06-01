@@ -461,7 +461,7 @@ SoundLister._remakePlaylist = () => {
   // update new playlist song durations
   SoundLister._getSongDurations();
 
-  SoundLister.dom.currentTime.textContent = '0:00';
+  SoundLister.dom.currentTime.textContent = SoundLister.__calculateTime(0);
   SoundLister.dom.seekSlider.value = 0;
   SoundLister.dom.audioPlayerContainer.style.setProperty('--seek-before-width', 0);
 
