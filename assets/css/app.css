@@ -251,7 +251,7 @@ section#main #wrapper {
   flex-direction: column;
   font-family: Consolas, monospace;
   justify-content: center;
-  margin: 0 0.25rem;
+  margin: 0;
   padding: 0 1.25rem;
   position: relative;
 }
@@ -489,7 +489,6 @@ section#main #wrapper {
   margin: 0 auto 26px;
   max-width: 500px;
   overflow-y: auto;
-  width: 100%;
 }
 #playlist.no-audio-found {
   background-color: #b52700;
