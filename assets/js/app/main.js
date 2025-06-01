@@ -1,5 +1,5 @@
 /* main */
-/* global Promise, Proxy */
+/* global Proxy */
 /* global SoundLister, MP3Tag */
 /* global SL_AUDIO_ASSETS_DIR, SL_CACHE_TEXT_KEY, SL_DEFAULT_COLLECTION, SL_PHP_DIR_SCRIPT, SL_SERVICE_WORKER_PATH */
 
