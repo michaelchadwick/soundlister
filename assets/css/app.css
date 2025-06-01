@@ -246,7 +246,6 @@ section#main #wrapper {
   --seek-before-width: 0%;
   --volume-before-width: 100%;
   background: var(--neutral-white);
-  border-radius: 10px;
   display: flex;
   flex-direction: column;
   font-family: Consolas, monospace;
@@ -254,6 +253,11 @@ section#main #wrapper {
   margin: 0;
   padding: 0 1.25rem;
   position: relative;
+}
+@media (min-width: 500px) {
+  #audio-player-container {
+    border-radius: 10px;
+  }
 }
 #audio-player-container::before {
   background: linear-gradient(to left, var(--base-color), #ff8a00);
@@ -356,7 +360,13 @@ section#main #wrapper {
 }
 
 #audio-player-container .time {
-  font-size: 1.1rem;
+  display: none;
+}
+@media (min-width: 500px) {
+  #audio-player-container .time {
+    display: flex;
+    font-size: 1.1rem;
+  }
 }
 
 #audio-player-container output {
@@ -398,12 +408,17 @@ section#main #wrapper {
   font-size: 1.1em;
   justify-content: center;
   max-width: 100px;
-  min-width: 60px;
+  min-width: 30px;
   width: 100%;
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -webkit-tap-highlight-color: transparent;
+}
+@media (min-width: 500px) {
+  #audio-controls button {
+    min-width: 60px;
+  }
 }
 @media (min-width: 768px) {
   #audio-controls button {
@@ -412,7 +427,11 @@ section#main #wrapper {
 }
 #audio-controls button.large {
   max-width: 160px;
-  min-width: 90px;
+}
+@media (min-width: 500px) {
+  #audio-controls button.large {
+    min-width: 90px;
+  }
 }
 @media (hover: hover) {
   #audio-controls button:hover {
@@ -426,6 +445,14 @@ section#main #wrapper {
   border-right: 1px solid var(--neutral-black);
 }
 */
+#audio-controls button span {
+  display: none;
+}
+@media (min-width: 376px) {
+  #audio-controls button span {
+    display: inline;
+  }
+}
 #audio-controls button#backward i {
   margin: 2px 7px 0 0;
 }
