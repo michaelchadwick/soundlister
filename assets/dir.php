@@ -1,28 +1,45 @@
 <?php
 
   $files = array();
-  $audio_root = 'audio/';
   $dir = '';
+  $audio_root = 'audio/';
+  $exts = ['aac', 'flac', 'm4a', 'mp3', 'mp4', 'ogg', 'wav', 'webm'];
 
-  foreach (glob($audio_root . '*/*.{aac,flac,m4a,mp3,mp4,ogg,wav,webm}', GLOB_BRACE) as $filename) {
-    $path = pathinfo($filename);
+  $iterator = new RecursiveIteratorIterator(
+    new RecursiveDirectoryIterator($audio_root, FilesystemIterator::SKIP_DOTS)
+  );
 
-    if ($dir != $path['dirname']) {
-      $dir = $path['dirname'];
-      $dirIndex = explode('/', $path['dirname'])[1];
-      $files[$dirIndex] = [];
+  foreach ($iterator as $file) {
+    if (in_array(strtolower($file->getExtension()), $exts)) {
+      // echo $file->getPathname(), PHP_EOL; // audio/[subdir/]music.mp3
+      // echo $file->getFileInfo(), PHP_EOL; // audio/[subdir/]music.mp3
+      // echo $file->getBasename(), PHP_EOL; // music.mp3
+      // echo $file->getFilename(), PHP_EOL; // music.mp3
+      // echo $file->getPath(), PHP_EOL;     // audio/[subdir/]
+      // echo PHP_EOL;
+
+      $pathArr = explode('/', $file->getPath());
+      $lastSubdir = end($pathArr);
+
+      if ($dir != $lastSubdir) {
+        $dir = $lastSubdir;
+        $dirIndex = $lastSubdir;
+        $files[$dirIndex] = [];
+      }
+
+      $fullpath = $file->getPath() . '/' . $file->getBasename();
+      $total_ms = getFileLengthInMs($fullpath);
+
+      $path['basename'] = $file->getBasename();
+      $path['duration'] = getDisplayDuration($total_ms);
+      $path['extension'] = $file->getExtension();
+      $path['filename'] = $file->getFilename();
+      $path['ms'] = $total_ms;
+      $path['subdirPath'] = explode('/', $file->getPath())[1];
+      $path['updated'] = getFileUpdatedDate($fullpath);
+
+      $files[$dirIndex][] = $path;
     }
-
-    $fullpath = $path['dirname'] . '/' . $path['basename'];
-
-    $path['updated'] = getFileUpdatedDate($fullpath);
-
-    $total_ms = getFileLengthInMs($fullpath);
-
-    $path['ms'] = $total_ms;
-    $path['duration'] = getDisplayDuration($total_ms);
-
-    $files[$dirIndex][] = $path;
   }
 
   if (sizeof($files)) {

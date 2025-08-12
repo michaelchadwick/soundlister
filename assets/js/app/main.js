@@ -602,15 +602,15 @@ SoundLister._fillSongs = async (fileColObj) => {
 
   // put all file information into 'songs' object[]
   for (const col in fileColObj) {
-    const dirPath = `${SL_AUDIO_ASSETS_DIR}/${col}`;
-
     for (const index in fileColObj[col]) {
-      const baseName = fileColObj[col][index]['basename'];
-      const ext = fileColObj[col][index]['extension'];
-      const filePath = `${dirPath}/${baseName}`;
-      const updated = fileColObj[col][index]['updated'];
-      const ms = fileColObj[col][index]['ms'];
-      const duration = fileColObj[col][index]['duration'];
+      const baseName = fileColObj[col][index]['basename']; // music.mp3
+      const duration = fileColObj[col][index]['duration']; // 3:12
+      const ext = fileColObj[col][index]['extension']; // mp3
+      const subdirs = fileColObj[col][index]['subdirPath']; // [/subdir]
+      const filePath = `${SL_AUDIO_ASSETS_DIR}/${subdirs}/${col}/${baseName}`;
+      const ms = fileColObj[col][index]['ms']; // 300
+      const updated = fileColObj[col][index]['updated']; // Fri May 9 13:48:41 PDT 2025
+
       const response = await fetch(filePath);
       const data = await response.blob();
 
