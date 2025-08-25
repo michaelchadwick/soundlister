@@ -607,9 +607,14 @@ SoundLister._fillSongs = async (fileColObj) => {
       const duration = fileColObj[col][index]['duration']; // 3:12
       const ext = fileColObj[col][index]['extension']; // mp3
       const subdirs = fileColObj[col][index]['subdirPath']; // [/subdir]
-      const filePath = `${SL_AUDIO_ASSETS_DIR}/${subdirs}/${col}/${baseName}`;
       const ms = fileColObj[col][index]['ms']; // 300
       const updated = fileColObj[col][index]['updated']; // Fri May 9 13:48:41 PDT 2025
+      let filePath = '';
+      if (subdirs == col) {
+        filePath = `${SL_AUDIO_ASSETS_DIR}/${subdirs}/${baseName}`;
+      } else {
+        filePath = `${SL_AUDIO_ASSETS_DIR}/${subdirs}/${col}/${baseName}`;
+      }
 
       const response = await fetch(filePath);
       const data = await response.blob();
