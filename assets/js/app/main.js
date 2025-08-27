@@ -110,7 +110,7 @@ SoundLister.goForward = (e = null) => {
       if (SoundLister.repeatMode) {
         SoundLister.changeTrack(SoundLister.currentIndex);
       } else {
-        SoundLister._updatePlayButton();
+        SoundLister._updatePlayState();
       }
     } else {
       SoundLister.currentIndex = SoundLister.currentIndex + 1;
@@ -156,7 +156,7 @@ SoundLister.playTrack = async (track) => {
   // play track
   SoundLister.dom.audio.play();
 
-  SoundLister._updatePlayButton('playlist');
+  SoundLister._updatePlayState('playlist');
 };
 
 /* ********************************* */
@@ -286,7 +286,7 @@ SoundLister._remakePlaylist = () => {
   SoundLister.dom.seekSlider.value = 0;
   SoundLister.dom.audioPlayerContainer.style.setProperty('--seek-before-width', 0);
 
-  SoundLister._updatePlayButton('collection');
+  SoundLister._updatePlayState('collection');
 };
 
 // add song durations to playlist
@@ -549,8 +549,8 @@ SoundLister._addCollectionOption = (col) => {
   // SoundLister.dom.collCustom.querySelector('.selectCustom-options').appendChild(option)
 };
 
-// change play/pause icon depending on context
-SoundLister._updatePlayButton = (source = null) => {
+// change play/pause icon and audio element depending on context
+SoundLister._updatePlayState = (source = null) => {
   switch (source) {
     case 'playlist':
       requestAnimationFrame(SoundLister._whilePlaying);
@@ -580,32 +580,36 @@ SoundLister._updatePlayButton = (source = null) => {
       }
       break;
 
-    case 'functionKey':
-      if (SoundLister.playIconState === 'play') {
-        requestAnimationFrame(SoundLister._whilePlaying);
-        SoundLister.playIconState = 'pause';
-      } else {
-        cancelAnimationFrame(SoundLister.raf);
-        SoundLister.playIconState = 'play';
-      }
-
-      break;
-
-    default:
-      if (SoundLister.playIconState === 'play') {
+    case 'click':
+    case 'key':
+      if (SoundLister.dom.audio.paused) {
         SoundLister.dom.audio.play();
 
         requestAnimationFrame(SoundLister._whilePlaying);
         SoundLister.playIconState = 'pause';
+
+        SoundLister.dom.playButtonIcon.classList.remove('fa-pause');
+        SoundLister.dom.playButtonIcon.classList.add('fa-play');
       } else {
         SoundLister.dom.audio.pause();
 
         cancelAnimationFrame(SoundLister.raf);
         SoundLister.playIconState = 'play';
+
+        SoundLister.dom.playButtonIcon.classList.remove('fa-play');
+        SoundLister.dom.playButtonIcon.classList.add('fa-pause');
       }
 
-      SoundLister.dom.playButtonIcon.classList.toggle('fa-play');
-      SoundLister.dom.playButtonIcon.classList.toggle('fa-pause');
+      break;
+
+    default:
+      if (SoundLister.dom.audio.paused) {
+        SoundLister.dom.playButtonIcon.classList.remove('fa-pause');
+        SoundLister.dom.playButtonIcon.classList.add('fa-play');
+      } else {
+        SoundLister.dom.playButtonIcon.classList.remove('fa-play');
+        SoundLister.dom.playButtonIcon.classList.add('fa-pause');
+      }
 
       break;
   }
@@ -893,18 +897,18 @@ SoundLister._updateQueryString = (coll) => {
       SoundLister._displayAudioDuration();
       SoundLister._displayCurrentTrackName();
       SoundLister._setSliderMax();
-      SoundLister._displayBufferedAmount('ready');
+      // SoundLister._displayBufferedAmount('ready');
     }
     // otherwise, set an event listener for metadata loading completion
     else {
       SoundLister.dom.audio.addEventListener('loadeddata', () => {
-        SoundLister._displayBufferedAmount('loadeddata');
+        // SoundLister._displayBufferedAmount('loadeddata');
       });
       SoundLister.dom.audio.addEventListener('loadedmetadata', () => {
         SoundLister._displayAudioDuration();
         SoundLister._displayCurrentTrackName();
         SoundLister._setSliderMax();
-        SoundLister._displayBufferedAmount('loadedmetadata');
+        // SoundLister._displayBufferedAmount('loadedmetadata');
 
         SoundLister.activeTrack = SoundLister.tracks()[0].title;
       });

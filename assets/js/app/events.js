@@ -5,8 +5,7 @@
 SoundLister.attachPresentationListeners = () => {
   // play/pause button
   SoundLister.dom.playButton.addEventListener('click', () => {
-    SoundLister._updatePlayButton('click');
-    SoundLister._setTitle();
+    SoundLister._updatePlayState('click');
   });
 
   // mute/unmute button
@@ -60,11 +59,8 @@ SoundLister.attachPresentationListeners = () => {
 
     SoundLister.playTrack(track);
 
-    SoundLister._updatePlayButton('playlist');
+    SoundLister._updatePlayState('playlist');
   });
-
-  // TODO: add event listener for audio play/pause triggered by function key
-  // window.onaudiochange
 
   window.onresize = SoundLister._resizePlaylist;
 };
@@ -73,12 +69,12 @@ SoundLister.attachPresentationListeners = () => {
 SoundLister.attachFunctionalListeners = () => {
   // <audio> element has started loading
   SoundLister.dom.audio.addEventListener('loadstart', () => {
-    // SoundLister._logStatus('audio loading begun', e)
+    // SoundLister._logStatus('audio loading begun')
     SoundLister._displayBufferedAmount('loadstart');
   });
   // <audio> element is loaded enough to start playing
   SoundLister.dom.audio.addEventListener('canplay', () => {
-    // SoundLister._logStatus('audio can play', e)
+    // SoundLister._logStatus('audio can play')
     SoundLister._displayAudioDuration();
     SoundLister._displayCurrentTrackName();
     SoundLister._setSliderMax();
@@ -86,27 +82,27 @@ SoundLister.attachFunctionalListeners = () => {
   });
   // <audio> element is loaded enough to play to end
   SoundLister.dom.audio.addEventListener('canplaythrough', () => {
-    // SoundLister._logStatus('audio can play through', e)
+    // SoundLister._logStatus('audio can play through')
     SoundLister._displayBufferedAmount('canplaythrough');
   });
   // <audio> element has started playing
   SoundLister.dom.audio.addEventListener('play', () => {
-    SoundLister._logStatus('audio has started playing');
+    // SoundLister._logStatus('audio has started playing');
     SoundLister._displayBufferedAmount('play');
-    // SoundLister._updatePlayButton('click');
-    // SoundLister._setTitle();
+    SoundLister._updatePlayState();
+    SoundLister._setTitle();
   });
   // <audio> element is playing
   SoundLister.dom.audio.addEventListener('playing', () => {
-    // SoundLister._logStatus('audio is playing', e)
+    // SoundLister._logStatus('audio is playing');
     SoundLister._displayBufferedAmount('playing');
   });
   // <audio> element has been paused
   SoundLister.dom.audio.addEventListener('pause', () => {
-    SoundLister._logStatus('audio has been paused');
+    // SoundLister._logStatus('audio has been paused');
     SoundLister._displayBufferedAmount('pause');
-    SoundLister._updatePlayButton('functionKey');
-    // SoundLister._setTitle();
+    SoundLister._updatePlayState();
+    SoundLister._setTitle();
   });
   // <audio> element ended
   SoundLister.dom.audio.addEventListener('ended', () => {
@@ -174,8 +170,10 @@ SoundLister.attachFunctionalListeners = () => {
       // fix issue with double-triggering
       // if space bar is activeElement
       document.activeElement.blur();
-      SoundLister._updatePlayButton('key');
+      SoundLister._updatePlayState('key');
     } else {
+      // Next Track: Shift+Cmd/Win+Right
+      // Prev Track: Shift+Cmd/Win+Left
       if (event.metaKey && event.shiftKey && event.code == 'ArrowRight') {
         SoundLister.goForward();
       } else if (event.metaKey && event.shiftKey && event.code == 'ArrowLeft') {
