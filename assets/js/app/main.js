@@ -654,9 +654,16 @@ SoundLister._displayAudioDuration = () => {
 
 SoundLister._displayCurrentTrackName = () => {
   const curTrackTitle = SoundLister.songs[SoundLister.currentIndex].title;
+  const curAlbumTitle = SoundLister.songs[SoundLister.currentIndex].album;
+  const curArtistTitle = SoundLister.songs[SoundLister.currentIndex].artist;
 
   SoundLister.dom.currentTrackName.textContent = curTrackTitle;
   SoundLister.dom.currentTrackName.setAttribute('title', curTrackTitle);
+  SoundLister.dom.currentAlbumArtistName.textContent = `${curAlbumTitle} by ${curArtistTitle}`;
+  SoundLister.dom.currentAlbumArtistName.setAttribute(
+    'title',
+    `${curAlbumTitle} by ${curArtistTitle}`,
+  );
 
   const titleTextHeight = SoundLister.dom.currentTrackName.getBoundingClientRect().height;
   const titleTextContainerHeight = document

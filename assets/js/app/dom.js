@@ -10,6 +10,7 @@ SoundLister.dom.audioPlayerContainer = document.getElementById('audio-player-con
 SoundLister.dom.audioPlaylistInfo = document.getElementById('audio-playlist-info');
 SoundLister.dom.audio = document.querySelector('audio');
 SoundLister.dom.currentTrackName = document.querySelector('#track-current-name span');
+SoundLister.dom.currentAlbumArtistName = document.querySelector('#track-current-album-artist span');
 SoundLister.dom.playButton = document.getElementById('play-icon');
 SoundLister.dom.playButtonIcon = document.querySelector('#play-icon i');
 SoundLister.dom.seekSlider = document.getElementById('seek-slider');

@@ -251,7 +251,7 @@ section#main #wrapper {
   font-family: Consolas, monospace;
   justify-content: center;
   margin: 0;
-  padding: 0 1.25rem;
+  padding: 0 1rem;
   position: relative;
 }
 @media (min-width: 500px) {
@@ -276,10 +276,11 @@ section#main #wrapper {
   justify-content: center;
 }
 #audio-player-container .row#row-title {
-  display: -webkit-box;
-  font-size: 90%;
+  display: flex;
+  flex-direction: column;
+  font-size: 110%;
   font-weight: 600;
-  height: 20px;
+  height: 45px;
   line-clamp: 2;
   line-height: 1;
   margin: 0.5rem 0;
@@ -291,10 +292,18 @@ section#main #wrapper {
 }
 #audio-player-container .row#row-title #track-current-name {
   display: block;
+  padding-bottom: 0.1em;
 }
 #audio-player-container .row#row-title #track-current-name.short {
   align-items: center;
   display: flex;
+  justify-content: center;
+}
+#audio-player-container .row#row-title #track-current-album-artist {
+  align-items: center;
+  display: flex;
+  font-size: 70%;
+  font-weight: 300;
   justify-content: center;
 }
 /*
@@ -310,7 +319,7 @@ section#main #wrapper {
 }
 @media (min-width: 768px) {
   #audio-player-container .row#row-title {
-    height: 35px;
+    height: 40px;
     font-size: 130%;
   }
 }
