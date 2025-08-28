@@ -102,7 +102,6 @@ SoundLister.attachFunctionalListeners = () => {
     // SoundLister._logStatus('audio has been paused');
     SoundLister._displayBufferedAmount('pause');
     SoundLister._updatePlayState();
-    SoundLister._setTitle();
   });
   // <audio> element ended
   SoundLister.dom.audio.addEventListener('ended', () => {
