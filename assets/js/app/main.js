@@ -552,34 +552,35 @@ SoundLister._addCollectionOption = (col) => {
 // change play/pause icon and audio element depending on context
 SoundLister._updatePlayState = (source = null) => {
   switch (source) {
+    // clicking in the audio playlist auto-starts track
+    // and sets play/pause icon to 'pause'
     case 'playlist':
+      // start the audio scrubbing bar updating so refreshes every second
       requestAnimationFrame(SoundLister._whilePlaying);
       SoundLister.playIconState = 'pause';
 
-      if (SoundLister.dom.playButtonIcon.classList.contains('fa-play')) {
-        SoundLister.dom.playButtonIcon.classList.remove('fa-play');
+      // change play/pause icon to 'pause'
+      SoundLister.dom.playButtonIcon.classList.remove('fa-play');
+      SoundLister.dom.playButtonIcon.classList.add('fa-pause');
 
-        if (!SoundLister.dom.playButtonIcon.classList.contains('fa-pause')) {
-          SoundLister.dom.playButtonIcon.classList.add('fa-pause');
-        }
-      }
       break;
 
+    // clicking on the collection dropdown auto-stops track
+    // and sets play/pause icon to 'play'
     case 'collection':
       cancelAnimationFrame(SoundLister.raf);
       SoundLister.playIconState = 'play';
 
       SoundLister.dom.audio.src = SoundLister.tracks()[0].href;
 
-      if (SoundLister.dom.playButtonIcon.classList.contains('fa-pause')) {
-        SoundLister.dom.playButtonIcon.classList.remove('fa-pause');
+      // change play/pause icon to 'play'
+      SoundLister.dom.playButtonIcon.classList.remove('fa-pause');
+      SoundLister.dom.playButtonIcon.classList.add('fa-play');
 
-        if (!SoundLister.dom.playButtonIcon.classList.contains('fa-play')) {
-          SoundLister.dom.playButtonIcon.classList.add('fa-play');
-        }
-      }
       break;
 
+    // clicking directly on the play/pause icon
+    // or using the space or next/prev keys
     case 'click':
     case 'key':
       if (SoundLister.dom.audio.paused) {
@@ -602,6 +603,7 @@ SoundLister._updatePlayState = (source = null) => {
 
       break;
 
+    // audio play/pause events
     default:
       if (SoundLister.dom.audio.paused) {
         SoundLister.dom.playButtonIcon.classList.remove('fa-pause');
