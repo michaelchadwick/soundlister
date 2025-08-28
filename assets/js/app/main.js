@@ -620,19 +620,6 @@ SoundLister._updatePlayState = (source = null) => {
   }
 };
 
-// toggle mute button icon
-SoundLister._updateMuteButton = () => {
-  if (SoundLister.muteIconState === 'unmute') {
-    SoundLister.dom.audio.muted = true;
-    SoundLister.muteIconState = 'mute';
-  } else {
-    SoundLister.dom.audio.muted = false;
-    SoundLister.muteIconState = 'unmute';
-  }
-
-  SoundLister.dom.muteButtonIcon.classList.toggle('fa-volume-mute');
-};
-
 SoundLister._displayBufferedAmount = (msg = null) => {
   const bufferedLength = SoundLister.dom.audio.buffered.length - 1;
 
@@ -691,16 +678,13 @@ SoundLister._setSliderMax = () => {
 };
 
 SoundLister._showRangeProgress = (rangeInput) => {
+  const newValNum = (rangeInput.value / rangeInput.max) * 100;
+  const newVal = newValNum + '%';
+
   if (rangeInput === SoundLister.dom.seekSlider) {
-    SoundLister.dom.audioPlayerContainer.style.setProperty(
-      '--seek-before-width',
-      (rangeInput.value / rangeInput.max) * 100 + '%',
-    );
+    SoundLister.dom.audioPlayerContainer.style.setProperty('--seek-before-width', newVal);
   } else {
-    SoundLister.dom.audioPlayerContainer.style.setProperty(
-      '--volume-before-width',
-      (rangeInput.value / rangeInput.max) * 100 + '%',
-    );
+    SoundLister.dom.audioPlayerContainer.style.setProperty('--volume-before-width', newVal);
   }
 };
 
@@ -934,7 +918,6 @@ SoundLister._updateQueryString = (coll) => {
     SoundLister.dom.playButton.disabled = 'true';
     SoundLister.dom.seekSlider.disabled = 'true';
     SoundLister.dom.volumeSlider.disabled = 'true';
-    SoundLister.dom.muteButton.disabled = 'true';
     SoundLister.dom.prevButton.disabled = 'true';
     SoundLister.dom.repeatButton.disabled = 'true';
     SoundLister.dom.nextButton.disabled = 'true';

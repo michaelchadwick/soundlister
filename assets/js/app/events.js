@@ -8,11 +8,6 @@ SoundLister.attachPresentationListeners = () => {
     SoundLister._updatePlayState('click');
   });
 
-  // mute/unmute button
-  SoundLister.dom.muteButton.addEventListener('click', () => {
-    SoundLister._updateMuteButton();
-  });
-
   // audio seek slider
   SoundLister.dom.seekSlider.addEventListener('input', (e) => {
     SoundLister._showRangeProgress(e.target);
@@ -141,24 +136,7 @@ SoundLister.attachFunctionalListeners = () => {
 
   // <audio> element volume slider
   SoundLister.dom.volumeSlider.addEventListener('input', (e) => {
-    const volume = e.target.value;
-
-    if (parseInt(volume) > 0) {
-      SoundLister.dom.muteButtonIcon.classList.remove('fa-volume-off');
-      if (parseInt(volume) > 49) {
-        SoundLister.dom.muteButtonIcon.classList.remove('fa-volume-low');
-        SoundLister.dom.muteButtonIcon.classList.add('fa-volume-high');
-      } else {
-        SoundLister.dom.muteButtonIcon.classList.remove('fa-volume-high');
-        SoundLister.dom.muteButtonIcon.classList.add('fa-volume-low');
-      }
-    } else {
-      SoundLister.dom.muteButtonIcon.classList.remove('fa-volume-low');
-      SoundLister.dom.muteButtonIcon.classList.remove('fa-volume-high');
-      SoundLister.dom.muteButtonIcon.classList.add('fa-volume-off');
-    }
-
-    // SoundLister.dom.outputVolume.textContent = volume.padStart(3, '0')
+    const volume = parseInt(e.target.value);
 
     SoundLister.dom.audio.volume = volume / 100;
   });

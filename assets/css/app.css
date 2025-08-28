@@ -343,29 +343,21 @@ section#main #wrapper {
   }
 }
 
-#audio-player-container #play-icon,
-#audio-player-container #mute-icon {
+#audio-player-container #play-icon {
   font-size: 1.5rem;
 }
 @media (min-width: 768px) {
-  #audio-player-container #play-icon,
-  #audio-player-container #mute-icon {
+  #audio-player-container #play-icon {
     font-size: 1.75rem;
   }
 }
 @media (hover: hover) {
-  #audio-player-container #play-icon:hover,
-  #audio-player-container #mute-icon:hover {
+  #audio-player-container #play-icon:hover {
     color: var(--button-highlight);
   }
 }
 #audio-player-container #play-icon {
   padding-right: 10px;
-}
-#audio-player-container #mute-icon {
-  height: 33px;
-  padding-left: 10px;
-  width: 48px;
 }
 
 #audio-player-container .time {
