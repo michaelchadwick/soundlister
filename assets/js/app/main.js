@@ -10,7 +10,6 @@ SoundLister.currentIndex = 0;
 SoundLister.tags = {};
 SoundLister.index = 0;
 SoundLister.coll = SL_DEFAULT_COLLECTION;
-SoundLister.playIconState = 'play';
 SoundLister.muteIconState = 'unmute';
 SoundLister.raf = null;
 SoundLister.repeatMode = true; // for now, only 2 modes
@@ -557,7 +556,6 @@ SoundLister._updatePlayState = (source = null) => {
     case 'playlist':
       // start the audio scrubbing bar updating so refreshes every second
       requestAnimationFrame(SoundLister._whilePlaying);
-      SoundLister.playIconState = 'pause';
 
       // change play/pause icon to 'pause'
       SoundLister.dom.playButtonIcon.classList.remove('fa-play');
@@ -569,7 +567,6 @@ SoundLister._updatePlayState = (source = null) => {
     // and sets play/pause icon to 'play'
     case 'collection':
       cancelAnimationFrame(SoundLister.raf);
-      SoundLister.playIconState = 'play';
 
       SoundLister.dom.audio.src = SoundLister.tracks()[0].href;
 
@@ -587,7 +584,6 @@ SoundLister._updatePlayState = (source = null) => {
         SoundLister.dom.audio.play();
 
         requestAnimationFrame(SoundLister._whilePlaying);
-        SoundLister.playIconState = 'pause';
 
         SoundLister.dom.playButtonIcon.classList.remove('fa-pause');
         SoundLister.dom.playButtonIcon.classList.add('fa-play');
@@ -595,7 +591,6 @@ SoundLister._updatePlayState = (source = null) => {
         SoundLister.dom.audio.pause();
 
         cancelAnimationFrame(SoundLister.raf);
-        SoundLister.playIconState = 'play';
 
         SoundLister.dom.playButtonIcon.classList.remove('fa-play');
         SoundLister.dom.playButtonIcon.classList.add('fa-pause');
