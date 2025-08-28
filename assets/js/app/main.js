@@ -566,8 +566,10 @@ SoundLister._updatePlayState = (source = null) => {
     // clicking on the collection dropdown auto-stops track
     // and sets play/pause icon to 'play'
     case 'collection':
+      // stop updating the audio scrubber bar refresh
       cancelAnimationFrame(SoundLister.raf);
 
+      // load first track in collection
       SoundLister.dom.audio.src = SoundLister.tracks()[0].href;
 
       // change play/pause icon to 'play'
@@ -583,15 +585,19 @@ SoundLister._updatePlayState = (source = null) => {
       if (SoundLister.dom.audio.paused) {
         SoundLister.dom.audio.play();
 
+        // start the audio scrubbing bar updating so refreshes every second
         requestAnimationFrame(SoundLister._whilePlaying);
 
+        // change play/pause icon to 'play'
         SoundLister.dom.playButtonIcon.classList.remove('fa-pause');
         SoundLister.dom.playButtonIcon.classList.add('fa-play');
       } else {
         SoundLister.dom.audio.pause();
 
+        // stop updating the audio scrubber bar refresh
         cancelAnimationFrame(SoundLister.raf);
 
+        // change play/pause icon to 'pause'
         SoundLister.dom.playButtonIcon.classList.remove('fa-play');
         SoundLister.dom.playButtonIcon.classList.add('fa-pause');
       }
@@ -601,9 +607,11 @@ SoundLister._updatePlayState = (source = null) => {
     // audio play/pause events
     default:
       if (SoundLister.dom.audio.paused) {
+        // change play/pause icon to 'play'
         SoundLister.dom.playButtonIcon.classList.remove('fa-pause');
         SoundLister.dom.playButtonIcon.classList.add('fa-play');
       } else {
+        // change play/pause icon to 'pause'
         SoundLister.dom.playButtonIcon.classList.remove('fa-play');
         SoundLister.dom.playButtonIcon.classList.add('fa-pause');
       }
