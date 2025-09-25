@@ -64,7 +64,7 @@ input[type="range"] {
   appearance: none;
   float: left;
   height: 19px;
-  margin: 10px 2.5%;
+  margin: 5px 2.5%;
   outline: none;
   padding: 0;
   position: relative;
@@ -283,7 +283,7 @@ section#main #wrapper {
   height: 45px;
   line-clamp: 2;
   line-height: 1;
-  margin: 0.5rem 0;
+  margin: 0.25rem 0 0;
   overflow: hidden;
   padding: 0;
   text-align: center;
@@ -361,11 +361,11 @@ section#main #wrapper {
 }
 
 #audio-player-container .time {
-  display: none;
+  display: flex;
+  font-size: 1rem;
 }
 @media (min-width: 500px) {
   #audio-player-container .time {
-    display: flex;
     font-size: 1.1rem;
   }
 }
@@ -399,14 +399,20 @@ section#main #wrapper {
 
 #audio-controls {
   display: flex;
+  gap: 0.5em;
   justify-content: center;
   padding-bottom: 0.25rem;
+}
+@media (min-width: 500px) {
+  #audio-controls {
+    gap: 0;
+  }
 }
 #audio-controls button {
   align-items: center;
   cursor: pointer;
   display: flex;
-  font-size: 1.1em;
+  font-size: 1.5em;
   justify-content: center;
   max-width: 100px;
   min-width: 30px;
