@@ -2,3 +2,6 @@
 /coverage/
 !.*
 .*/
+# Ignore vendor
+assets/vendor/*.js
+assets/**/vendor/*.js

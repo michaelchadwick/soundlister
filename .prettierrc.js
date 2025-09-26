@@ -5,8 +5,10 @@ module.exports = {
     {
       files: '*.{js,ts}',
       options: {
-        singleQuote: true,
         printWidth: 100,
+        semi: false,
+        singleQuote: true,
+        trailingComma: 'es5',
       },
     },
   ],

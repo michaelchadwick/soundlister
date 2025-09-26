@@ -1,5 +1,6 @@
 .DS_Store
-.eslintignore
+.editorconfig
+.eslintcache
 .eslintrc.js
 .git
 .gitignore
@@ -7,11 +8,16 @@
 .markdownlint.json
 .prettierignore
 .prettierrc.js
+.ruby-lsp
+.stylelintignore
+.stylelintrc.js
+
 assets/audio
 custom.json.dist
 cypress
 node_modules
 cypress.config.js
+eslint.config.mjs
 LICENSE
 LICENSE.md
 package.json

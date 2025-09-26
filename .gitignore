@@ -6,6 +6,8 @@ audio/
 !assets/js/vendor
 assets/js/vendor/*.min.js
 
+.eslintcache
+
 # Ignore cypress stuff
 cypress/build/release
 cypress/coverage

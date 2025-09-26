@@ -5,7 +5,11 @@
   "main": "index.html",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "lint": "pnpm run --parallel \"/^lint:(js|css)$/\"",
+    "lint:css": "stylelint \"**/*.css\"",
+    "lint:css:fix": "stylelint \"**/*.css\" --fix",
+    "lint:js": "eslint . --cache",
+    "lint:js:fix": "eslint . --fix",
     "test": "npx cypress run --env host=local",
     "test-open": "npx cypress open --e2e -b electron --env host=local",
     "test-open-prod": "npx cypress open --e2e -b electron --config baseUrl='https://soundlister.neb.host' --env host=prod",
@@ -14,14 +18,28 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "cypress": "^13.17.0",
-    "eslint": "^8.57.1",
+    "@babel/eslint-parser": "^7.28.4",
+    "@babel/plugin-proposal-decorators": "^7.28.0",
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.35.0",
+    "cypress": "^15.2.0",
+    "cypress-real-events": "^1.15.0",
+    "eslint": "^9.35.0",
     "eslint-config-prettier": "^9.1.2",
     "eslint-plugin-cypress": "^3.6.0",
     "eslint-plugin-n": "^17.23.1",
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-vue": "^9.33.0",
     "eslint-plugin-yml": "^1.18.0",
-    "husky": "^9.1.7"
+    "globals": "^15.15.0",
+    "husky": "^9.1.7",
+    "stylelint": "^16.24.0",
+    "stylelint-config-recommended": "^14.0.1",
+    "stylelint-prettier": "^5.0.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "cypress"
+    ]
   }
 }
