@@ -662,10 +662,10 @@ SoundLister._displayCurrentTrackName = () => {
 
   SoundLister.dom.currentTrackName.textContent = curTrackTitle
   SoundLister.dom.currentTrackName.setAttribute('title', curTrackTitle)
-  SoundLister.dom.currentAlbumArtistName.textContent = `${curAlbumTitle} by ${curArtistTitle}`
+  SoundLister.dom.currentAlbumArtistName.innerHTML = `<strong>${curArtistTitle}</strong> - <strong>${curAlbumTitle}</strong>`
   SoundLister.dom.currentAlbumArtistName.setAttribute(
     'title',
-    `${curAlbumTitle} by ${curArtistTitle}`
+    `by ${curArtistTitle} on ${curAlbumTitle}`
   )
 
   const titleTextHeight = SoundLister.dom.currentTrackName.getBoundingClientRect().height
