@@ -881,9 +881,7 @@ SoundLister._updateQueryString = (coll) => {
     SoundLister.dom.currentTime = document.getElementById('time-current')
     SoundLister.dom.totalTime = document.getElementById('time-total')
     SoundLister.dom.outputVolume = document.getElementById('output-volume')
-    SoundLister.dom.audioPlaylistInfo.innerHTML = `<strong>${albumTrackCount}</strong> tracks, <strong>${SoundLister.__calculateTime(
-      albumDuration
-    )}</strong>`
+    SoundLister.__updatePlaylistInfo(albumTrackCount, albumDuration)
 
     // TODO: add files to CacheStorage AND be able to use them
     // SoundLister._addAudioToCache(fileObjArr)

@@ -37,6 +37,16 @@ SoundLister.attachPresentationListeners = () => {
 
     // update browser UI
     SoundLister._updateCollDisplay()
+
+    let albumTrackCount = 0
+    let albumDuration = 0
+
+    // update playlist info
+    Object.values(SoundLister.songs).forEach((song) => {
+      albumTrackCount++
+      albumDuration += song.ms / 1000
+    })
+    SoundLister.__updatePlaylistInfo(albumTrackCount, albumDuration)
   })
 
   // click/tap audio track on playlist

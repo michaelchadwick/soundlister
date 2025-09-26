@@ -117,3 +117,9 @@ SoundLister.__sortObjArr = (oldObjArr, props) => {
 
   return newObjArr
 }
+
+SoundLister.__updatePlaylistInfo = (albumTrackCount, albumDuration) => {
+  SoundLister.dom.audioPlaylistInfo.innerHTML = `<strong>${albumTrackCount}</strong> tracks, <strong>${SoundLister.__calculateTime(
+    albumDuration
+  )}</strong>`
+}
