@@ -182,6 +182,17 @@ SoundLister._setTitle = () => {
   let title = SoundLister.env == 'local' ? '(LH) ' : ''
 
   title += SoundLister.activeTrack != '' ? SoundLister.activeTrack + ' | ' : ''
+
+  if (SoundLister.coll !== SL_DEFAULT_COLLECTION) {
+    title += SoundLister.coll.toUpperCase() + ' | '
+
+    SoundLister.dom.collHeader.innerHTML = `<strong>${SoundLister.coll.toUpperCase()}</strong>.`
+
+    SoundLister._updateQueryString(SoundLister.coll)
+  } else {
+    SoundLister.dom.collHeader.innerHTML = 'something.'
+  }
+
   title += SoundLister.title
 
   document.title = title
@@ -750,21 +761,7 @@ SoundLister._updateCollDisplay = (overridedTitle = null) => {
     SoundLister.coll = overridedTitle
   }
 
-  if (SoundLister.coll !== SL_DEFAULT_COLLECTION) {
-    document.title = SoundLister.coll.toUpperCase() + ' | SoundLister'
-
-    SoundLister.dom.collHeader.innerHTML = `<strong>${SoundLister.coll.toUpperCase()}</strong>.`
-
-    SoundLister._updateQueryString(SoundLister.coll)
-  } else {
-    document.title = 'SoundLister'
-
-    SoundLister.dom.collHeader.innerHTML = 'something.'
-  }
-
-  if (SoundLister.env == 'local') {
-    document.title = '(LH) ' + document.title
-  }
+  SoundLister._setTitle()
 }
 
 SoundLister._removeCollDropdown = (collection) => {
