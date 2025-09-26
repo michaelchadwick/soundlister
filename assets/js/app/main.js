@@ -5,18 +5,18 @@
 
 // TODO: playlist scroll not working correctly sometimes
 
-SoundLister.activeTrack = '';
-SoundLister.currentIndex = 0;
-SoundLister.tags = {};
-SoundLister.index = 0;
-SoundLister.coll = SL_DEFAULT_COLLECTION;
-SoundLister.muteIconState = 'unmute';
-SoundLister.raf = null;
-SoundLister.repeatMode = true; // for now, only 2 modes
-SoundLister.shuffleMode = false; // for now, only 2 modes
-SoundLister.title = 'SoundLister';
+SoundLister.activeTrack = ''
+SoundLister.currentIndex = 0
+SoundLister.tags = {}
+SoundLister.index = 0
+SoundLister.coll = SL_DEFAULT_COLLECTION
+SoundLister.muteIconState = 'unmute'
+SoundLister.raf = null
+SoundLister.repeatMode = true // for now, only 2 modes
+SoundLister.shuffleMode = false // for now, only 2 modes
+SoundLister.title = 'SoundLister'
 
-SoundLister.config = {};
+SoundLister.config = {}
 
 /* ********************************* */
 /* public functions                  */
@@ -24,51 +24,51 @@ SoundLister.config = {};
 
 // gets tracklist with potential collection filter
 SoundLister.tracks = () => {
-  let tracks = null;
+  let tracks = null
 
   if (SoundLister.coll !== SL_DEFAULT_COLLECTION) {
-    tracks = document.querySelectorAll(`#playlist a[data-col=${SoundLister.coll}]`);
+    tracks = document.querySelectorAll(`#playlist a[data-col=${SoundLister.coll}]`)
 
-    SoundLister._updateCollDisplay();
+    SoundLister._updateCollDisplay()
   } else {
-    tracks = document.querySelectorAll('#playlist a');
+    tracks = document.querySelectorAll('#playlist a')
   }
 
-  return tracks;
-};
+  return tracks
+}
 
 // go back one track in the playlist
 SoundLister.goBack = (e = null) => {
   // SoundLister._logStatus('goBack()')
 
   if (e) {
-    e.preventDefault();
+    e.preventDefault()
   }
 
-  const len = SoundLister.tracks().length - 1;
+  const len = SoundLister.tracks().length - 1
 
   if (!SoundLister.shuffleMode) {
-    SoundLister.currentIndex = SoundLister.currentIndex === 0 ? len : SoundLister.currentIndex - 1;
+    SoundLister.currentIndex = SoundLister.currentIndex === 0 ? len : SoundLister.currentIndex - 1
 
-    SoundLister.changeTrack(SoundLister.currentIndex);
+    SoundLister.changeTrack(SoundLister.currentIndex)
   }
   // TODO: add shuffle button
   // else {
   // }
-};
+}
 
 // toggle repeat mode
 SoundLister.toggleRepeatMode = () => {
   if (SoundLister.repeatMode) {
-    SoundLister.dom.repeatButton.classList.remove('repeat-all');
-    SoundLister.dom.repeatButton.classList.add('repeat-none');
+    SoundLister.dom.repeatButton.classList.remove('repeat-all')
+    SoundLister.dom.repeatButton.classList.add('repeat-none')
   } else {
-    SoundLister.dom.repeatButton.classList.remove('repeat-none');
-    SoundLister.dom.repeatButton.classList.add('repeat-all');
+    SoundLister.dom.repeatButton.classList.remove('repeat-none')
+    SoundLister.dom.repeatButton.classList.add('repeat-all')
   }
 
-  SoundLister.repeatMode = !SoundLister.repeatMode;
-};
+  SoundLister.repeatMode = !SoundLister.repeatMode
+}
 
 // toggle shuffle mode
 SoundLister.toggleShuffleMode = () => {
@@ -81,376 +81,377 @@ SoundLister.toggleShuffleMode = () => {
     // SoundLister.shuffleQueue = SoundLister._shuffleArray(Object.keys(SoundLister.tracks()))
   } else {
     // dom updates
-    SoundLister.dom.shuffleButton.classList.remove('shuffle-all');
-    SoundLister.dom.shuffleButton.classList.add('shuffle-none');
+    SoundLister.dom.shuffleButton.classList.remove('shuffle-all')
+    SoundLister.dom.shuffleButton.classList.add('shuffle-none')
   }
 
-  SoundLister.shuffleMode = !SoundLister.shuffleMode;
-};
+  SoundLister.shuffleMode = !SoundLister.shuffleMode
+}
 
 // go forward one track in the playlist
 SoundLister.goForward = (e = null) => {
   // SoundLister._logStatus('goForward()')
 
   if (e) {
-    e.preventDefault();
+    e.preventDefault()
 
     // SoundLister._logStatus('manual change to next song')
   } else {
     // SoundLister._logStatus('song ended and changing to next one')
   }
 
-  const len = SoundLister.tracks().length - 1;
+  const len = SoundLister.tracks().length - 1
 
   if (!SoundLister.shuffleMode) {
     if (SoundLister.currentIndex === len) {
-      SoundLister.currentIndex = 0;
+      SoundLister.currentIndex = 0
 
       if (SoundLister.repeatMode) {
-        SoundLister.changeTrack(SoundLister.currentIndex);
+        SoundLister.changeTrack(SoundLister.currentIndex)
       } else {
-        SoundLister._updatePlayState();
+        SoundLister._updatePlayState()
       }
     } else {
-      SoundLister.currentIndex = SoundLister.currentIndex + 1;
+      SoundLister.currentIndex = SoundLister.currentIndex + 1
 
-      SoundLister.changeTrack(SoundLister.currentIndex);
+      SoundLister.changeTrack(SoundLister.currentIndex)
     }
   } else {
     /* TODO: SHUFFLE */
   }
-};
+}
 
 // change the currently-playing track
 SoundLister.changeTrack = (current) => {
-  SoundLister._logStatus(`changeTrack(${current})`, SoundLister.tracks()[current].title);
+  SoundLister._logStatus(`changeTrack(${current})`, SoundLister.tracks()[current].title)
 
   // scroll new track into view
-  const activeTrack = document.querySelector('#playlist a.active');
-  activeTrack.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  const activeTrack = document.querySelector('#playlist a.active')
+  activeTrack.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
 
   // set <title>
-  SoundLister.activeTrack = SoundLister.tracks()[current].title;
-  SoundLister._setTitle();
+  SoundLister.activeTrack = SoundLister.tracks()[current].title
+  SoundLister._setTitle()
 
   // play track
-  SoundLister.playTrack(SoundLister.tracks()[current]);
-};
+  SoundLister.playTrack(SoundLister.tracks()[current])
+}
 
 // play currently-loaded track
 SoundLister.playTrack = async (track) => {
-  SoundLister._logStatus('playTrack()', track.href);
+  SoundLister._logStatus('playTrack()', track.href)
 
   // change <audio> source
-  SoundLister.dom.audio.src = track.href;
+  SoundLister.dom.audio.src = track.href
 
   // switch DOM's active track
-  SoundLister.tracks().forEach((t) => t.classList.remove('active'));
-  track.classList.add('active');
+  SoundLister.tracks().forEach((t) => t.classList.remove('active'))
+  track.classList.add('active')
 
   // set <title>
-  SoundLister.activeTrack = track.title;
-  SoundLister._setTitle();
+  SoundLister.activeTrack = track.title
+  SoundLister._setTitle()
 
   // play track
-  SoundLister.dom.audio.play();
+  SoundLister.dom.audio.play()
 
-  SoundLister._updatePlayState('playlist');
-};
+  SoundLister._updatePlayState('playlist')
+}
 
 /* ********************************* */
 /* _private functions                */
 /* ********************************* */
 
 SoundLister._setCustomIcon = (iconPath) => {
-  var links = document.querySelectorAll("link[rel~='icon']");
+  var links = document.querySelectorAll("link[rel~='icon']")
   links.forEach((link) => {
-    link.href = iconPath;
-  });
-};
+    link.href = iconPath
+  })
+}
 SoundLister._setCustomLogo = (logoPath) => {
-  SoundLister.dom.logo.src = logoPath;
-};
+  SoundLister.dom.logo.src = logoPath
+}
 SoundLister._setCustomHeader = (headerText) => {
-  SoundLister.dom.headerText.innerHTML = headerText;
-};
+  SoundLister.dom.headerText.innerHTML = headerText
+}
 SoundLister._setCustomTitle = (titleText) => {
-  SoundLister.title = titleText;
-  SoundLister._setTitle();
-};
+  SoundLister.title = titleText
+  SoundLister._setTitle()
+}
 
 SoundLister._setTitle = () => {
-  let title = SoundLister.env == 'local' ? '(LH) ' : '';
+  let title = SoundLister.env == 'local' ? '(LH) ' : ''
 
-  title += SoundLister.activeTrack != '' ? SoundLister.activeTrack + ' | ' : '';
-  title += SoundLister.title;
+  title += SoundLister.activeTrack != '' ? SoundLister.activeTrack + ' | ' : ''
+  title += SoundLister.title
 
-  document.title = title;
-};
+  document.title = title
+}
 
 // Fisher-Yates Shuffle
 // https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
 SoundLister._shuffleArray = (arr) => {
   let curIdx = arr.length,
-    randIdx;
+    randIdx
 
   // While there remain elements to shuffle.
   while (curIdx != 0) {
     // Pick a remaining element.
-    randIdx = Math.floor(Math.random() * curIdx);
-    curIdx--;
+    randIdx = Math.floor(Math.random() * curIdx)
+    curIdx--
 
     // And swap it with the current element.
-    [arr[curIdx], arr[randIdx]] = [arr[randIdx], arr[curIdx]];
+    ;[arr[curIdx], arr[randIdx]] = [arr[randIdx], arr[curIdx]]
   }
 
-  return arr;
-};
+  return arr
+}
 
 SoundLister._registerServiceWorker = async () => {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker
       .register(SL_SERVICE_WORKER_PATH, { scope: 'assets/js/app/' })
       .then((registration) => {
-        SoundLister._logStatus('Service Worker registered', registration);
+        SoundLister._logStatus('Service Worker registered', registration)
 
         if (registration.installing) {
-          SoundLister._logStatus('Service worker installing');
+          SoundLister._logStatus('Service worker installing')
         } else if (registration.waiting) {
-          SoundLister._logStatus('Service worker installed');
+          SoundLister._logStatus('Service worker installed')
         } else if (registration.active) {
-          SoundLister._logStatus('Service worker active');
+          SoundLister._logStatus('Service worker active')
         }
       })
       .catch((err) => {
-        console.error('Service Worker failed to register', err);
-      });
+        console.error('Service Worker failed to register', err)
+      })
   }
-};
+}
 
 // change max-height of playlist to match viewport
 // TODO: playlist sometimes doesn't extend to bottom of viewport on iPhone
 SoundLister._resizePlaylist = () => {
-  const winHeight = window.innerHeight;
-  const winWidth = window.innerWidth;
+  const winHeight = window.innerHeight
+  const winWidth = window.innerWidth
 
-  let plHeight = 0;
+  let plHeight = 0
 
   if (winWidth >= 992) {
-    plHeight = Math.floor(winHeight - 370);
+    plHeight = Math.floor(winHeight - 370)
   } else if (winWidth >= 768) {
-    plHeight = Math.floor(winHeight - 310);
+    plHeight = Math.floor(winHeight - 310)
   } else {
-    plHeight = Math.floor(winHeight - 250);
+    plHeight = Math.floor(winHeight - 250)
   }
 
   // console.log(`_resizePlaylist: winHeight(${winHeight}), plHeight(${plHeight})`)
 
-  SoundLister.dom.playlist.style.height = `${plHeight}px`;
-};
+  SoundLister.dom.playlist.style.height = `${plHeight}px`
+}
 
 // remake playlist with collection filter
 SoundLister._remakePlaylist = () => {
   // SoundLister._logStatus('_remakePlaylist()')
 
   // empty playlist
-  SoundLister.dom.playlist.innerHTML = '';
-  SoundLister.index = 0;
-  SoundLister.songsCol = [];
+  SoundLister.dom.playlist.innerHTML = ''
+  SoundLister.index = 0
+  SoundLister.songsCol = []
 
   // remake playlist
   if (SoundLister.coll !== SL_DEFAULT_COLLECTION) {
     SoundLister.songsBase.forEach((song) => {
       if (song.col == SoundLister.coll) {
-        SoundLister.songsCol.push(song);
-        SoundLister._createPlaylistItem(song);
+        SoundLister.songsCol.push(song)
+        SoundLister._createPlaylistItem(song)
       }
-    });
+    })
 
     if (SoundLister.songsCol.length) {
-      SoundLister.songs = SoundLister.songsCol;
+      SoundLister.songs = SoundLister.songsCol
     }
   } else {
     SoundLister.songsBase.forEach((song) => {
-      SoundLister._createPlaylistItem(song);
-    });
+      SoundLister._createPlaylistItem(song)
+    })
 
-    SoundLister.songs = SoundLister.songsBase;
+    SoundLister.songs = SoundLister.songsBase
   }
 
   // update new playlist song durations
-  SoundLister._getSongDurations();
+  SoundLister._getSongDurations()
 
-  SoundLister.dom.currentTime.textContent = SoundLister.__calculateTime(0);
-  SoundLister.dom.seekSlider.value = 0;
-  SoundLister.dom.audioPlayerContainer.style.setProperty('--seek-before-width', 0);
+  SoundLister.dom.currentTime.textContent = SoundLister.__calculateTime(0)
+  SoundLister.dom.seekSlider.value = 0
+  SoundLister.dom.audioPlayerContainer.style.setProperty('--seek-before-width', 0)
 
-  SoundLister._updatePlayState('collection');
-};
+  SoundLister._updatePlayState('collection')
+}
 
 // add song durations to playlist
 SoundLister._getSongDurations = () => {
   // create audio elements - to read songs duration
-  let audio_arr = [];
+  let audio_arr = []
 
   SoundLister.tracks().forEach((track) => {
-    const audio = document.createElement('audio');
+    const audio = document.createElement('audio')
 
-    audio.src = track.href;
-    audio_arr.push(audio);
-  });
+    audio.src = track.href
+    audio_arr.push(audio)
+  })
 
   // get each song duration and put it in html element with '.song-duration' class name
   audio_arr.forEach((audio, index) => {
     audio.addEventListener('loadeddata', () => {
-      const minutes = Math.floor(audio.duration / 60);
-      const seconds = Math.floor(audio.duration % 60);
+      const minutes = Math.floor(audio.duration / 60)
+      const seconds = Math.floor(audio.duration % 60)
 
       if (document.querySelectorAll('.track-duration')[index]) {
-        document.querySelectorAll('.track-duration')[index].innerHTML =
-          `${minutes}:${seconds >= 10 ? seconds : '0' + seconds}`;
+        document.querySelectorAll('.track-duration')[index].innerHTML = `${minutes}:${
+          seconds >= 10 ? seconds : '0' + seconds
+        }`
       }
-    });
-  });
-};
+    })
+  })
+}
 
 // use mp3tag to read ID3 tags from files
 SoundLister._getID3Tags = (buffer) => {
-  const mp3tag = new MP3Tag(buffer);
+  const mp3tag = new MP3Tag(buffer)
 
-  mp3tag.read();
+  mp3tag.read()
 
-  return mp3tag.tags;
-};
+  return mp3tag.tags
+}
 
 // add DOM element to playlist
 SoundLister._createPlaylistItem = (song) => {
-  const track = document.createElement('a');
+  const track = document.createElement('a')
 
   if (SoundLister.index == 0) {
-    track.classList.add('active');
-    SoundLister.dom.audio.setAttribute('src', song.url);
+    track.classList.add('active')
+    SoundLister.dom.audio.setAttribute('src', song.url)
   }
 
-  const timestamp = new Date(song.updated);
-  const year = timestamp.getFullYear();
-  const month = (timestamp.getMonth() + 1).toString().padStart(2, '0');
-  const day = timestamp.getDate().toString().padStart(2, '0');
+  const timestamp = new Date(song.updated)
+  const year = timestamp.getFullYear()
+  const month = (timestamp.getMonth() + 1).toString().padStart(2, '0')
+  const day = timestamp.getDate().toString().padStart(2, '0')
   const hours =
     timestamp.getHours() > 12
       ? (timestamp.getHours() - 12).toString().padStart(2, '0')
-      : timestamp.getHours().toString().padStart(2, '0');
-  const mins = timestamp.getMinutes().toString().padStart(2, '0');
-  const ampm = timestamp.getHours() >= 12 ? 'PM' : 'AM';
+      : timestamp.getHours().toString().padStart(2, '0')
+  const mins = timestamp.getMinutes().toString().padStart(2, '0')
+  const ampm = timestamp.getHours() >= 12 ? 'PM' : 'AM'
 
-  let trackUpdated = `${year}/${month}/${day} ${hours}:${mins}${ampm}`;
+  let trackUpdated = `${year}/${month}/${day} ${hours}:${mins}${ampm}`
 
-  track.setAttribute('title', song.title);
-  track.setAttribute('alt', song.title);
-  track.dataset.index = SoundLister.index;
-  track.dataset.col = song.col;
-  track.dataset.updated = trackUpdated;
-  track.href = song.url;
+  track.setAttribute('title', song.title)
+  track.setAttribute('alt', song.title)
+  track.dataset.index = SoundLister.index
+  track.dataset.col = song.col
+  track.dataset.updated = trackUpdated
+  track.href = song.url
 
-  const trackNum = document.createElement('label');
-  trackNum.classList.add('track-attribute', 'track-num');
-  trackNum.innerHTML = (SoundLister.index + 1).toString().padStart(2, '0');
+  const trackNum = document.createElement('label')
+  trackNum.classList.add('track-attribute', 'track-num')
+  trackNum.innerHTML = (SoundLister.index + 1).toString().padStart(2, '0')
 
-  const trackTitles = document.createElement('div');
-  trackTitles.classList.add('track-attribute', 'titles');
+  const trackTitles = document.createElement('div')
+  trackTitles.classList.add('track-attribute', 'titles')
 
-  const trackName = document.createElement('div');
-  trackName.classList.add('track-attribute', 'track-name');
-  trackName.innerHTML = song.title;
+  const trackName = document.createElement('div')
+  trackName.classList.add('track-attribute', 'track-name')
+  trackName.innerHTML = song.title
 
-  const trackArtistAlbum = document.createElement('div');
-  trackArtistAlbum.classList.add('track-attribute', 'track-artist-album');
+  const trackArtistAlbum = document.createElement('div')
+  trackArtistAlbum.classList.add('track-attribute', 'track-artist-album')
   trackArtistAlbum.innerHTML = `
     by <span class='track-attribute highlight'>${song.artist}</span> on <span class='track-attribute highlight'>${song.album}</span>
-  `;
+  `
 
-  const trackMetaInfo = document.createElement('div');
-  trackMetaInfo.classList.add('track-attribute', 'track-meta-info');
+  const trackMetaInfo = document.createElement('div')
+  trackMetaInfo.classList.add('track-attribute', 'track-meta-info')
   trackMetaInfo.innerHTML = `
     updated: ${trackUpdated}
-  `;
+  `
 
-  trackTitles.append(trackName);
-  trackTitles.append(trackArtistAlbum);
+  trackTitles.append(trackName)
+  trackTitles.append(trackArtistAlbum)
 
-  const trackDuration = document.createElement('div');
-  trackDuration.classList.add('track-attribute', 'track-duration');
-  trackDuration.innerHTML = song.duration;
+  const trackDuration = document.createElement('div')
+  trackDuration.classList.add('track-attribute', 'track-duration')
+  trackDuration.innerHTML = song.duration
 
-  track.append(trackNum);
-  track.append(trackTitles);
-  track.append(trackDuration);
+  track.append(trackNum)
+  track.append(trackTitles)
+  track.append(trackDuration)
 
-  SoundLister.dom.playlist.appendChild(track);
-  SoundLister.dom.playlist.appendChild(trackMetaInfo);
+  SoundLister.dom.playlist.appendChild(track)
+  SoundLister.dom.playlist.appendChild(trackMetaInfo)
 
-  SoundLister.index++;
-};
+  SoundLister.index++
+}
 
 // convert filename to a title, if needed
 SoundLister._filenameToTitle = (filename) => {
-  let title;
+  let title
   // change '-' to ' '
-  title = filename.replaceAll('-', ' ');
+  title = filename.replaceAll('-', ' ')
   // remove track numbers
   // e.g. 0 Track, 11 Track, 115 Track, 4-Track, 05-Track, 043-Track
-  title = title.replaceAll(/^([0-9]{1,3}[\s-]+)/g, '');
+  title = title.replaceAll(/^([0-9]{1,3}[\s-]+)/g, '')
   // remove file extension
-  title = title.replaceAll(/\.{1}[a-zA-Z0-9]{3,4}$/g, '');
+  title = title.replaceAll(/\.{1}[a-zA-Z0-9]{3,4}$/g, '')
 
-  let t_split = title.split(' ');
+  let t_split = title.split(' ')
 
   // uppercase first letter in title
   for (var i = 0; i < t_split.length; i++) {
-    t_split[i] = t_split[i].charAt(0).toUpperCase() + t_split[i].slice(1);
+    t_split[i] = t_split[i].charAt(0).toUpperCase() + t_split[i].slice(1)
   }
 
-  return t_split.join(' ');
-};
+  return t_split.join(' ')
+}
 
 // fill songs object[] with JSON
 SoundLister._fillSongs = async (fileColObj) => {
-  const songObjArr = [];
-  let fileIndex = 1;
+  const songObjArr = []
+  let fileIndex = 1
 
-  let fileCount = SoundLister.__getFileCount(fileColObj);
+  let fileCount = SoundLister.__getFileCount(fileColObj)
 
   // put all file information into 'songs' object[]
   for (const col in fileColObj) {
     for (const index in fileColObj[col]) {
-      const baseName = fileColObj[col][index]['basename']; // music.mp3
-      const duration = fileColObj[col][index]['duration']; // 3:12
-      const ext = fileColObj[col][index]['extension']; // mp3
-      const subdirs = fileColObj[col][index]['subdirPath']; // [/subdir]
-      const ms = fileColObj[col][index]['ms']; // 300
-      const updated = fileColObj[col][index]['updated']; // Fri May 9 13:48:41 PDT 2025
-      let filePath = '';
+      const baseName = fileColObj[col][index]['basename'] // music.mp3
+      const duration = fileColObj[col][index]['duration'] // 3:12
+      const ext = fileColObj[col][index]['extension'] // mp3
+      const subdirs = fileColObj[col][index]['subdirPath'] // [/subdir]
+      const ms = fileColObj[col][index]['ms'] // 300
+      const updated = fileColObj[col][index]['updated'] // Fri May 9 13:48:41 PDT 2025
+      let filePath = ''
       if (subdirs == col) {
-        filePath = `${SL_AUDIO_ASSETS_DIR}/${subdirs}/${baseName}`;
+        filePath = `${SL_AUDIO_ASSETS_DIR}/${subdirs}/${baseName}`
       } else {
-        filePath = `${SL_AUDIO_ASSETS_DIR}/${subdirs}/${col}/${baseName}`;
+        filePath = `${SL_AUDIO_ASSETS_DIR}/${subdirs}/${col}/${baseName}`
       }
 
-      const response = await fetch(filePath);
-      const data = await response.blob();
+      const response = await fetch(filePath)
+      const data = await response.blob()
 
       // when FileReader loads, read ID3 tags from file via MP3Tag
       // if found, use; otherwise use defaults
-      const buffer = await SoundLister.__readFileAsync(data);
-      const tags = await SoundLister._getID3Tags(buffer);
+      const buffer = await SoundLister.__readFileAsync(data)
+      const tags = await SoundLister._getID3Tags(buffer)
 
-      const defaultTitle = SoundLister._filenameToTitle(baseName);
-      const defaultArtist = 'Unknown Artist';
-      const defaultAlbum = 'Unknown Album';
+      const defaultTitle = SoundLister._filenameToTitle(baseName)
+      const defaultArtist = 'Unknown Artist'
+      const defaultAlbum = 'Unknown Album'
 
-      const songTitle = tags.title || defaultTitle;
-      const songArtist = tags.artist || defaultArtist;
-      const songAlbum = tags.album || defaultAlbum;
+      const songTitle = tags.title || defaultTitle
+      const songArtist = tags.artist || defaultArtist
+      const songAlbum = tags.album || defaultAlbum
 
       const newSong = {
         title: songTitle,
@@ -462,47 +463,47 @@ SoundLister._fillSongs = async (fileColObj) => {
         col: col,
         url: filePath,
         ext: ext,
-      };
+      }
 
-      songObjArr.push(newSong);
+      songObjArr.push(newSong)
 
-      const percentDone = (fileIndex / fileCount) * 100;
+      const percentDone = (fileIndex / fileCount) * 100
 
-      SoundLister._updateProgressBar(percentDone, songTitle, fileIndex, fileCount);
+      SoundLister._updateProgressBar(percentDone, songTitle, fileIndex, fileCount)
 
-      fileIndex += 1;
+      fileIndex += 1
     }
   }
 
-  return SoundLister.__sortObjArr(songObjArr, ['url']);
-};
+  return SoundLister.__sortObjArr(songObjArr, ['url'])
+}
 
 SoundLister._updateProgressBar = (percent, title, cur, total) => {
   if (percent >= 0 && percent <= 100) {
-    SoundLister.dom.progressText.innerHTML = `<span>loading </span><span><strong>${title}</strong></span><span> (${cur}/${total})</span>`;
-    SoundLister.dom.progressBar.style.width = percent + '%';
+    SoundLister.dom.progressText.innerHTML = `<span>loading </span><span><strong>${title}</strong></span><span> (${cur}/${total})</span>`
+    SoundLister.dom.progressBar.style.width = percent + '%'
 
     // SoundLister.dom.progressBar.innerHTML = `<span>loading </span><span><strong>${title}</strong></span><span> (${cur}/${total})</span>`
     // SoundLister.dom.progressBar.style.width = percent + '%'
   }
-};
+}
 
 // use PHP script to scan audio directory
 // add to CacheStorage
 // return titles of files
 SoundLister._getFiles = async () => {
-  const fileList = await fetch(SL_PHP_DIR_SCRIPT);
-  const titlesArray = await fileList.text();
-  let titlesJSON = null;
+  const fileList = await fetch(SL_PHP_DIR_SCRIPT)
+  const titlesArray = await fileList.text()
+  let titlesJSON = null
 
   if (titlesArray.length) {
-    titlesJSON = JSON.parse(titlesArray);
+    titlesJSON = JSON.parse(titlesArray)
 
     // initiate the collection dropdown if more than one collection
     if (Object.keys(titlesJSON).length > 1) {
-      Object.keys(titlesJSON).forEach((col) => SoundLister._addCollectionOption(col));
+      Object.keys(titlesJSON).forEach((col) => SoundLister._addCollectionOption(col))
     } else {
-      SoundLister._removeCollDropdown(titlesJSON[0]);
+      SoundLister._removeCollDropdown(titlesJSON[0])
     }
 
     // TODO: use a Service Worker to intercept requests
@@ -510,30 +511,30 @@ SoundLister._getFiles = async () => {
     // SoundLister._registerServiceWorker()
 
     // check querystring for ?col|coll|collection= to filter dropdown
-    SoundLister._loadQSCollection();
+    SoundLister._loadQSCollection()
 
     if (SoundLister.coll !== SL_DEFAULT_COLLECTION) {
       titlesJSON = Object.keys(titlesJSON)
         .filter((key) => key.includes(SoundLister.coll))
         .reduce((cur, key) => {
-          return Object.assign(cur, { [key]: titlesJSON[key] });
-        }, {});
+          return Object.assign(cur, { [key]: titlesJSON[key] })
+        }, {})
     }
   } else {
-    titlesJSON = {};
+    titlesJSON = {}
   }
 
   if (Object.keys(titlesJSON).length == 1) {
-    SoundLister._updateCollDisplay(Object.keys(titlesJSON)[0]);
+    SoundLister._updateCollDisplay(Object.keys(titlesJSON)[0])
   }
 
-  return titlesJSON;
-};
+  return titlesJSON
+}
 
 // add new option to collections dropdown
 SoundLister._addCollectionOption = (col) => {
   // bog-standard <select>
-  SoundLister.dom.collDropdown.options.add(new Option(col, col));
+  SoundLister.dom.collDropdown.options.add(new Option(col, col))
 
   // STUB
   // Blog: https://css-tricks.com/striking-a-balance-between-native-and-custom-select-elements/
@@ -546,7 +547,7 @@ SoundLister._addCollectionOption = (col) => {
   // option.dataset.value = col
   // option.textContent = col
   // SoundLister.dom.collCustom.querySelector('.selectCustom-options').appendChild(option)
-};
+}
 
 // change play/pause icon and audio element depending on context
 SoundLister._updatePlayState = (source = null) => {
@@ -555,272 +556,270 @@ SoundLister._updatePlayState = (source = null) => {
     // and sets play/pause icon to 'pause'
     case 'playlist':
       // start the audio scrubbing bar updating so refreshes every second
-      requestAnimationFrame(SoundLister._whilePlaying);
+      requestAnimationFrame(SoundLister._whilePlaying)
 
       // change play/pause icon to 'pause'
-      SoundLister.dom.playButtonIcon.classList.remove('fa-play');
-      SoundLister.dom.playButtonIcon.classList.add('fa-pause');
+      SoundLister.dom.playButtonIcon.classList.remove('fa-play')
+      SoundLister.dom.playButtonIcon.classList.add('fa-pause')
 
-      break;
+      break
 
     // clicking on the collection dropdown auto-stops track
     // and sets play/pause icon to 'play'
     case 'collection':
       // stop updating the audio scrubber bar refresh
-      cancelAnimationFrame(SoundLister.raf);
+      cancelAnimationFrame(SoundLister.raf)
 
       // load first track in collection
-      SoundLister.dom.audio.src = SoundLister.tracks()[0].href;
+      SoundLister.dom.audio.src = SoundLister.tracks()[0].href
 
       // change play/pause icon to 'play'
-      SoundLister.dom.playButtonIcon.classList.remove('fa-pause');
-      SoundLister.dom.playButtonIcon.classList.add('fa-play');
+      SoundLister.dom.playButtonIcon.classList.remove('fa-pause')
+      SoundLister.dom.playButtonIcon.classList.add('fa-play')
 
-      break;
+      break
 
     // clicking directly on the play/pause icon
     // or using the space or next/prev keys
     case 'click':
     case 'key':
       if (SoundLister.dom.audio.paused) {
-        SoundLister.dom.audio.play();
+        SoundLister.dom.audio.play()
 
         // start the audio scrubbing bar updating so refreshes every second
-        requestAnimationFrame(SoundLister._whilePlaying);
+        requestAnimationFrame(SoundLister._whilePlaying)
 
         // change play/pause icon to 'play'
-        SoundLister.dom.playButtonIcon.classList.remove('fa-pause');
-        SoundLister.dom.playButtonIcon.classList.add('fa-play');
+        SoundLister.dom.playButtonIcon.classList.remove('fa-pause')
+        SoundLister.dom.playButtonIcon.classList.add('fa-play')
       } else {
-        SoundLister.dom.audio.pause();
+        SoundLister.dom.audio.pause()
 
         // stop updating the audio scrubber bar refresh
-        cancelAnimationFrame(SoundLister.raf);
+        cancelAnimationFrame(SoundLister.raf)
 
         // change play/pause icon to 'pause'
-        SoundLister.dom.playButtonIcon.classList.remove('fa-play');
-        SoundLister.dom.playButtonIcon.classList.add('fa-pause');
+        SoundLister.dom.playButtonIcon.classList.remove('fa-play')
+        SoundLister.dom.playButtonIcon.classList.add('fa-pause')
       }
 
-      break;
+      break
 
     // audio play/pause events
     default:
       if (SoundLister.dom.audio.paused) {
         // change play/pause icon to 'play'
-        SoundLister.dom.playButtonIcon.classList.remove('fa-pause');
-        SoundLister.dom.playButtonIcon.classList.add('fa-play');
+        SoundLister.dom.playButtonIcon.classList.remove('fa-pause')
+        SoundLister.dom.playButtonIcon.classList.add('fa-play')
       } else {
         // change play/pause icon to 'pause'
-        SoundLister.dom.playButtonIcon.classList.remove('fa-play');
-        SoundLister.dom.playButtonIcon.classList.add('fa-pause');
+        SoundLister.dom.playButtonIcon.classList.remove('fa-play')
+        SoundLister.dom.playButtonIcon.classList.add('fa-pause')
       }
 
-      break;
+      break
   }
-};
+}
 
 SoundLister._displayBufferedAmount = (msg = null) => {
-  const bufferedLength = SoundLister.dom.audio.buffered.length - 1;
+  const bufferedLength = SoundLister.dom.audio.buffered.length - 1
 
   if (bufferedLength >= 0) {
-    const bufferedAmount = Math.floor(SoundLister.dom.audio.buffered.end(bufferedLength));
+    const bufferedAmount = Math.floor(SoundLister.dom.audio.buffered.end(bufferedLength))
 
     SoundLister._logStatus(
       'bufferedAmount',
-      `${bufferedAmount} / ${SoundLister.dom.seekSlider.max}: ${msg}`,
-    );
+      `${bufferedAmount} / ${SoundLister.dom.seekSlider.max}: ${msg}`
+    )
 
     SoundLister.dom.audioPlayerContainer.style.setProperty(
       '--buffered-width',
-      `${(bufferedAmount / SoundLister.dom.seekSlider.max) * 100}%`,
-    );
+      `${(bufferedAmount / SoundLister.dom.seekSlider.max) * 100}%`
+    )
   }
-};
+}
 
 SoundLister._displayAudioDuration = () => {
-  const duration = SoundLister.__calculateTime(SoundLister.dom.audio.duration);
+  const duration = SoundLister.__calculateTime(SoundLister.dom.audio.duration)
 
-  SoundLister.dom.totalTime.textContent = duration;
-};
+  SoundLister.dom.totalTime.textContent = duration
+}
 
 SoundLister._displayCurrentTrackName = () => {
-  const curTrackTitle = SoundLister.songs[SoundLister.currentIndex].title;
-  const curAlbumTitle = SoundLister.songs[SoundLister.currentIndex].album;
-  const curArtistTitle = SoundLister.songs[SoundLister.currentIndex].artist;
+  const curTrackTitle = SoundLister.songs[SoundLister.currentIndex].title
+  const curAlbumTitle = SoundLister.songs[SoundLister.currentIndex].album
+  const curArtistTitle = SoundLister.songs[SoundLister.currentIndex].artist
 
-  SoundLister.dom.currentTrackName.textContent = curTrackTitle;
-  SoundLister.dom.currentTrackName.setAttribute('title', curTrackTitle);
-  SoundLister.dom.currentAlbumArtistName.textContent = `${curAlbumTitle} by ${curArtistTitle}`;
+  SoundLister.dom.currentTrackName.textContent = curTrackTitle
+  SoundLister.dom.currentTrackName.setAttribute('title', curTrackTitle)
+  SoundLister.dom.currentAlbumArtistName.textContent = `${curAlbumTitle} by ${curArtistTitle}`
   SoundLister.dom.currentAlbumArtistName.setAttribute(
     'title',
-    `${curAlbumTitle} by ${curArtistTitle}`,
-  );
+    `${curAlbumTitle} by ${curArtistTitle}`
+  )
 
-  const titleTextHeight = SoundLister.dom.currentTrackName.getBoundingClientRect().height;
+  const titleTextHeight = SoundLister.dom.currentTrackName.getBoundingClientRect().height
   const titleTextContainerHeight = document
     .querySelector('#track-current-name')
-    .parentElement.getBoundingClientRect().height;
+    .parentElement.getBoundingClientRect().height
 
   if (titleTextHeight > titleTextContainerHeight) {
-    document.querySelector('#track-current-name').classList.remove('short');
-    document.querySelector('#track-current-name').parentElement.style.display = '-webkit-box';
+    document.querySelector('#track-current-name').classList.remove('short')
+    document.querySelector('#track-current-name').parentElement.style.display = '-webkit-box'
   } else {
-    document.querySelector('#track-current-name').classList.add('short');
-    document.querySelector('#track-current-name').parentElement.style.display = 'flex';
+    document.querySelector('#track-current-name').classList.add('short')
+    document.querySelector('#track-current-name').parentElement.style.display = 'flex'
   }
-};
+}
 
 SoundLister._setSliderMax = () => {
-  const duration = Math.floor(SoundLister.dom.audio.duration);
+  const duration = Math.floor(SoundLister.dom.audio.duration)
 
-  SoundLister.dom.seekSlider.max = duration;
-};
+  SoundLister.dom.seekSlider.max = duration
+}
 
 SoundLister._showRangeProgress = (rangeInput) => {
-  const newValNum = (rangeInput.value / rangeInput.max) * 100;
-  const newVal = newValNum + '%';
+  const newValNum = (rangeInput.value / rangeInput.max) * 100
+  const newVal = newValNum + '%'
 
   if (rangeInput === SoundLister.dom.seekSlider) {
-    SoundLister.dom.audioPlayerContainer.style.setProperty('--seek-before-width', newVal);
+    SoundLister.dom.audioPlayerContainer.style.setProperty('--seek-before-width', newVal)
   } else {
-    SoundLister.dom.audioPlayerContainer.style.setProperty('--volume-before-width', newVal);
+    SoundLister.dom.audioPlayerContainer.style.setProperty('--volume-before-width', newVal)
   }
-};
+}
 
 SoundLister._whilePlaying = () => {
-  SoundLister.dom.seekSlider.value = Math.floor(SoundLister.dom.audio.currentTime);
+  SoundLister.dom.seekSlider.value = Math.floor(SoundLister.dom.audio.currentTime)
   SoundLister.dom.currentTime.textContent = SoundLister.__calculateTime(
-    SoundLister.dom.seekSlider.value,
-  );
+    SoundLister.dom.seekSlider.value
+  )
 
   SoundLister.dom.audioPlayerContainer.style.setProperty(
     '--seek-before-width',
-    `${(SoundLister.dom.seekSlider.value / SoundLister.dom.seekSlider.max) * 100}%`,
-  );
+    `${(SoundLister.dom.seekSlider.value / SoundLister.dom.seekSlider.max) * 100}%`
+  )
 
-  SoundLister.raf = requestAnimationFrame(SoundLister._whilePlaying);
-};
+  SoundLister.raf = requestAnimationFrame(SoundLister._whilePlaying)
+}
 
 SoundLister._addAudioToCache = async (collections) => {
   await caches.open(SL_CACHE_TEXT_KEY).then(async (cache) => {
     await cache.keys().then(async function (keys) {
       if (!keys.length) {
-        let filesToAdd = [];
+        let filesToAdd = []
 
         Object.keys(collections).forEach((col) => {
           collections[col].forEach((song) => {
-            filesToAdd.push(`/assets/${song.dirname}/${song.basename}`);
-          });
-        });
+            filesToAdd.push(`/assets/${song.dirname}/${song.basename}`)
+          })
+        })
 
-        await cache.addAll(filesToAdd);
+        await cache.addAll(filesToAdd)
       } else {
         // SoundLister._logStatus(`${SL_CACHE_TEXT_KEY} is full, so no need to initialize`)
       }
-    });
-  });
-};
+    })
+  })
+}
 
 SoundLister._loadQSCollection = () => {
   const params = new Proxy(new URLSearchParams(window.location.search), {
     get: (searchParams, prop) => searchParams.get(prop),
-  });
+  })
 
-  const colToLoad = params.col || params.coll || params.collection;
+  const colToLoad = params.col || params.coll || params.collection
 
   if (colToLoad) {
-    SoundLister.coll = colToLoad;
+    SoundLister.coll = colToLoad
 
-    const validChoices = Array.from(SoundLister.dom.collDropdown.options).map((op) => op.value);
+    const validChoices = Array.from(SoundLister.dom.collDropdown.options).map((op) => op.value)
 
     // permananently change to one collection (save network)
     // remove collection dropdown
     if (validChoices.includes(colToLoad)) {
-      SoundLister._removeCollDropdown(colToLoad);
+      SoundLister._removeCollDropdown(colToLoad)
     } else {
       // if invalid collection speficied, default to all collections
-      SoundLister.coll = SL_DEFAULT_COLLECTION;
+      SoundLister.coll = SL_DEFAULT_COLLECTION
     }
   }
-};
+}
 
 SoundLister._updateCollDisplay = (overridedTitle = null) => {
   if (overridedTitle) {
-    SoundLister.coll = overridedTitle;
+    SoundLister.coll = overridedTitle
   }
 
   if (SoundLister.coll !== SL_DEFAULT_COLLECTION) {
-    document.title = SoundLister.coll.toUpperCase() + ' | SoundLister';
+    document.title = SoundLister.coll.toUpperCase() + ' | SoundLister'
 
-    SoundLister.dom.collHeader.innerHTML = `<strong>${SoundLister.coll.toUpperCase()}</strong>.`;
+    SoundLister.dom.collHeader.innerHTML = `<strong>${SoundLister.coll.toUpperCase()}</strong>.`
 
-    SoundLister._updateQueryString(SoundLister.coll);
+    SoundLister._updateQueryString(SoundLister.coll)
   } else {
-    document.title = 'SoundLister';
+    document.title = 'SoundLister'
 
-    SoundLister.dom.collHeader.innerHTML = 'something.';
+    SoundLister.dom.collHeader.innerHTML = 'something.'
   }
 
   if (SoundLister.env == 'local') {
-    document.title = '(LH) ' + document.title;
+    document.title = '(LH) ' + document.title
   }
-};
+}
 
 SoundLister._removeCollDropdown = (collection) => {
-  SoundLister.dom.collDropdown.value = collection;
-  SoundLister.dom.collDropdown.dispatchEvent(new Event('change'));
-  SoundLister.dom.collDropdown.disabled = true;
-  SoundLister.dom.collDropdown.style.display = 'none';
+  SoundLister.dom.collDropdown.value = collection
+  SoundLister.dom.collDropdown.dispatchEvent(new Event('change'))
+  SoundLister.dom.collDropdown.disabled = true
+  SoundLister.dom.collDropdown.style.display = 'none'
 
   if (collection && collection !== SL_DEFAULT_COLLECTION) {
-    SoundLister._updateCollDisplay();
+    SoundLister._updateCollDisplay()
   }
-};
+}
 
 SoundLister._updateQueryString = (coll) => {
-  const url = new URL(location);
-  url.searchParams.set('coll', coll);
-  window.history.pushState({}, '', url);
-};
+  const url = new URL(location)
+  url.searchParams.set('coll', coll)
+  window.history.pushState({}, '', url)
+}
 
 /* ********************************* */
 /* start the engine                  */
 /* ********************************* */
-
-/* eslint-disable no-extra-semi */
-(async () => {
+;(async () => {
   // adjust <title> for env
   if (SoundLister.env == 'local') {
-    SoundLister._setTitle();
+    SoundLister._setTitle()
   }
 
   try {
-    const resp = await fetch('./custom.json');
+    const resp = await fetch('./custom.json')
 
     if (resp) {
-      const conf = await resp.json();
+      const conf = await resp.json()
 
       if (conf) {
-        const icon = conf.faviconFilePath;
-        const header = conf.headerText;
-        const logo = conf.logoFilePath;
-        const title = conf.titleText;
+        const icon = conf.faviconFilePath
+        const header = conf.headerText
+        const logo = conf.logoFilePath
+        const title = conf.titleText
 
         if (icon !== '') {
-          SoundLister._setCustomIcon(icon);
+          SoundLister._setCustomIcon(icon)
         }
         if (logo !== '') {
-          SoundLister._setCustomLogo(logo);
+          SoundLister._setCustomLogo(logo)
         }
         if (header !== '') {
-          SoundLister._setCustomHeader(header);
+          SoundLister._setCustomHeader(header)
         }
         if (title !== '') {
-          SoundLister._setCustomTitle(title);
+          SoundLister._setCustomTitle(title)
         }
       } else {
-        console.error('custom.json could not be loaded');
+        console.error('custom.json could not be loaded')
       }
     } else {
       // console.warn('custom.json not found');
@@ -830,104 +829,106 @@ SoundLister._updateQueryString = (coll) => {
   }
 
   // create fileObjArr object array of file info
-  const fileObjArr = await SoundLister._getFiles();
+  const fileObjArr = await SoundLister._getFiles()
 
   if (Object.keys(fileObjArr).length) {
     // create SoundLister.songsBase JSON object
     // use title, artist, etc. of all songs
-    SoundLister.songsBase = await SoundLister._fillSongs(fileObjArr);
+    SoundLister.songsBase = await SoundLister._fillSongs(fileObjArr)
 
     // set array of objects for reference during usage
-    SoundLister.songs = SoundLister.songsBase;
+    SoundLister.songs = SoundLister.songsBase
 
     // create playlist from SoundLister.songs
-    SoundLister.dom.playlist.textContent = '';
+    SoundLister.dom.playlist.textContent = ''
 
-    let album = null;
-    let albumTrackCount = 0;
-    let albumDuration = 0;
+    let album = null
+    let albumTrackCount = 0
+    let albumDuration = 0
 
     Object.values(SoundLister.songs).forEach((song) => {
-      let songAlbum = song.album;
+      let songAlbum = song.album
 
       if (songAlbum != album) {
-        const hr = document.createElement('hr');
-        hr.classList.add('album-separator');
+        const hr = document.createElement('hr')
+        hr.classList.add('album-separator')
 
-        SoundLister.dom.playlist.appendChild(hr);
+        SoundLister.dom.playlist.appendChild(hr)
 
-        album = songAlbum;
+        album = songAlbum
       }
 
-      albumTrackCount++;
-      albumDuration += song.ms / 1000;
-      SoundLister._createPlaylistItem(song);
-    });
+      albumTrackCount++
+      albumDuration += song.ms / 1000
+      SoundLister._createPlaylistItem(song)
+    })
 
     // SoundLister.dom.loadMessage.classList.remove('loading')
 
     // hide loading info once songs are loaded
-    SoundLister.dom.progressText.innerHTML = '<span>loading done!</span>';
+    SoundLister.dom.progressText.innerHTML = '<span>loading done!</span>'
 
     setTimeout(() => {
-      SoundLister.dom.progressBar.parentElement.style.height = '0';
+      SoundLister.dom.progressBar.parentElement.style.height = '0'
       setTimeout(() => {
-        SoundLister.dom.progressBar.parentElement.style.display = 'none';
-      }, 100);
-    }, 2000);
+        SoundLister.dom.progressBar.parentElement.style.display = 'none'
+      }, 100)
+    }, 2000)
 
     // attach DOM listeners
-    SoundLister.attachPresentationListeners();
+    SoundLister.attachPresentationListeners()
 
     // init DOM status labels
-    SoundLister.dom.currentTime = document.getElementById('time-current');
-    SoundLister.dom.totalTime = document.getElementById('time-total');
-    SoundLister.dom.outputVolume = document.getElementById('output-volume');
-    SoundLister.dom.audioPlaylistInfo.innerHTML = `<strong>${albumTrackCount}</strong> tracks, <strong>${SoundLister.__calculateTime(albumDuration)}</strong>`;
+    SoundLister.dom.currentTime = document.getElementById('time-current')
+    SoundLister.dom.totalTime = document.getElementById('time-total')
+    SoundLister.dom.outputVolume = document.getElementById('output-volume')
+    SoundLister.dom.audioPlaylistInfo.innerHTML = `<strong>${albumTrackCount}</strong> tracks, <strong>${SoundLister.__calculateTime(
+      albumDuration
+    )}</strong>`
 
     // TODO: add files to CacheStorage AND be able to use them
     // SoundLister._addAudioToCache(fileObjArr)
 
     // if <audio> is loaded and ready, then get its duration and such
     if (SoundLister.dom.audio.readyState == 4) {
-      SoundLister._displayAudioDuration();
-      SoundLister._displayCurrentTrackName();
-      SoundLister._setSliderMax();
+      SoundLister._displayAudioDuration()
+      SoundLister._displayCurrentTrackName()
+      SoundLister._setSliderMax()
       // SoundLister._displayBufferedAmount('ready');
     }
     // otherwise, set an event listener for metadata loading completion
     else {
       SoundLister.dom.audio.addEventListener('loadeddata', () => {
         // SoundLister._displayBufferedAmount('loadeddata');
-      });
+      })
       SoundLister.dom.audio.addEventListener('loadedmetadata', () => {
-        SoundLister._displayAudioDuration();
-        SoundLister._displayCurrentTrackName();
-        SoundLister._setSliderMax();
+        SoundLister._displayAudioDuration()
+        SoundLister._displayCurrentTrackName()
+        SoundLister._setSliderMax()
         // SoundLister._displayBufferedAmount('loadedmetadata');
 
-        SoundLister.activeTrack = SoundLister.tracks()[0].title;
-      });
+        SoundLister.activeTrack = SoundLister.tracks()[0].title
+      })
     }
 
     // now attach <audio>, etc. listeners
-    SoundLister.attachFunctionalListeners();
+    SoundLister.attachFunctionalListeners()
   } else {
-    SoundLister.dom.progressContainer.style.display = 'none';
+    SoundLister.dom.progressContainer.style.display = 'none'
 
-    SoundLister.dom.playButton.disabled = 'true';
-    SoundLister.dom.seekSlider.disabled = 'true';
-    SoundLister.dom.volumeSlider.disabled = 'true';
-    SoundLister.dom.prevButton.disabled = 'true';
-    SoundLister.dom.repeatButton.disabled = 'true';
-    SoundLister.dom.nextButton.disabled = 'true';
+    SoundLister.dom.playButton.disabled = 'true'
+    SoundLister.dom.seekSlider.disabled = 'true'
+    SoundLister.dom.volumeSlider.disabled = 'true'
+    SoundLister.dom.prevButton.disabled = 'true'
+    SoundLister.dom.repeatButton.disabled = 'true'
+    SoundLister.dom.nextButton.disabled = 'true'
 
-    SoundLister.dom.playlist.classList.add('no-audio-found');
+    SoundLister.dom.playlist.classList.add('no-audio-found')
     SoundLister.dom.playlist.innerHTML =
-      '<p>No audio files found. Try adding some to <code>/assets/audio</code>!</p>';
+      '<p>No audio files found. Try adding some to <code>/assets/audio</code>!</p>'
 
-    SoundLister.dom.collDropdown.disabled = 'true';
+    SoundLister.dom.collDropdown.disabled = 'true'
 
-    console.error('No audio files found.');
+    console.error('No audio files found.')
   }
-})();
+})()
