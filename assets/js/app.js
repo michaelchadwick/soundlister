@@ -5,6 +5,7 @@ const SOUNDLISTER_ENV_PROD_URL = [
   'sl.neb.host',
   'soundlister.neb.host',
   'satch20.nebyoolae.com',
+  'soh.nebyoolae.com',
   'bits.neb.host',
 ]
 
