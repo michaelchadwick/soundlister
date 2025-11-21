@@ -3,6 +3,7 @@ task :deploy do
   sh "rsync -auP --no-p --exclude-from='rsync-exclude.txt' . $SOUNDLISTER_REMOTE"
   sh "rsync -auP --no-p --exclude-from='rsync-exclude.txt' . $BITS_REMOTE"
   sh "rsync -auP --no-p --exclude-from='rsync-exclude.txt' . $SATCH20_REMOTE"
+  sh "rsync -auP --no-p --exclude-from='rsync-exclude.txt' . $SOH_REMOTE"
 end
 
 task default: [:deploy]
