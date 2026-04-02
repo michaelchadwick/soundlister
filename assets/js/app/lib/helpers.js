@@ -1,7 +1,7 @@
 /* misc global functions */
 /* global SoundLister */
-/* eslint-disable no-undef */
 
+// return number of files loaded for stat purposes
 SoundLister.__getFileCount = (dirList) => {
   let sum = 0
 
@@ -25,44 +25,6 @@ SoundLister.__calculateTime = (seconds) => {
     .padStart(2, '0')
 
   return hrs > 0 ? `${hrs}:${mins}:${secs}` : `${mins}:${secs}`
-}
-
-// asynchronously read a file from disk
-SoundLister.__readFileAsync = (file) => {
-  return new Promise((resolve) => {
-    let reader = new FileReader()
-
-    reader.onload = function () {
-      resolve(reader.result)
-    }
-
-    reader.onloadend = function () {}
-
-    reader.readAsArrayBuffer(file)
-  })
-}
-
-SoundLister.__isCached = (filename) => {
-  return window.caches
-    .open(SL_CACHE_TEXT_KEY)
-    .then((cache) => cache.match(filename))
-    .then(Boolean)
-}
-
-SoundLister.__addToCache = (filename) => {
-  window.caches
-    .open(SL_CACHE_TEXT_KEY)
-    .then((cache) => cache.add(filename))
-    .then(() => console.log(`added '${filename}' to cache`))
-    .catch((e) => console.error(`failed to cache '${filename}'`, e))
-}
-
-SoundLister.__removeFromCache = (filename) => {
-  window.caches
-    .open(SL_CACHE_TEXT_KEY)
-    .then((cache) => cache.delete(filename))
-    .then(() => console.log(`removed '${filename}' from cache`))
-    .catch((e) => console.error(`failed to remove '${filename}' from cache`, e))
 }
 
 // sort an array of objects by any number of properties
@@ -118,6 +80,7 @@ SoundLister.__sortObjArr = (oldObjArr, props) => {
   return newObjArr
 }
 
+// update playlist UI track count and total time
 SoundLister.__updatePlaylistInfo = (albumTrackCount, albumDuration) => {
   SoundLister.dom.audioPlaylistInfo.innerHTML = `<strong>${albumTrackCount}</strong> tracks, <strong>${SoundLister.__calculateTime(
     albumDuration
