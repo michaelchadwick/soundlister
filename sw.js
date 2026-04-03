@@ -6,59 +6,6 @@ const SL_CACHE_STATIC_KEY = 'soundlister-cache-static-v1'
 const SL_AUDIO_MANIFEST = '/assets/json/audio_manifest.json'
 const SL_AUDIO_ASSETS_DIR = '/assets/audio'
 
-const putInCache = async (request, response) => {
-  // ignore chrome extension sending messages
-  if (/^chrome-extension/gi.test(request.url)) {
-    return
-  }
-
-  const cache = await caches.open(SL_CACHE_AUDIO_KEY)
-  await cache.put(request, response)
-}
-
-const cacheFirst = async ({ request, preloadResponsePromise, fallbackUrl }) => {
-  // First try to get the resource from the cache
-  const responseFromCache = await caches.match(request)
-  if (responseFromCache) {
-    return responseFromCache
-  }
-
-  // Next try to use the preloaded response, if it's there
-  // NOTE: Chrome throws errors regarding preloadResponse, see:
-  // https://bugs.chromium.org/p/chromium/issues/detail?id=1420515
-  // https://github.com/mdn/dom-examples/issues/145
-  // To avoid those errors, remove or comment out this block of preloadResponse
-  // code along with enableNavigationPreload() and the "activate" listener.
-  const preloadResponse = await preloadResponsePromise
-  if (preloadResponse) {
-    console.info('using preload response', preloadResponse)
-    putInCache(request, preloadResponse.clone())
-    return preloadResponse
-  }
-
-  // Next try to get the resource from the network
-  try {
-    const responseFromNetwork = await fetch(request.clone())
-    // response may be used only once
-    // we need to save clone to put one copy in cache
-    // and serve second one
-    putInCache(request, responseFromNetwork.clone())
-    return responseFromNetwork
-  } catch (error) {
-    const fallbackResponse = await caches.match(fallbackUrl)
-    if (fallbackResponse) {
-      return fallbackResponse
-    }
-    // when even the fallback response is not available,
-    // there is nothing we can do, but we must always
-    // return a Response object
-    return new Response('Network error happened', {
-      status: 408,
-      headers: { 'Content-Type': 'text/plain' },
-    })
-  }
-}
-
 const enableNavigationPreload = async () => {
   if (self.registration.navigationPreload) {
     // Enable navigation preloads!
@@ -71,16 +18,6 @@ self.addEventListener('activate', (event) => {
 })
 
 self.addEventListener('install', (event) => {
-  console.log('install event', event)
-
-  // Object.keys(collections).forEach((col) => {
-  //   collections[col].forEach((song) => {
-  //     const filename = `/assets/audio/${song.subdirPath}/${song.basename}`
-  //     SoundLister._logStatus(`Adding ${filename} to the cache`)
-  //     filesToAdd.push(filename)
-  //   })
-  // })
-
   event.waitUntil(
     caches
       .open(SL_CACHE_STATIC_KEY)
@@ -93,6 +30,7 @@ self.addEventListener('install', (event) => {
           './assets/dir.php',
           './assets/css/app.css',
           './assets/css/colors.css',
+          './assets/css/custom-select.css',
           './assets/custom/colors.css',
           './assets/fontawesome/css/fontawesome.min.css',
           './assets/fontawesome/css/solid.min.css',
@@ -106,6 +44,7 @@ self.addEventListener('install', (event) => {
           './assets/icons/mstile-150x150.png',
           './assets/icons/safari-pinned-tab.svg',
           './assets/images/logo-small.png',
+          './assets/includes/custom-select.html',
           './assets/js/app.js',
           './assets/js/app/constants.js',
           './assets/js/app/dom.js',
