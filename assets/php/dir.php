@@ -51,6 +51,7 @@
 
   if (sizeof($files)) {
     $jsonString = json_encode($filePaths, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+    // make sure web server user has write access to the directory this is in!
     $fp = fopen($audioManifestPath, 'w');
     fwrite($fp, $jsonString);
     fclose($fp);
