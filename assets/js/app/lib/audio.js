@@ -1,5 +1,5 @@
 /* audio handling functions */
-/* global SoundLister, SL_CACHE_AUDIO_KEY */
+/* global SoundLister */
 
 // asynchronously read a file from disk
 SoundLister.__readFileAsync = (file) => {
@@ -16,25 +16,17 @@ SoundLister.__readFileAsync = (file) => {
   })
 }
 
-SoundLister.__isCached = (filename) => {
-  return window.caches
-    .open(SL_CACHE_AUDIO_KEY)
-    .then((cache) => cache.match(filename))
-    .then(Boolean)
-}
+// try to get data from the cache, but fall back to fetching it
+SoundLister.__getData = async (url) => {
+  let dataResponse = await fetch(url)
 
-SoundLister.__addToCache = (filename) => {
-  window.caches
-    .open(SL_CACHE_AUDIO_KEY)
-    .then((cache) => cache.add(filename))
-    .then(() => console.log(`added '${filename}' to cache`))
-    .catch((e) => console.error(`failed to cache '${filename}'`, e))
-}
+  if (!dataResponse.ok) {
+    throw new Error(
+      `Audio didn't load successfully; error code: ${
+        dataResponse.statusText || dataResponse.status
+      }`
+    )
+  }
 
-SoundLister.__removeFromCache = (filename) => {
-  window.caches
-    .open(SL_CACHE_AUDIO_KEY)
-    .then((cache) => cache.delete(filename))
-    .then(() => console.log(`removed '${filename}' from cache`))
-    .catch((e) => console.error(`failed to remove '${filename}' from cache`, e))
+  return dataResponse.blob()
 }

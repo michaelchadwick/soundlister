@@ -1,13 +1,19 @@
 <?php
 
+  // to echo out and return to JS for further processing
   $files = array();
-  $dir = '';
-  $audio_root = 'audio/';
+  // to save to JSON for service worker manifest
+  $filePaths = array();
+  $audioAbsoluteRootPath = '/assets/audio';
+  $audioRelativeRootPath = 'audio/';
+  $audioManifestPath = 'json/audio_manifest.json';
   $exts = ['aac', 'flac', 'm4a', 'mp3', 'mp4', 'ogg', 'wav', 'webm'];
 
   $iterator = new RecursiveIteratorIterator(
-    new RecursiveDirectoryIterator($audio_root, FilesystemIterator::SKIP_DOTS)
+    new RecursiveDirectoryIterator($audioRelativeRootPath, FilesystemIterator::SKIP_DOTS)
   );
+
+  $curDir = '';
 
   foreach ($iterator as $file) {
     if (in_array(strtolower($file->getExtension()), $exts)) {
@@ -21,8 +27,8 @@
       $pathArr = explode('/', $file->getPath());
       $lastSubdir = end($pathArr);
 
-      if ($dir != $lastSubdir) {
-        $dir = $lastSubdir;
+      if ($curDir != $lastSubdir) {
+        $curDir = $lastSubdir;
         $dirIndex = $lastSubdir;
         $files[$dirIndex] = [];
       }
@@ -39,10 +45,15 @@
       $path['updated'] = getFileUpdatedDate($fullpath);
 
       $files[$dirIndex][] = $path;
+      $filePaths[] = $audioAbsoluteRootPath . '/' . $path['subdirPath'] . '/' . $path['basename'];
     }
   }
 
   if (sizeof($files)) {
+    $jsonString = json_encode($filePaths, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+    $fp = fopen($audioManifestPath, 'w');
+    fwrite($fp, $jsonString);
+    fclose($fp);
     echo json_encode($files);
   } else {
     echo json_encode([]);

@@ -1,6 +1,6 @@
 /* main */
 /* global SoundLister, MP3Tag */
-/* global SL_AUDIO_ASSETS_DIR, SL_CACHE_TEXT_KEY, SL_DEFAULT_COLLECTION, SL_PHP_DIR_SCRIPT, SL_SERVICE_WORKER_PATH */
+/* global SL_AUDIO_ASSETS_DIR, SL_DEFAULT_COLLECTION, SL_PHP_DIR_SCRIPT, SL_SERVICE_WORKER_PATH */
 
 // TODO: playlist scroll not working correctly sometimes
 
@@ -16,6 +16,28 @@ SoundLister.shuffleMode = false // for now, only 2 modes
 SoundLister.title = 'SoundLister'
 
 SoundLister.config = {}
+
+SoundLister.registerServiceWorker = async () => {
+  if ('serviceWorker' in navigator) {
+    try {
+      const registration = await navigator.serviceWorker.register(SL_SERVICE_WORKER_PATH, {
+        scope: '/',
+      })
+
+      SoundLister._logStatus('Service Worker registered', registration)
+
+      if (registration.installing) {
+        SoundLister._logStatus('Service worker installing')
+      } else if (registration.waiting) {
+        SoundLister._logStatus('Service worker installed')
+      } else if (registration.active) {
+        SoundLister._logStatus('Service worker active')
+      }
+    } catch (error) {
+      console.error('Service Worker failed to register', error)
+    }
+  }
+}
 
 /* ********************************* */
 /* public functions                  */
@@ -77,7 +99,7 @@ SoundLister.toggleShuffleMode = () => {
     // SoundLister.dom.shuffleButton.classList.remove('shuffle-none')
     // SoundLister.dom.shuffleButton.classList.add('shuffle-all')
     // // shuffle keys and add to queue
-    // SoundLister.shuffleQueue = SoundLister._shuffleArray(Object.keys(SoundLister.tracks()))
+    // SoundLister.shuffleQueue = SoundLister.__shuffleArray(Object.keys(SoundLister.tracks()))
   } else {
     // dom updates
     SoundLister.dom.shuffleButton.classList.remove('shuffle-all')
@@ -130,7 +152,7 @@ SoundLister.changeTrack = (current) => {
 
   // set <title>
   SoundLister.activeTrack = SoundLister.tracks()[current].title
-  SoundLister._setTitle()
+  SoundLister._setHtmlTitle()
 
   // play track
   SoundLister.playTrack(SoundLister.tracks()[current])
@@ -149,7 +171,7 @@ SoundLister.playTrack = async (track) => {
 
   // set <title>
   SoundLister.activeTrack = track.title
-  SoundLister._setTitle()
+  SoundLister._setHtmlTitle()
 
   // play track
   SoundLister.dom.audio.play()
@@ -160,104 +182,6 @@ SoundLister.playTrack = async (track) => {
 /* ********************************* */
 /* _private functions                */
 /* ********************************* */
-
-SoundLister._setCustomIcon = (iconPath) => {
-  var links = document.querySelectorAll("link[rel~='icon']")
-  links.forEach((link) => {
-    link.href = iconPath
-  })
-}
-SoundLister._setCustomLogo = (logoPath) => {
-  SoundLister.dom.logo.src = logoPath
-}
-SoundLister._setCustomHeader = (headerText) => {
-  SoundLister.dom.headerText.innerHTML = headerText
-}
-SoundLister._setCustomTitle = (titleText) => {
-  SoundLister.title = titleText
-  SoundLister._setTitle()
-}
-
-SoundLister._setTitle = () => {
-  let title = SoundLister.env == 'local' ? '(LH) ' : ''
-
-  title += SoundLister.activeTrack != '' ? SoundLister.activeTrack + ' | ' : ''
-
-  if (SoundLister.coll !== SL_DEFAULT_COLLECTION) {
-    title += SoundLister.coll.toUpperCase() + ' | '
-
-    SoundLister.dom.collHeader.innerHTML = `<strong>${SoundLister.coll.toUpperCase()}</strong>.`
-
-    SoundLister._updateQueryString(SoundLister.coll)
-  } else {
-    SoundLister.dom.collHeader.innerHTML = 'something.'
-  }
-
-  title += SoundLister.title
-
-  document.title = title
-}
-
-// Fisher-Yates Shuffle
-// https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
-SoundLister._shuffleArray = (arr) => {
-  let curIdx = arr.length,
-    randIdx
-
-  // While there remain elements to shuffle.
-  while (curIdx != 0) {
-    // Pick a remaining element.
-    randIdx = Math.floor(Math.random() * curIdx)
-    curIdx--
-
-    // And swap it with the current element.
-    ;[arr[curIdx], arr[randIdx]] = [arr[randIdx], arr[curIdx]]
-  }
-
-  return arr
-}
-
-SoundLister._registerServiceWorker = async () => {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker
-      .register(SL_SERVICE_WORKER_PATH, { scope: 'assets/js/app/' })
-      .then((registration) => {
-        SoundLister._logStatus('Service Worker registered', registration)
-
-        if (registration.installing) {
-          SoundLister._logStatus('Service worker installing')
-        } else if (registration.waiting) {
-          SoundLister._logStatus('Service worker installed')
-        } else if (registration.active) {
-          SoundLister._logStatus('Service worker active')
-        }
-      })
-      .catch((err) => {
-        console.error('Service Worker failed to register', err)
-      })
-  }
-}
-
-// change max-height of playlist to match viewport
-// TODO: playlist sometimes doesn't extend to bottom of viewport on iPhone
-SoundLister._resizePlaylist = () => {
-  const winHeight = window.innerHeight
-  const winWidth = window.innerWidth
-
-  let plHeight = 0
-
-  if (winWidth >= 992) {
-    plHeight = Math.floor(winHeight - 370)
-  } else if (winWidth >= 768) {
-    plHeight = Math.floor(winHeight - 310)
-  } else {
-    plHeight = Math.floor(winHeight - 250)
-  }
-
-  // console.log(`_resizePlaylist: winHeight(${winHeight}), plHeight(${plHeight})`)
-
-  SoundLister.dom.playlist.style.height = `${plHeight}px`
-}
 
 // remake playlist with collection filter
 SoundLister._remakePlaylist = () => {
@@ -403,29 +327,8 @@ SoundLister._createPlaylistItem = (song) => {
   SoundLister.index++
 }
 
-// convert filename to a title, if needed
-SoundLister._filenameToTitle = (filename) => {
-  let title
-  // change '-' to ' '
-  title = filename.replaceAll('-', ' ')
-  // remove track numbers
-  // e.g. 0 Track, 11 Track, 115 Track, 4-Track, 05-Track, 043-Track
-  title = title.replaceAll(/^([0-9]{1,3}[\s-]+)/g, '')
-  // remove file extension
-  title = title.replaceAll(/\.{1}[a-zA-Z0-9]{3,4}$/g, '')
-
-  let t_split = title.split(' ')
-
-  // uppercase first letter in title
-  for (var i = 0; i < t_split.length; i++) {
-    t_split[i] = t_split[i].charAt(0).toUpperCase() + t_split[i].slice(1)
-  }
-
-  return t_split.join(' ')
-}
-
 // fill songs object[] with JSON
-SoundLister._fillSongs = async (fileColObj) => {
+SoundLister._fillSongsObj = async (fileColObj) => {
   const songObjArr = []
   let fileIndex = 1
 
@@ -447,8 +350,8 @@ SoundLister._fillSongs = async (fileColObj) => {
         filePath = `${SL_AUDIO_ASSETS_DIR}/${subdirs}/${col}/${baseName}`
       }
 
-      const response = await fetch(filePath)
-      const data = await response.blob()
+      // get audio blob data from file
+      const data = await SoundLister.__getData(filePath)
 
       // when FileReader loads, read ID3 tags from file via MP3Tag
       // if found, use; otherwise use defaults
@@ -488,18 +391,7 @@ SoundLister._fillSongs = async (fileColObj) => {
   return SoundLister.__sortObjArr(songObjArr, ['url'])
 }
 
-SoundLister._updateProgressBar = (percent, title, cur, total) => {
-  if (percent >= 0 && percent <= 100) {
-    SoundLister.dom.progressText.innerHTML = `<span>loading </span><span><strong>${title}</strong></span><span> (${cur}/${total})</span>`
-    SoundLister.dom.progressBar.style.width = percent + '%'
-
-    // SoundLister.dom.progressBar.innerHTML = `<span>loading </span><span><strong>${title}</strong></span><span> (${cur}/${total})</span>`
-    // SoundLister.dom.progressBar.style.width = percent + '%'
-  }
-}
-
 // use PHP script to scan audio directory
-// add to CacheStorage
 // return titles of files
 SoundLister._getFiles = async () => {
   const fileList = await fetch(SL_PHP_DIR_SCRIPT)
@@ -515,10 +407,6 @@ SoundLister._getFiles = async () => {
     } else {
       SoundLister._removeCollDropdown(titlesJSON[0])
     }
-
-    // TODO: use a Service Worker to intercept requests
-    // return cached versions if possible
-    // SoundLister._registerServiceWorker()
 
     // check querystring for ?col|coll|collection= to filter dropdown
     SoundLister._loadQSCollection()
@@ -538,25 +426,9 @@ SoundLister._getFiles = async () => {
     SoundLister._updateCollDisplay(Object.keys(titlesJSON)[0])
   }
 
+  console.log('titlesJSON', titlesJSON)
+
   return titlesJSON
-}
-
-// add new option to collections dropdown
-SoundLister._addCollectionOption = (col) => {
-  // bog-standard <select>
-  SoundLister.dom.collDropdown.options.add(new Option(col, col))
-
-  // STUB
-  // Blog: https://css-tricks.com/striking-a-balance-between-native-and-custom-select-elements/
-  // Codepen: https://codepen.io/sandrina-p/pen/YzyOYRr
-
-  // SoundLister.dom.collNative.options.add(new Option(col, col))
-
-  // const option = document.createElement('div')
-  // option.classList.add('selectCustom-option')
-  // option.dataset.value = col
-  // option.textContent = col
-  // SoundLister.dom.collCustom.querySelector('.selectCustom-options').appendChild(option)
 }
 
 // change play/pause icon and audio element depending on context
@@ -713,124 +585,28 @@ SoundLister._whilePlaying = () => {
   SoundLister.raf = requestAnimationFrame(SoundLister._whilePlaying)
 }
 
-SoundLister._addAudioToCache = async (collections) => {
-  await caches.open(SL_CACHE_TEXT_KEY).then(async (cache) => {
-    await cache.keys().then(async function (keys) {
-      if (!keys.length) {
-        let filesToAdd = []
-
-        Object.keys(collections).forEach((col) => {
-          collections[col].forEach((song) => {
-            filesToAdd.push(`/assets/${song.dirname}/${song.basename}`)
-          })
-        })
-
-        await cache.addAll(filesToAdd)
-      } else {
-        // SoundLister._logStatus(`${SL_CACHE_TEXT_KEY} is full, so no need to initialize`)
-      }
-    })
-  })
-}
-
-SoundLister._loadQSCollection = () => {
-  const params = new Proxy(new URLSearchParams(window.location.search), {
-    get: (searchParams, prop) => searchParams.get(prop),
-  })
-
-  const colToLoad = params.col || params.coll || params.collection
-
-  if (colToLoad) {
-    SoundLister.coll = colToLoad
-
-    const validChoices = Array.from(SoundLister.dom.collDropdown.options).map((op) => op.value)
-
-    // permananently change to one collection (save network)
-    // remove collection dropdown
-    if (validChoices.includes(colToLoad)) {
-      SoundLister._removeCollDropdown(colToLoad)
-    } else {
-      // if invalid collection speficied, default to all collections
-      SoundLister.coll = SL_DEFAULT_COLLECTION
-    }
-  }
-}
-
-SoundLister._updateCollDisplay = (overridedTitle = null) => {
-  if (overridedTitle) {
-    SoundLister.coll = overridedTitle
-  }
-
-  SoundLister._setTitle()
-}
-
-SoundLister._removeCollDropdown = (collection) => {
-  SoundLister.dom.collDropdown.value = collection
-  SoundLister.dom.collDropdown.dispatchEvent(new Event('change'))
-  SoundLister.dom.collDropdown.disabled = true
-  SoundLister.dom.collDropdown.style.display = 'none'
-
-  if (collection && collection !== SL_DEFAULT_COLLECTION) {
-    SoundLister._updateCollDisplay()
-  }
-}
-
-SoundLister._updateQueryString = (coll) => {
-  const url = new URL(location)
-  url.searchParams.set('coll', coll)
-  window.history.pushState({}, '', url)
-}
-
 /* ********************************* */
 /* start the engine                  */
 /* ********************************* */
 ;(async () => {
   // adjust <title> for env
   if (SoundLister.env == 'local') {
-    SoundLister._setTitle()
+    SoundLister._setHtmlTitle()
   }
 
-  try {
-    const resp = await fetch('./custom.json')
-
-    if (resp) {
-      const conf = await resp.json()
-
-      if (conf) {
-        const icon = conf.faviconFilePath
-        const header = conf.headerText
-        const logo = conf.logoFilePath
-        const title = conf.titleText
-
-        if (icon !== '') {
-          SoundLister._setCustomIcon(icon)
-        }
-        if (logo !== '') {
-          SoundLister._setCustomLogo(logo)
-        }
-        if (header !== '') {
-          SoundLister._setCustomHeader(header)
-        }
-        if (title !== '') {
-          SoundLister._setCustomTitle(title)
-        }
-      } else {
-        console.error('custom.json could not be loaded')
-      }
-    } else {
-      // console.warn('custom.json not found');
-    }
-  } catch {
-    // console.warn('no custom.json file found', e);
-  }
+  // try to customize theme if `custom.json` is present
+  SoundLister._setCustomTheme()
 
   // create fileObjArr object array of file info
   const fileObjArr = await SoundLister._getFiles()
 
+  console.log('fileObjArr', fileObjArr)
+
+  // if we have audio, build playlist
   if (Object.keys(fileObjArr).length) {
     // create SoundLister.songsBase JSON object
     // use title, artist, etc. of all songs
-    SoundLister.songsBase = await SoundLister._fillSongs(fileObjArr)
+    SoundLister.songsBase = await SoundLister._fillSongsObj(fileObjArr)
 
     // set array of objects for reference during usage
     SoundLister.songs = SoundLister.songsBase
@@ -878,10 +654,7 @@ SoundLister._updateQueryString = (coll) => {
     SoundLister.dom.currentTime = document.getElementById('time-current')
     SoundLister.dom.totalTime = document.getElementById('time-total')
     SoundLister.dom.outputVolume = document.getElementById('output-volume')
-    SoundLister.__updatePlaylistInfo(albumTrackCount, albumDuration)
-
-    // TODO: add files to CacheStorage AND be able to use them
-    // SoundLister._addAudioToCache(fileObjArr)
+    SoundLister._updatePlaylistInfo(albumTrackCount, albumDuration)
 
     // if <audio> is loaded and ready, then get its duration and such
     if (SoundLister.dom.audio.readyState == 4) {
@@ -907,7 +680,9 @@ SoundLister._updateQueryString = (coll) => {
 
     // now attach <audio>, etc. listeners
     SoundLister.attachFunctionalListeners()
-  } else {
+  }
+  // if no audio, then disable everything
+  else {
     SoundLister.dom.progressContainer.style.display = 'none'
 
     SoundLister.dom.playButton.disabled = 'true'
@@ -925,4 +700,7 @@ SoundLister._updateQueryString = (coll) => {
 
     console.error('No audio files found.')
   }
+
+  // create Service Worker
+  SoundLister.registerServiceWorker()
 })()

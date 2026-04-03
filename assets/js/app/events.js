@@ -46,7 +46,7 @@ SoundLister.attachPresentationListeners = () => {
       albumTrackCount++
       albumDuration += song.ms / 1000
     })
-    SoundLister.__updatePlaylistInfo(albumTrackCount, albumDuration)
+    SoundLister._updatePlaylistInfo(albumTrackCount, albumDuration)
   })
 
   // click/tap audio track on playlist
@@ -95,7 +95,7 @@ SoundLister.attachFunctionalListeners = () => {
     // SoundLister._logStatus('audio has started playing');
     SoundLister._displayBufferedAmount('play')
     SoundLister._updatePlayState()
-    SoundLister._setTitle()
+    SoundLister._setHtmlTitle()
   })
   // <audio> element is playing
   SoundLister.dom.audio.addEventListener('playing', () => {

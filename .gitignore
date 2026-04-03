@@ -4,7 +4,7 @@ audio/
 !assets/icons
 !assets/images/vendor
 !assets/js/vendor
-assets/js/vendor/*.min.js
+assets/json
 
 .eslintcache
 
