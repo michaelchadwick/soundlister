@@ -5,8 +5,8 @@
   // to save to JSON for service worker manifest
   $filePaths = array();
   $audioAbsoluteRootPath = '/assets/audio';
-  $audioRelativeRootPath = 'audio/';
-  $audioManifestPath = 'json/audio_manifest.json';
+  $audioRelativeRootPath = '../audio/';
+  $audioManifestPath = '../json/audio_manifest.json';
   $exts = ['aac', 'flac', 'm4a', 'mp3', 'mp4', 'ogg', 'wav', 'webm'];
 
   $iterator = new RecursiveIteratorIterator(
@@ -41,7 +41,7 @@
       $path['extension'] = $file->getExtension();
       $path['filename'] = $file->getFilename();
       $path['ms'] = $total_ms;
-      $path['subdirPath'] = explode('/', $file->getPath())[1];
+      $path['subdirPath'] = explode('/', $file->getPath())[2];
       $path['updated'] = getFileUpdatedDate($fullpath);
 
       $files[$dirIndex][] = $path;
