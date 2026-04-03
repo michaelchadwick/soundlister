@@ -426,8 +426,6 @@ SoundLister._getFiles = async () => {
     SoundLister._updateCollDisplay(Object.keys(titlesJSON)[0])
   }
 
-  console.log('titlesJSON', titlesJSON)
-
   return titlesJSON
 }
 
@@ -599,8 +597,6 @@ SoundLister._whilePlaying = () => {
 
   // create fileObjArr object array of file info
   const fileObjArr = await SoundLister._getFiles()
-
-  console.log('fileObjArr', fileObjArr)
 
   // if we have audio, build playlist
   if (Object.keys(fileObjArr).length) {
