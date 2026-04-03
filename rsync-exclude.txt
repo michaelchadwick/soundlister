@@ -13,6 +13,7 @@
 .stylelintrc.js
 
 assets/audio
+assets/json
 custom.json.dist
 cypress
 node_modules
