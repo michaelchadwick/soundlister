@@ -32,6 +32,11 @@ SoundLister.registerServiceWorker = async () => {
         SoundLister._logStatus('Service worker installed')
       } else if (registration.active) {
         SoundLister._logStatus('Service worker active')
+
+        SoundLister.dom.updateSWButton.addEventListener('click', () => {
+          console.log('updating service worker', registration)
+          registration.update()
+        })
       }
     } catch (error) {
       console.error('Service Worker failed to register', error)

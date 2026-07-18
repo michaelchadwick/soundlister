@@ -680,10 +680,13 @@ section#main #wrapper {
 }
 
 footer {
+  align-items: center;
   background-color: var(--gray-darker);
   border-top: 2px solid var(--neutral-black);
   bottom: 0;
   color: var(--gray);
+  display: flex;
+  justify-content: space-between;
   font-size: 0.75rem;
   height: 30px;
   position: fixed;
@@ -695,6 +698,10 @@ footer div {
 }
 footer div a {
   color: #f0be5b;
+}
+footer div button {
+  cursor: pointer;
+  padding: 0.1em 0.5em;
 }
 
 @keyframes fill-bar {
