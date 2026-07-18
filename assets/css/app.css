@@ -628,7 +628,7 @@ section#main #wrapper {
 #playlist hr.album-separator {
   background-color: var(--base-color);
   border: none;
-  height: 2px;
+  height: 4px;
 }
 #playlist hr.album-separator:first-child {
   display: none;
