@@ -312,7 +312,7 @@ SoundLister._createPlaylistItem = (song) => {
   const trackMetaInfo = document.createElement('div')
   trackMetaInfo.classList.add('track-attribute', 'track-meta-info')
   trackMetaInfo.innerHTML = `
-    updated: ${trackUpdated}
+    UPDATED ^ ${trackUpdated}
   `
 
   trackTitles.append(trackName)
