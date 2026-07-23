@@ -639,13 +639,13 @@ SoundLister._whilePlaying = () => {
     // SoundLister.dom.loadMessage.classList.remove('loading')
 
     // hide loading info once songs are loaded
-    SoundLister.dom.progressText.innerHTML = '<span>loading done!</span>'
-
     setTimeout(() => {
+      SoundLister.dom.progressText.innerHTML = '<span>loading done!</span>'
       SoundLister.dom.progressBar.parentElement.style.height = '0'
+
       setTimeout(() => {
         SoundLister.dom.progressBar.parentElement.style.display = 'none'
-      }, 100)
+      }, 500)
     }, 2000)
 
     // attach DOM listeners
