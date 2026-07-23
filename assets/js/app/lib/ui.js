@@ -26,6 +26,7 @@ SoundLister._setHtmlTitle = () => {
     SoundLister._updateQueryString(SoundLister.coll)
   } else {
     SoundLister.dom.collHeader.innerHTML = 'something.'
+    SoundLister._updateQueryString(SL_DEFAULT_COLLECTION)
   }
 
   title += SoundLister.title

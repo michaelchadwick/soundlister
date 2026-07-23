@@ -66,7 +66,17 @@ SoundLister._removeCollDropdown = (collection) => {
 
 // update query string based on changes to the current collection filter
 SoundLister._updateQueryString = (coll) => {
-  const url = new URL(location)
-  url.searchParams.set('coll', coll)
-  window.history.pushState({}, '', url)
+  // only worry about updating queryString if there is more than 1 collection
+  if (SoundLister.dom.collDropdown.options.length > 1) {
+    // setting to non-default? set ?coll=
+    if (coll !== SL_DEFAULT_COLLECTION) {
+      const url = new URL(location)
+      url.searchParams.set('coll', coll)
+      window.history.pushState({}, '', url)
+    }
+    // setting to default? remove ?coll=
+    else {
+      window.history.pushState({}, '', location.origin)
+    }
+  }
 }
