@@ -1,6 +1,8 @@
 packages:
   # include packages in subfolders (e.g. apps/ and packages/)
   - "apps/**"
-  - 'packages/**'
+  - "packages/**"
   # if required, exclude some directories
-  - '!**/test/**'
+  - "!**/test/**"
+allowBuilds:
+  cypress: true
